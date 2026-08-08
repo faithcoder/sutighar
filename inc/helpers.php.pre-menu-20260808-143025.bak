@@ -1,0 +1,449 @@
+<?php
+/**
+ * Shared helpers for templates.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+function sutighar_asset( $path ) {
+	return SUTIGHAR_URI . '/' . ltrim( $path, '/' );
+}
+
+function sutighar_option( $key, $default = '' ) {
+	$value = get_option( 'sutighar_' . $key, $default );
+	return '' === $value ? $default : $value;
+}
+
+function sutighar_default_whatsapp_number() {
+	return '8801616322116';
+}
+
+function sutighar_whatsapp_number( $with_plus = false ) {
+	$raw    = trim( sutighar_option( 'whatsapp_number', sutighar_default_whatsapp_number() ) );
+	$number = preg_replace( '/\D+/', '', $raw );
+	if ( strlen( $number ) < 8 ) {
+		$number = $raw ? $raw : sutighar_default_whatsapp_number();
+	}
+
+	return $with_plus ? '+' . $number : $number;
+}
+
+function sutighar_whatsapp_url( $message = '' ) {
+	$url = 'https://wa.me/' . rawurlencode( sutighar_whatsapp_number() );
+	if ( '' !== $message ) {
+		$url .= '?text=' . rawurlencode( $message );
+	}
+
+	return $url;
+}
+
+function sutighar_product_description_html( $product ) {
+	if ( ! $product instanceof WC_Product ) {
+		return '';
+	}
+
+	$content = $product->get_short_description();
+	if ( '' === trim( $content ) ) {
+		$content = get_post_field( 'post_content', $product->get_id() );
+	}
+
+	if ( '' === trim( $content ) ) {
+		return '';
+	}
+
+	$content = html_entity_decode( $content, ENT_QUOTES, get_bloginfo( 'charset' ) );
+	$content = do_shortcode( $content );
+	$content = wpautop( $content );
+	$allowed = wp_kses_allowed_html( 'post' );
+
+	$allowed['video'] = array(
+		'autoplay'    => true,
+		'class'       => true,
+		'controls'    => true,
+		'height'      => true,
+		'loop'        => true,
+		'muted'       => true,
+		'playsinline' => true,
+		'poster'      => true,
+		'preload'     => true,
+		'src'         => true,
+		'style'       => true,
+		'width'       => true,
+	);
+	$allowed['source'] = array(
+		'src'  => true,
+		'type' => true,
+	);
+	$allowed['track']  = array(
+		'default' => true,
+		'kind'    => true,
+		'label'   => true,
+		'src'     => true,
+		'srclang' => true,
+	);
+	$allowed['iframe'] = array(
+		'allow'           => true,
+		'allowfullscreen' => true,
+		'class'           => true,
+		'height'          => true,
+		'loading'         => true,
+		'referrerpolicy'  => true,
+		'src'             => true,
+		'style'           => true,
+		'title'           => true,
+		'width'           => true,
+	);
+
+	return wp_kses( $content, $allowed );
+}
+
+function sutighar_logo_image( $key, $class ) {
+	$logo_id = absint( sutighar_option( $key, 0 ) );
+	if ( ! $logo_id && 'header_logo' === $key ) {
+		$logo_id = absint( get_theme_mod( 'custom_logo' ) );
+	}
+	if ( ! $logo_id && 'footer_logo' === $key ) {
+		$logo_id = absint( sutighar_option( 'header_logo', 0 ) );
+		$logo_id = $logo_id ? $logo_id : absint( get_theme_mod( 'custom_logo' ) );
+	}
+
+	if ( ! $logo_id ) {
+		return '';
+	}
+
+	return wp_get_attachment_image(
+		$logo_id,
+		'full',
+		false,
+		array(
+			'class' => $class,
+			'alt'   => get_bloginfo( 'name' ),
+		)
+	);
+}
+
+function sutighar_categories() {
+	$defaults = array(
+		'all'          => array( 'label' => __( 'Browse All', 'sutighar' ), 'image' => 'nav-browse-all.png', 'url' => wc_get_page_permalink( 'shop' ) ),
+		'solid'        => array( 'label' => __( 'Solid', 'sutighar' ), 'image' => 'nav-solid.png' ),
+		'stripe-check' => array( 'label' => __( 'Stripe & Check', 'sutighar' ), 'image' => 'nav-stripe.png' ),
+		'jacquard'     => array( 'label' => __( 'Jacquard', 'sutighar' ), 'image' => 'nav-jacquard.png' ),
+		'batik-print'  => array( 'label' => __( 'Batik Print', 'sutighar' ), 'image' => 'nav-batik.png' ),
+		'handloom'     => array( 'label' => __( 'Handloom', 'sutighar' ), 'image' => 'nav-handloom.png' ),
+	);
+
+	foreach ( $defaults as $slug => &$item ) {
+		if ( 'all' !== $slug ) {
+			$term = get_term_by( 'slug', $slug, 'product_cat' );
+			if ( $term && ! is_wp_error( $term ) ) {
+				$item['label'] = $term->name;
+				$item['url']   = get_term_link( $term );
+				$thumb_id      = get_term_meta( $term->term_id, 'thumbnail_id', true );
+				if ( $thumb_id ) {
+					$item['thumb_id'] = (int) $thumb_id;
+				}
+			} else {
+				$item['url'] = add_query_arg( 'product_cat', $slug, wc_get_page_permalink( 'shop' ) );
+			}
+		}
+	}
+	unset( $item );
+
+	return $defaults;
+}
+
+function sutighar_category_thumb_url( $item ) {
+	if ( ! empty( $item['thumb_id'] ) ) {
+		return wp_get_attachment_image_url( $item['thumb_id'], 'thumbnail' );
+	}
+
+	return sutighar_asset( 'assets/images/' . $item['image'] );
+}
+
+function sutighar_menu_item_thumb_url( $item ) {
+	if ( $item instanceof WP_Post && 'taxonomy' === $item->type && 'product_cat' === $item->object ) {
+		$thumb_id = get_term_meta( (int) $item->object_id, 'thumbnail_id', true );
+		if ( $thumb_id ) {
+			return wp_get_attachment_image_url( (int) $thumb_id, 'thumbnail' );
+		}
+	}
+
+	if ( $item instanceof WP_Post && 'post_type' === $item->type && 'product' === $item->object && has_post_thumbnail( (int) $item->object_id ) ) {
+		return get_the_post_thumbnail_url( (int) $item->object_id, 'thumbnail' );
+	}
+
+	return sutighar_asset( 'assets/images/nav-browse-all.png' );
+}
+
+function sutighar_is_active_category( $slug ) {
+	if ( 'all' === $slug ) {
+		return is_shop() || is_front_page();
+	}
+
+	return is_product_category( $slug ) || ( isset( $_GET['product_cat'] ) && $slug === sanitize_title( wp_unslash( $_GET['product_cat'] ) ) );
+}
+
+function sutighar_is_active_menu_item( $item ) {
+	if ( ! $item instanceof WP_Post ) {
+		return false;
+	}
+
+	$classes = isset( $item->classes ) ? (array) $item->classes : array();
+	return in_array( 'current-menu-item', $classes, true ) || in_array( 'current-menu-ancestor', $classes, true ) || in_array( 'current-product_cat-ancestor', $classes, true );
+}
+
+function sutighar_primary_menu_items() {
+	$locations = get_nav_menu_locations();
+	if ( ! empty( $locations['primary'] ) ) {
+		$items = wp_get_nav_menu_items( $locations['primary'] );
+		if ( $items ) {
+			return array_values(
+				array_filter(
+					$items,
+					function ( $item ) {
+						return 0 === (int) $item->menu_item_parent;
+					}
+				)
+			);
+		}
+	}
+
+	return array();
+}
+
+function sutighar_render_plain_menu_links( $location ) {
+	$locations = get_nav_menu_locations();
+	if ( empty( $locations[ $location ] ) ) {
+		return false;
+	}
+
+	$items = wp_get_nav_menu_items( $locations[ $location ] );
+	if ( ! $items ) {
+		return false;
+	}
+
+	foreach ( $items as $item ) {
+		if ( 0 !== (int) $item->menu_item_parent ) {
+			continue;
+		}
+		?>
+		<a href="<?php echo esc_url( $item->url ); ?>"><?php echo esc_html( $item->title ); ?></a>
+		<?php
+	}
+
+	return true;
+}
+
+function sutighar_render_category_nav_items( $context = 'desktop' ) {
+	$menu_items = sutighar_primary_menu_items();
+	if ( $menu_items ) {
+		foreach ( $menu_items as $item ) {
+			$classes = 'desktop' === $context ? 'sg-catnav__item' : '';
+			if ( sutighar_is_active_menu_item( $item ) ) {
+				$classes .= ' is-active';
+			}
+			?>
+			<a class="<?php echo esc_attr( trim( $classes ) ); ?>" href="<?php echo esc_url( $item->url ); ?>">
+				<span class="<?php echo 'desktop' === $context ? 'sg-catnav__thumb' : ''; ?>" role="img" aria-label="<?php echo esc_attr( $item->title ); ?>" style="background-image:url('<?php echo esc_url( sutighar_menu_item_thumb_url( $item ) ); ?>')"></span>
+				<span><?php echo esc_html( $item->title ); ?></span>
+			</a>
+			<?php
+		}
+		return;
+	}
+
+	foreach ( sutighar_categories() as $slug => $item ) {
+		$classes = 'desktop' === $context ? 'sg-catnav__item' : '';
+		if ( sutighar_is_active_category( $slug ) ) {
+			$classes .= ' is-active';
+		}
+		?>
+		<a class="<?php echo esc_attr( trim( $classes ) ); ?>" href="<?php echo esc_url( $item['url'] ); ?>">
+			<span class="<?php echo 'desktop' === $context ? 'sg-catnav__thumb' : ''; ?>" role="img" aria-label="<?php echo esc_attr( $item['label'] ); ?>" style="background-image:url('<?php echo esc_url( sutighar_category_thumb_url( $item ) ); ?>')"></span>
+			<span><?php echo esc_html( $item['label'] ); ?></span>
+		</a>
+		<?php
+	}
+}
+
+function sutighar_inline_icon( $name ) {
+	$icons = array(
+		'cart'    => '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path></svg>',
+		'heart'   => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"></path></svg>',
+		'user'    => '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M4.5 20.5c1.4-3.7 4.2-5.5 7.5-5.5s6.1 1.8 7.5 5.5"></path></svg>',
+		'check'   => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>',
+		'filter'  => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M8 12h8"></path><path d="M10 17h4"></path></svg>',
+		'minus'   => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path></svg>',
+		'plus'    => '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>',
+	);
+
+	return isset( $icons[ $name ] ) ? $icons[ $name ] : '';
+}
+
+function sutighar_price( $price ) {
+	return wc_price(
+		$price,
+		array(
+			'currency'           => 'BDT',
+			'decimal_separator'  => '.',
+			'thousand_separator' => ',',
+			'decimals'           => 0,
+		)
+	);
+}
+
+function sutighar_product_card( $product = null ) {
+	if ( ! $product ) {
+		global $product;
+	}
+	if ( ! $product instanceof WC_Product ) {
+		return;
+	}
+
+	wc_get_template_part( 'content', 'product' );
+}
+
+function sutighar_product_size_measurements( $product ) {
+	if ( $product instanceof WC_Product ) {
+		$meta_size   = $product->get_meta( '_sg_size' );
+		$meta_height = $product->get_meta( '_sg_height' );
+		$meta_waist  = $product->get_meta( '_sg_waist' );
+		if ( $meta_size || $meta_height || $meta_waist ) {
+			return array(
+				'size'   => $meta_size ? $meta_size : __( 'One size', 'sutighar' ),
+				'height' => $meta_height ? $meta_height : '—',
+				'waist'  => $meta_waist ? $meta_waist : '—',
+			);
+		}
+	}
+
+	$size = $product instanceof WC_Product ? $product->get_attribute( 'pa_size' ) : '';
+	$size = $size ? $size : $product->get_meta( '_sg_size' );
+	$map  = array(
+		'Kids'     => array( 42, 72 ),
+		'5 Haat'   => array( 51, 98 ),
+		'5.5 Haat' => array( 51, 98 ),
+		'6 Haat'   => array( 54, 104 ),
+	);
+
+	foreach ( $map as $label => $values ) {
+		if ( false !== stripos( $size, $label ) || false !== stripos( $product->get_name(), $label ) ) {
+			return array( 'size' => $label, 'height' => $values[0], 'waist' => $values[1] );
+		}
+	}
+
+	return array( 'size' => $size ? $size : __( 'One size', 'sutighar' ), 'height' => '—', 'waist' => '—' );
+}
+
+function sutighar_product_spec_value( $product, $label ) {
+	if ( ! $product instanceof WC_Product ) {
+		return '';
+	}
+
+	$meta_key = '_sg_spec_' . sanitize_key( str_replace( ' ', '_', strtolower( $label ) ) );
+	$value    = $product->get_meta( $meta_key );
+	if ( $value ) {
+		return $value;
+	}
+
+	$value = $product->get_attribute( sanitize_title( $label ) );
+	if ( ! $value && 'Brand' === $label ) {
+		$terms = wp_get_post_terms( $product->get_id(), 'product_brand', array( 'fields' => 'names' ) );
+		$value = ! is_wp_error( $terms ) ? implode( ', ', $terms ) : '';
+	}
+
+	if ( $value ) {
+		return $value;
+	}
+
+	$defaults = sutighar_default_specs();
+	return $defaults[ $label ] ?? '';
+}
+
+function sutighar_default_specs() {
+	return array(
+		'Brand'      => 'Sutighar',
+		'Fabric'     => '100% Cotton',
+		'Mercerized' => 'Yes',
+		'Loom Type'  => 'Mechanical',
+		'Border'     => 'Woven',
+		'Wash Type'  => 'Regular',
+	);
+}
+
+function sutighar_product_plain_price( $product ) {
+	if ( ! $product instanceof WC_Product ) {
+		return '';
+	}
+
+	$price = $product->get_price();
+	if ( '' === $price && $product->is_type( 'variable' ) ) {
+		$price = $product->get_variation_price( 'min', true );
+	}
+
+	return '' === $price ? '' : number_format_i18n( (float) $price, 0 );
+}
+
+function sutighar_size_chart_modal() {
+	static $printed = false;
+	if ( $printed ) {
+		return;
+	}
+	$printed = true;
+	?>
+	<div class="sg-modal" data-sg-size-modal hidden>
+		<div class="sg-modal__backdrop" data-sg-size-close></div>
+		<div class="sg-modal__panel" role="dialog" aria-modal="true" aria-labelledby="sg-size-title">
+			<div class="sg-modal__head">
+				<h2 id="sg-size-title"><?php esc_html_e( 'Size Chart', 'sutighar' ); ?></h2>
+				<button type="button" data-sg-size-close aria-label="<?php esc_attr_e( 'Close size chart', 'sutighar' ); ?>">×</button>
+			</div>
+			<div class="sg-size-chart">
+				<?php foreach ( array( 'Kids' => array( 42, 72 ), '5 Haat' => array( 51, 98 ), '5.5 Haat' => array( 51, 98 ), '6 Haat' => array( 54, 104 ) ) as $label => $row ) : ?>
+					<div><strong><?php echo esc_html( $label ); ?></strong><span><?php echo esc_html( sprintf( __( 'Height %1$s″ · Waist %2$s″', 'sutighar' ), $row[0], $row[1] ) ); ?></span></div>
+				<?php endforeach; ?>
+			</div>
+			<p><?php esc_html_e( 'Measurements in inches, taken flat before wash. Allow about 1″ shrinkage on first wash.', 'sutighar' ); ?></p>
+		</div>
+	</div>
+	<?php
+}
+
+function sutighar_whatsapp_order_url( $order ) {
+	if ( ! $order instanceof WC_Order ) {
+		return '#';
+	}
+
+	$lines  = array(
+		'New Order from Sutighar website',
+		'Ref: ' . $order->get_order_number(),
+		'------------------------------',
+	);
+
+	foreach ( $order->get_items() as $item ) {
+		$product = $item->get_product();
+		$size    = $product ? $product->get_attribute( 'pa_size' ) : '';
+		$lines[] = $item->get_name() . ( $size ? ' · ' . $size : '' ) . ' × ' . $item->get_quantity() . ' — ' . wp_strip_all_tags( wc_price( $item->get_total(), array( 'decimals' => 0 ) ) );
+	}
+
+	$lines[] = '------------------------------';
+	$lines[] = 'Subtotal: ' . wp_strip_all_tags( wc_price( $order->get_subtotal(), array( 'decimals' => 0 ) ) );
+	$lines[] = 'Shipping: ' . ( $order->get_shipping_total() > 0 ? wp_strip_all_tags( wc_price( $order->get_shipping_total(), array( 'decimals' => 0 ) ) ) : 'Free' );
+	$lines[] = 'Total: ' . wp_strip_all_tags( $order->get_formatted_order_total() );
+	$lines[] = '------------------------------';
+	$lines[] = 'Name: ' . $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+	$lines[] = 'Phone: ' . $order->get_billing_phone();
+	$lines[] = 'Email: ' . ( $order->get_billing_email() ? $order->get_billing_email() : '—' );
+	$address = trim( $order->get_billing_address_1() . ', ' . $order->get_billing_city() . ( $order->get_billing_postcode() ? ', ' . $order->get_billing_postcode() : '' ), ', ' );
+	$lines[] = 'Address: ' . $address;
+	if ( $order->get_customer_note() ) {
+		$lines[] = 'Notes: ' . $order->get_customer_note();
+	}
+	$payment = $order->get_payment_method_title();
+	$trx     = $order->get_meta( '_sg_transaction_id' );
+	$lines[] = 'Payment: ' . $payment . ( $trx ? ' (Trxn: ' . $trx . ')' : '' );
+
+	return sutighar_whatsapp_url( implode( "\n", $lines ) );
+}
