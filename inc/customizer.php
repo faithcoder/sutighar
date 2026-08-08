@@ -67,6 +67,7 @@ function sutighar_customize_register( $wp_customize ) {
 	$store_fields = array(
 		'whatsapp_number'         => array( __( 'WhatsApp number', 'sutighar' ), sutighar_default_whatsapp_number() ),
 		'shipping_fee'            => array( __( 'Shipping fee', 'sutighar' ), '80' ),
+		'outside_dhaka_shipping_fee' => array( __( 'Outside Dhaka shipping fee', 'sutighar' ), '120' ),
 		'free_shipping_threshold' => array( __( 'Free shipping threshold', 'sutighar' ), '3000' ),
 		'return_inside_dhaka_fee' => array( __( 'Inside Dhaka exchange fee', 'sutighar' ), '120' ),
 		'return_outside_dhaka_fee' => array( __( 'Outside Dhaka exchange fee', 'sutighar' ), '200' ),

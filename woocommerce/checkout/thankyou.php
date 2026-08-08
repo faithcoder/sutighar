@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 					$order->get_billing_phone(),
 					$order->get_billing_address_1(),
 					$order->get_billing_city(),
+					$order->get_billing_state(),
 					$order->get_billing_postcode(),
 				)
 			);

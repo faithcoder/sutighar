@@ -185,6 +185,14 @@ function sutighar_render_feature_cards_block( $attributes ) {
 	ob_start();
 	?>
 	<section <?php echo get_block_wrapper_attributes( array( 'class' => 'sg-feature-band alignfull' ) ); ?>>
+		<nav class="sg-mobile-category-menu sg-container" aria-label="<?php esc_attr_e( 'Product categories', 'sutighar' ); ?>">
+			<?php foreach ( sutighar_categories() as $item ) : ?>
+				<a class="sg-mobile-category-menu__item" href="<?php echo esc_url( $item['url'] ); ?>">
+					<span class="sg-mobile-category-menu__thumb" style="background-image:url('<?php echo esc_url( sutighar_category_thumb_url( $item ) ); ?>')"></span>
+					<span><?php echo esc_html( $item['label'] ); ?></span>
+				</a>
+			<?php endforeach; ?>
+		</nav>
 		<div class="sg-feature-cards sg-container">
 			<?php foreach ( $cards as $index => $label ) : ?>
 				<div class="sg-feature-card">

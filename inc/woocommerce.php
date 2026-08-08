@@ -419,7 +419,7 @@ function sutighar_checkout_fields( $fields ) {
 		'billing_first_name' => array(
 			'type'         => 'text',
 			'label'        => __( 'Full name', 'sutighar' ),
-			'placeholder'  => __( 'Your full name', 'sutighar' ),
+			'placeholder'  => __( 'Full name', 'sutighar' ),
 			'required'     => true,
 			'class'        => array( 'form-row-wide' ),
 			'autocomplete' => 'name',
@@ -428,7 +428,7 @@ function sutighar_checkout_fields( $fields ) {
 		'billing_phone'      => array(
 			'type'         => 'tel',
 			'label'        => __( 'Phone (WhatsApp)', 'sutighar' ),
-			'placeholder'  => '01XXXXXXXXX',
+			'placeholder'  => __( 'Phone (WhatsApp)', 'sutighar' ),
 			'required'     => true,
 			'class'        => array( 'form-row-first' ),
 			'autocomplete' => 'tel',
@@ -437,7 +437,7 @@ function sutighar_checkout_fields( $fields ) {
 		'billing_email'      => array(
 			'type'         => 'email',
 			'label'        => __( 'Email (optional)', 'sutighar' ),
-			'placeholder'  => 'you@email.com',
+			'placeholder'  => __( 'Email (optional)', 'sutighar' ),
 			'required'     => false,
 			'class'        => array( 'form-row-last' ),
 			'autocomplete' => 'email',
@@ -446,7 +446,7 @@ function sutighar_checkout_fields( $fields ) {
 		'billing_address_1'  => array(
 			'type'        => 'textarea',
 			'label'       => __( 'Delivery address', 'sutighar' ),
-			'placeholder' => __( 'House, road, area', 'sutighar' ),
+			'placeholder' => __( 'Delivery address', 'sutighar' ),
 			'required'    => true,
 			'class'       => array( 'form-row-wide' ),
 			'priority'    => 40,
@@ -457,18 +457,26 @@ function sutighar_checkout_fields( $fields ) {
 		'billing_city'       => array(
 			'type'        => 'text',
 			'label'       => __( 'City', 'sutighar' ),
-			'placeholder' => __( 'Dhaka, Chittagong...', 'sutighar' ),
+			'placeholder' => __( 'City', 'sutighar' ),
+			'required'    => true,
+			'class'       => array( 'form-row-last' ),
+			'priority'    => 60,
+		),
+		'billing_state'      => array(
+			'type'        => 'select',
+			'label'       => __( 'District', 'sutighar' ),
 			'required'    => true,
 			'class'       => array( 'form-row-first' ),
+			'options'     => sutighar_checkout_district_options(),
 			'priority'    => 50,
 		),
 		'billing_postcode'   => array(
 			'type'        => 'text',
 			'label'       => __( 'Postal code (optional)', 'sutighar' ),
-			'placeholder' => '1212',
+			'placeholder' => __( 'Postal code (optional)', 'sutighar' ),
 			'required'    => false,
-			'class'       => array( 'form-row-last' ),
-			'priority'    => 60,
+			'class'       => array( 'form-row-wide' ),
+			'priority'    => 70,
 		),
 	);
 
@@ -477,11 +485,11 @@ function sutighar_checkout_fields( $fields ) {
 	$fields['order']    = array(
 		'order_comments' => array(
 			'type'        => 'textarea',
-			'label'       => __( 'Notes (optional)', 'sutighar' ),
-			'placeholder' => __( 'Gift wrap, special instructions', 'sutighar' ),
+			'label'       => __( 'Additional Notes', 'sutighar' ),
+			'placeholder' => __( 'Additional Notes', 'sutighar' ),
 			'required'    => false,
 			'class'       => array( 'form-row-wide' ),
-			'priority'    => 10,
+			'priority'    => 15,
 			'custom_attributes' => array(
 				'rows' => 2,
 			),
@@ -489,6 +497,133 @@ function sutighar_checkout_fields( $fields ) {
 	);
 
 	return $fields;
+}
+
+function sutighar_checkout_district_options() {
+	$districts = array(
+		'Bagerhat',
+		'Bandarban',
+		'Barguna',
+		'Barishal',
+		'Bhola',
+		'Bogura',
+		'Brahmanbaria',
+		'Chandpur',
+		'Chapai Nawabganj',
+		'Chattogram',
+		'Chuadanga',
+		'Cox\'s Bazar',
+		'Cumilla',
+		'Dhaka',
+		'Dinajpur',
+		'Faridpur',
+		'Feni',
+		'Gaibandha',
+		'Gazipur',
+		'Gopalganj',
+		'Habiganj',
+		'Jamalpur',
+		'Jashore',
+		'Jhalokati',
+		'Jhenaidah',
+		'Joypurhat',
+		'Khagrachhari',
+		'Khulna',
+		'Kishoreganj',
+		'Kurigram',
+		'Kushtia',
+		'Lakshmipur',
+		'Lalmonirhat',
+		'Madaripur',
+		'Magura',
+		'Manikganj',
+		'Meherpur',
+		'Moulvibazar',
+		'Munshiganj',
+		'Mymensingh',
+		'Naogaon',
+		'Narail',
+		'Narayanganj',
+		'Narsingdi',
+		'Natore',
+		'Netrokona',
+		'Nilphamari',
+		'Noakhali',
+		'Pabna',
+		'Panchagarh',
+		'Patuakhali',
+		'Pirojpur',
+		'Rajbari',
+		'Rajshahi',
+		'Rangamati',
+		'Rangpur',
+		'Satkhira',
+		'Shariatpur',
+		'Sherpur',
+		'Sirajganj',
+		'Sunamganj',
+		'Sylhet',
+		'Tangail',
+		'Thakurgaon',
+	);
+	$options   = array( '' => __( 'Select District', 'sutighar' ) );
+
+	foreach ( $districts as $district ) {
+		$options[ sanitize_title( $district ) ] = $district;
+	}
+
+	return $options;
+}
+
+function sutighar_selected_shipping_option() {
+	$district = '';
+
+	if ( isset( $_POST['billing_state'] ) ) {
+		$district = sanitize_title( wp_unslash( $_POST['billing_state'] ) );
+	} elseif ( isset( $_POST['post_data'] ) ) {
+		parse_str( wp_unslash( $_POST['post_data'] ), $posted );
+		if ( isset( $posted['billing_state'] ) ) {
+			$district = sanitize_title( $posted['billing_state'] );
+		}
+	}
+
+	if ( '' === $district ) {
+		return '';
+	}
+
+	return 'dhaka' === $district ? 'inside_dhaka' : 'outside_dhaka';
+}
+
+function sutighar_shipping_option_fee( $option ) {
+	if ( 'outside_dhaka' === $option ) {
+		return (float) sutighar_option( 'outside_dhaka_shipping_fee', '120' );
+	}
+	if ( 'inside_dhaka' !== $option ) {
+		return 0;
+	}
+
+	return (float) sutighar_option( 'shipping_fee', '80' );
+}
+
+add_action( 'woocommerce_cart_calculate_fees', 'sutighar_checkout_shipping_option_fee' );
+function sutighar_checkout_shipping_option_fee( $cart ) {
+	if ( is_admin() && ! wp_doing_ajax() ) {
+		return;
+	}
+	if ( ! is_checkout() && ! wp_doing_ajax() ) {
+		return;
+	}
+	if ( ! $cart || $cart->is_empty() ) {
+		return;
+	}
+
+	$option = sutighar_selected_shipping_option();
+	$fee    = sutighar_shipping_option_fee( $option );
+	$label  = 'outside_dhaka' === $option ? __( 'Shipping - Outside Dhaka', 'sutighar' ) : __( 'Shipping - Inside Dhaka', 'sutighar' );
+
+	if ( $fee > 0 ) {
+		$cart->add_fee( $label, $fee, false );
+	}
 }
 
 add_filter( 'woocommerce_available_payment_gateways', 'sutighar_payment_gateway_copy' );
@@ -516,6 +651,9 @@ function sutighar_store_checkout_field_snapshot( $order, $data ) {
 	$first_name = isset( $_POST['billing_first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_first_name'] ) ) : '';
 	$address   = isset( $_POST['billing_address_1'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_address_1'] ) ) : '';
 	$city      = isset( $_POST['billing_city'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_city'] ) ) : '';
+	$district  = isset( $_POST['billing_state'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_state'] ) ) : '';
+	$districts = sutighar_checkout_district_options();
+	$district  = isset( $districts[ $district ] ) ? $districts[ $district ] : $district;
 	$postcode  = isset( $_POST['billing_postcode'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_postcode'] ) ) : '';
 
 	if ( $first_name ) {
@@ -526,6 +664,10 @@ function sutighar_store_checkout_field_snapshot( $order, $data ) {
 	}
 	if ( $city ) {
 		$order->set_shipping_city( $city );
+	}
+	if ( $district ) {
+		$order->set_billing_state( $district );
+		$order->set_shipping_state( $district );
 	}
 	if ( $postcode ) {
 		$order->set_shipping_postcode( $postcode );
@@ -543,6 +685,10 @@ function sutighar_store_checkout_field_snapshot( $order, $data ) {
 			$value = wc_clean( wp_unslash( $_POST[ $key ] ) );
 			if ( is_array( $value ) ) {
 				$value = implode( ', ', array_filter( array_map( 'sanitize_text_field', $value ) ) );
+			}
+			if ( 'billing_state' === $key ) {
+				$districts = sutighar_checkout_district_options();
+				$value     = isset( $districts[ $value ] ) ? $districts[ $value ] : $value;
 			}
 			if ( '' === $value ) {
 				continue;

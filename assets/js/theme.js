@@ -88,9 +88,8 @@
     if (window.innerWidth > 719) closeDrawer();
   });
 
-  // ---- Floating cart modal ----
+  // ---- Cart drawer ----
   const cartModal = document.querySelector('[data-sg-cart-modal]');
-  const cartFab = document.querySelector('[data-sg-cart-fab]');
   let lastCartModalFocus = null;
 
   function openCartModal() {
@@ -156,8 +155,10 @@
   }
 
   document.addEventListener('click', (event) => {
-    if (cartFab && event.target.closest('[data-sg-cart-fab]')) {
+    if (event.target.closest('[data-sg-cart-open]')) {
       event.preventDefault();
+      closeDrawer();
+      closePops();
       openCartModal();
       return;
     }
@@ -187,10 +188,6 @@
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') closeCartModal();
-  });
-
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 719) closeCartModal();
   });
 
   document.addEventListener('pointerdown', (event) => {
@@ -282,15 +279,9 @@
       const res = await fetch(window.sutighar.ajaxUrl, { method: 'POST', credentials: 'same-origin', body });
       const json = await res.json();
       if (json && json.fragments) {
-        Object.keys(json.fragments).forEach((selector) => {
-          document.querySelectorAll(selector).forEach((el) => {
-            const tmp = document.createElement('div');
-            tmp.innerHTML = json.fragments[selector];
-            const next = tmp.firstElementChild;
-            if (next) el.replaceWith(next);
-          });
-        });
+        applyCartFragments(json.fragments);
       }
+      openCartModal();
       submitter.textContent = window.sutighar.i18n.added + ' ✓';
       setTimeout(() => { submitter.textContent = window.sutighar.i18n.added.replace('Added', 'Add to Cart'); }, 1200);
     } catch (error) {
@@ -518,6 +509,45 @@
     });
   }
 
+  function selectedDistrictSlug() {
+    const district = document.querySelector('[name="billing_state"]');
+    return district && district.value ? district.value.toLowerCase() : '';
+  }
+
+  function syncCheckoutShippingCost() {
+    const wrap = document.querySelector('[data-sg-shipping-cost]');
+    const value = wrap && wrap.querySelector('[data-sg-shipping-cost-value]');
+    if (!wrap || !value) return;
+    const district = selectedDistrictSlug();
+    if (!district) {
+      value.textContent = wrap.getAttribute('data-empty-label') || '';
+      return;
+    }
+    value.textContent = district === 'dhaka' ? wrap.getAttribute('data-inside-label') : wrap.getAttribute('data-outside-label');
+  }
+
+  function syncMobileCheckoutSummary() {
+    const summary = document.querySelector('[data-sg-checkout-summary]');
+    const payment = document.querySelector('.sg-checkout-page #payment');
+    const placeOrder = payment && payment.querySelector('.place-order');
+    if (!summary || !payment || !placeOrder) return;
+
+    const existing = payment.querySelector('[data-sg-checkout-summary-mobile]');
+
+    if (window.matchMedia('(max-width: 719px)').matches) {
+      const clone = summary.cloneNode(true);
+      clone.removeAttribute('data-sg-checkout-summary');
+      clone.setAttribute('data-sg-checkout-summary-mobile', '');
+      clone.removeAttribute('id');
+      clone.querySelectorAll('[id]').forEach((node) => node.removeAttribute('id'));
+      if (existing) existing.replaceWith(clone);
+      else payment.insertBefore(clone, placeOrder);
+      return;
+    }
+
+    if (existing) existing.remove();
+  }
+
   document.addEventListener('click', (event) => {
     const option = event.target.closest('.sg-payment-option');
     if (!option) return;
@@ -529,12 +559,25 @@
     syncPaymentCards();
   });
 
+  document.addEventListener('change', (event) => {
+    if (!event.target.matches('[name="billing_state"]')) return;
+    syncCheckoutShippingCost();
+    if (window.jQuery) {
+      window.jQuery(document.body).trigger('update_checkout');
+    }
+  });
+
   document.body.addEventListener('updated_checkout', () => {
     syncPaymentCards();
     stabilizeCheckoutLayout();
+    syncCheckoutShippingCost();
+    syncMobileCheckoutSummary();
   });
+  window.addEventListener('resize', syncMobileCheckoutSummary);
   syncPaymentCards();
   stabilizeCheckoutLayout();
+  syncCheckoutShippingCost();
+  syncMobileCheckoutSummary();
 
   document.querySelectorAll('.quantity').forEach((wrap) => {
     if (wrap.querySelector('[data-sg-qty]')) return;

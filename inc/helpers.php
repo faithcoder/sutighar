@@ -540,7 +540,15 @@ function sutighar_whatsapp_order_url( $order ) {
 	$lines[] = 'Name: ' . $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
 	$lines[] = 'Phone: ' . $order->get_billing_phone();
 	$lines[] = 'Email: ' . ( $order->get_billing_email() ? $order->get_billing_email() : '—' );
-	$address = trim( $order->get_billing_address_1() . ', ' . $order->get_billing_city() . ( $order->get_billing_postcode() ? ', ' . $order->get_billing_postcode() : '' ), ', ' );
+	$address_parts = array_filter(
+		array(
+			$order->get_billing_address_1(),
+			$order->get_billing_city(),
+			$order->get_billing_state(),
+			$order->get_billing_postcode(),
+		)
+	);
+	$address       = implode( ', ', $address_parts );
 	$lines[] = 'Address: ' . $address;
 	if ( $order->get_customer_note() ) {
 		$lines[] = 'Notes: ' . $order->get_customer_note();

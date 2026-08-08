@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php if ( function_exists( 'WC' ) && WC()->cart ) : ?>
 				<span class="sg-cart-total" data-sg-cart-total><?php echo wp_kses_post( WC()->cart->get_cart_subtotal() ); ?></span>
 			<?php endif; ?>
-			<a class="sg-icon-btn sg-cart-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Cart', 'sutighar' ); ?>">
+			<a class="sg-icon-btn sg-cart-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Cart', 'sutighar' ); ?>" data-sg-cart-open>
 				<?php echo sutighar_inline_icon( 'cart' ); ?>
 				<span class="sg-badge" data-sg-cart-count data-count="<?php echo esc_attr( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?>"><?php echo esc_html( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?></span>
 			</a>
@@ -99,7 +99,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<a class="sg-icon-btn" href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" aria-label="<?php esc_attr_e( 'Account', 'sutighar' ); ?>">
 					<?php echo sutighar_inline_icon( 'user' ); ?>
 				</a>
-				<a class="sg-icon-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Cart', 'sutighar' ); ?>">
+				<a class="sg-icon-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Cart', 'sutighar' ); ?>" data-sg-cart-open>
 					<?php echo sutighar_inline_icon( 'cart' ); ?>
 					<span class="sg-badge" data-sg-cart-count data-count="<?php echo esc_attr( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?>"><?php echo esc_html( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?></span>
 				</a>
@@ -137,7 +137,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 </div>
 
-<a class="sg-fab" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'View cart', 'sutighar' ); ?>" data-sg-cart-fab>
+<a class="sg-fab" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'View cart', 'sutighar' ); ?>" data-sg-cart-open data-sg-cart-fab>
 	<?php echo sutighar_inline_icon( 'cart' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 </a>
 <a class="sg-fab sg-fab--whatsapp" href="<?php echo esc_url( sutighar_whatsapp_url() ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Chat on WhatsApp', 'sutighar' ); ?>">

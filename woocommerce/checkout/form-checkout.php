@@ -16,13 +16,23 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 				<?php if ( $checkout->get_checkout_fields() ) : ?>
 					<h3><?php esc_html_e( 'Delivery Details', 'sutighar' ); ?></h3>
 					<?php do_action( 'woocommerce_checkout_billing' ); ?>
+					<div
+						class="sg-checkout-shipping-cost"
+						data-sg-shipping-cost
+						data-inside-label="<?php echo esc_attr( sutighar_bdt( (float) sutighar_option( 'shipping_fee', '80' ) ) ); ?>"
+						data-outside-label="<?php echo esc_attr( sutighar_bdt( (float) sutighar_option( 'outside_dhaka_shipping_fee', '120' ) ) ); ?>"
+						data-empty-label="<?php esc_attr_e( 'Select district', 'sutighar' ); ?>"
+					>
+						<span><?php esc_html_e( 'Delivery Charge', 'sutighar' ); ?></span>
+						<strong data-sg-shipping-cost-value><?php esc_html_e( 'Select district', 'sutighar' ); ?></strong>
+					</div>
 					<?php do_action( 'woocommerce_checkout_shipping' ); ?>
 				<?php endif; ?>
 				<h3><?php esc_html_e( 'Payment Method', 'sutighar' ); ?></h3>
 				<?php woocommerce_checkout_payment(); ?>
 				<span class="sg-checkout-note"><?php esc_html_e( "We'll confirm your order on WhatsApp within a few hours.", 'sutighar' ); ?></span>
 			</div>
-			<aside class="sg-cart-summary">
+			<aside class="sg-cart-summary" data-sg-checkout-summary>
 				<h2><?php esc_html_e( 'Order Summary', 'sutighar' ); ?></h2>
 				<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
 				<div id="order_review" class="woocommerce-checkout-review-order">
