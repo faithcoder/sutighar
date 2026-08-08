@@ -48,6 +48,25 @@ function sutighar_whatsapp_url( $message = '' ) {
 	return $url;
 }
 
+function sutighar_plain_price( $amount, $args = array() ) {
+	$defaults = array(
+		'decimals' => 0,
+	);
+	$price    = wp_strip_all_tags( wc_price( $amount, wp_parse_args( $args, $defaults ) ) );
+	$price    = html_entity_decode( $price, ENT_QUOTES | ENT_HTML5, get_bloginfo( 'charset' ) );
+	$price    = str_replace( "\xc2\xa0", ' ', $price );
+
+	return trim( preg_replace( '/\s+/', ' ', $price ) );
+}
+
+function sutighar_plain_text( $text ) {
+	$text = wp_strip_all_tags( (string) $text );
+	$text = html_entity_decode( $text, ENT_QUOTES | ENT_HTML5, get_bloginfo( 'charset' ) );
+	$text = str_replace( "\xc2\xa0", ' ', $text );
+
+	return trim( preg_replace( '/[ \t]+/', ' ', $text ) );
+}
+
 function sutighar_product_description_html( $product ) {
 	if ( ! $product instanceof WC_Product ) {
 		return '';
@@ -520,26 +539,9 @@ function sutighar_whatsapp_order_url( $order ) {
 		return '#';
 	}
 
-	$lines  = array(
-		'New Order from Sutighar website',
-		'Ref: ' . $order->get_order_number(),
-		'------------------------------',
-	);
-
-	foreach ( $order->get_items() as $item ) {
-		$product = $item->get_product();
-		$size    = $product ? $product->get_attribute( 'pa_size' ) : '';
-		$lines[] = $item->get_name() . ( $size ? ' · ' . $size : '' ) . ' × ' . $item->get_quantity() . ' — ' . wp_strip_all_tags( wc_price( $item->get_total(), array( 'decimals' => 0 ) ) );
-	}
-
-	$lines[] = '------------------------------';
-	$lines[] = 'Subtotal: ' . wp_strip_all_tags( wc_price( $order->get_subtotal(), array( 'decimals' => 0 ) ) );
-	$lines[] = 'Shipping: ' . ( $order->get_shipping_total() > 0 ? wp_strip_all_tags( wc_price( $order->get_shipping_total(), array( 'decimals' => 0 ) ) ) : 'Free' );
-	$lines[] = 'Total: ' . wp_strip_all_tags( $order->get_formatted_order_total() );
-	$lines[] = '------------------------------';
-	$lines[] = 'Name: ' . $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
-	$lines[] = 'Phone: ' . $order->get_billing_phone();
-	$lines[] = 'Email: ' . ( $order->get_billing_email() ? $order->get_billing_email() : '—' );
+	$customer_name = trim( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() );
+	$shipping      = (float) $order->get_shipping_total();
+	$fee_total     = 0.0;
 	$address_parts = array_filter(
 		array(
 			$order->get_billing_address_1(),
@@ -548,14 +550,60 @@ function sutighar_whatsapp_order_url( $order ) {
 			$order->get_billing_postcode(),
 		)
 	);
-	$address       = implode( ', ', $address_parts );
-	$lines[] = 'Address: ' . $address;
-	if ( $order->get_customer_note() ) {
-		$lines[] = 'Notes: ' . $order->get_customer_note();
+
+	foreach ( $order->get_fees() as $fee ) {
+		$fee_total += (float) $fee->get_total();
 	}
+
+	$delivery_charge = $shipping + $fee_total;
+	$lines         = array(
+		'*New order from Sutighar*',
+		'Order ref: #' . $order->get_order_number(),
+		'Date: ' . wc_format_datetime( $order->get_date_created(), 'd M Y' ),
+		'',
+		'*Items*',
+	);
+	$item_count    = 1;
+
+	foreach ( $order->get_items() as $item ) {
+		$product = $item->get_product();
+		$size    = $product ? $product->get_attribute( 'pa_size' ) : '';
+		$item_name = sutighar_plain_text( $item->get_name() );
+		$lines[]   = $item_count . '. ' . $item_name . ( $size ? ' - ' . sutighar_plain_text( $size ) : '' );
+		$lines[] = '   Qty: ' . $item->get_quantity() . ' | Total: ' . sutighar_plain_price( $item->get_total() );
+		$item_count++;
+	}
+
+	$lines = array_merge(
+		$lines,
+		array(
+			'',
+			'*Order Summary*',
+			'Subtotal: ' . sutighar_plain_price( $order->get_subtotal() ),
+			'Delivery charge: ' . ( $delivery_charge > 0 ? sutighar_plain_price( $delivery_charge ) : 'Free' ),
+			'Total: ' . sutighar_plain_price( $order->get_total() ),
+			'',
+			'*Customer Details*',
+			'Name: ' . ( $customer_name ? sutighar_plain_text( $customer_name ) : '-' ),
+			'Phone: ' . ( $order->get_billing_phone() ? sutighar_plain_text( $order->get_billing_phone() ) : '-' ),
+			'Email: ' . ( $order->get_billing_email() ? sanitize_email( $order->get_billing_email() ) : '-' ),
+			'District: ' . ( $order->get_billing_state() ? sutighar_plain_text( $order->get_billing_state() ) : '-' ),
+			'Address: ' . ( $address_parts ? sutighar_plain_text( implode( ', ', $address_parts ) ) : '-' ),
+		)
+	);
+
+	if ( $order->get_customer_note() ) {
+		$lines[] = 'Notes: ' . sutighar_plain_text( $order->get_customer_note() );
+	}
+
 	$payment = $order->get_payment_method_title();
 	$trx     = $order->get_meta( '_sg_transaction_id' );
-	$lines[] = 'Payment: ' . $payment . ( $trx ? ' (Trxn: ' . $trx . ')' : '' );
+	$lines[] = '';
+	$lines[] = '*Payment*';
+	$lines[] = sutighar_plain_text( $payment ? $payment : '-' );
+	if ( $trx ) {
+		$lines[] = 'Transaction ID: ' . sutighar_plain_text( $trx );
+	}
 
 	return sutighar_whatsapp_url( implode( "\n", $lines ) );
 }
