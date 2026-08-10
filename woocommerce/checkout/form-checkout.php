@@ -21,10 +21,10 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 						data-sg-shipping-cost
 						data-inside-label="<?php echo esc_attr( sutighar_bdt( (float) sutighar_option( 'shipping_fee', '80' ) ) ); ?>"
 						data-outside-label="<?php echo esc_attr( sutighar_bdt( (float) sutighar_option( 'outside_dhaka_shipping_fee', '120' ) ) ); ?>"
-						data-empty-label="<?php esc_attr_e( 'Select district', 'sutighar' ); ?>"
+						data-empty-label="-"
 					>
 						<span><?php esc_html_e( 'Delivery Charge', 'sutighar' ); ?></span>
-						<strong data-sg-shipping-cost-value><?php esc_html_e( 'Select district', 'sutighar' ); ?></strong>
+						<strong data-sg-shipping-cost-value>-</strong>
 					</div>
 					<?php do_action( 'woocommerce_checkout_shipping' ); ?>
 				<?php endif; ?>
@@ -33,13 +33,18 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 				<span class="sg-checkout-note"><?php esc_html_e( "We'll confirm your order on WhatsApp within a few hours.", 'sutighar' ); ?></span>
 			</div>
 			<aside class="sg-cart-summary" data-sg-checkout-summary>
-				<h2><?php esc_html_e( 'Order Summary', 'sutighar' ); ?></h2>
-				<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
-				<div id="order_review" class="woocommerce-checkout-review-order">
-					<?php wc_get_template( 'checkout/review-order.php', array( 'checkout' => $checkout ) ); ?>
+				<button type="button" class="sg-checkout-summary-toggle" data-sg-summary-toggle aria-expanded="false">
+					<span><?php esc_html_e( 'Order Summary', 'sutighar' ); ?></span>
+					<strong><?php echo wp_kses_post( WC()->cart ? WC()->cart->get_total() : '' ); ?></strong>
+				</button>
+				<div class="sg-checkout-summary-content" data-sg-summary-content>
+					<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
+					<div id="order_review" class="woocommerce-checkout-review-order">
+						<?php wc_get_template( 'checkout/review-order.php', array( 'checkout' => $checkout ) ); ?>
+					</div>
+					<a class="sg-edit-cart" href="<?php echo esc_url( wc_get_cart_url() ); ?>"><?php esc_html_e( 'Edit cart', 'sutighar' ); ?></a>
+					<?php do_action( 'woocommerce_checkout_after_order_review' ); ?>
 				</div>
-				<a class="sg-edit-cart" href="<?php echo esc_url( wc_get_cart_url() ); ?>"><?php esc_html_e( 'Edit cart', 'sutighar' ); ?></a>
-				<?php do_action( 'woocommerce_checkout_after_order_review' ); ?>
 			</aside>
 		</div>
 	</form>

@@ -542,14 +542,6 @@ function sutighar_whatsapp_order_url( $order ) {
 	$customer_name = trim( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() );
 	$shipping      = (float) $order->get_shipping_total();
 	$fee_total     = 0.0;
-	$address_parts = array_filter(
-		array(
-			$order->get_billing_address_1(),
-			$order->get_billing_city(),
-			$order->get_billing_state(),
-			$order->get_billing_postcode(),
-		)
-	);
 
 	foreach ( $order->get_fees() as $fee ) {
 		$fee_total += (float) $fee->get_total();
@@ -588,7 +580,8 @@ function sutighar_whatsapp_order_url( $order ) {
 			'Phone: ' . ( $order->get_billing_phone() ? sutighar_plain_text( $order->get_billing_phone() ) : '-' ),
 			'Email: ' . ( $order->get_billing_email() ? sanitize_email( $order->get_billing_email() ) : '-' ),
 			'District: ' . ( $order->get_billing_state() ? sutighar_plain_text( $order->get_billing_state() ) : '-' ),
-			'Address: ' . ( $address_parts ? sutighar_plain_text( implode( ', ', $address_parts ) ) : '-' ),
+			'Thana: ' . ( $order->get_billing_city() ? sutighar_plain_text( $order->get_billing_city() ) : '-' ),
+			'Address: ' . ( $order->get_billing_address_1() ? sutighar_plain_text( $order->get_billing_address_1() ) : '-' ),
 		)
 	);
 

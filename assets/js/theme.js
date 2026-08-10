@@ -549,6 +549,17 @@
   }
 
   document.addEventListener('click', (event) => {
+    const summaryToggle = event.target.closest('[data-sg-summary-toggle]');
+    if (summaryToggle) {
+      const summary = summaryToggle.closest('.sg-cart-summary');
+      if (summary) {
+        const open = !summary.classList.contains('is-open');
+        summary.classList.toggle('is-open', open);
+        summaryToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      return;
+    }
+
     const option = event.target.closest('.sg-payment-option');
     if (!option) return;
     const radio = option.querySelector('input[type="radio"][name="payment_method"]');

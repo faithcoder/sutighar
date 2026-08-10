@@ -427,8 +427,8 @@ function sutighar_checkout_fields( $fields ) {
 		),
 		'billing_phone'      => array(
 			'type'         => 'tel',
-			'label'        => __( 'Phone (WhatsApp)', 'sutighar' ),
-			'placeholder'  => __( 'Phone (WhatsApp)', 'sutighar' ),
+			'label'        => __( 'Phone', 'sutighar' ),
+			'placeholder'  => __( 'Phone', 'sutighar' ),
 			'required'     => true,
 			'class'        => array( 'form-row-first' ),
 			'autocomplete' => 'tel',
@@ -456,8 +456,8 @@ function sutighar_checkout_fields( $fields ) {
 		),
 		'billing_city'       => array(
 			'type'        => 'text',
-			'label'       => __( 'City', 'sutighar' ),
-			'placeholder' => __( 'City', 'sutighar' ),
+			'label'       => __( 'Thana', 'sutighar' ),
+			'placeholder' => __( 'Thana', 'sutighar' ),
 			'required'    => true,
 			'class'       => array( 'form-row-last' ),
 			'priority'    => 60,
@@ -469,14 +469,6 @@ function sutighar_checkout_fields( $fields ) {
 			'class'       => array( 'form-row-first' ),
 			'options'     => sutighar_checkout_district_options(),
 			'priority'    => 50,
-		),
-		'billing_postcode'   => array(
-			'type'        => 'text',
-			'label'       => __( 'Postal code (optional)', 'sutighar' ),
-			'placeholder' => __( 'Postal code (optional)', 'sutighar' ),
-			'required'    => false,
-			'class'       => array( 'form-row-wide' ),
-			'priority'    => 70,
 		),
 	);
 
@@ -654,7 +646,6 @@ function sutighar_store_checkout_field_snapshot( $order, $data ) {
 	$district  = isset( $_POST['billing_state'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_state'] ) ) : '';
 	$districts = sutighar_checkout_district_options();
 	$district  = isset( $districts[ $district ] ) ? $districts[ $district ] : $district;
-	$postcode  = isset( $_POST['billing_postcode'] ) ? sanitize_text_field( wp_unslash( $_POST['billing_postcode'] ) ) : '';
 
 	if ( $first_name ) {
 		$order->set_shipping_first_name( $first_name );
@@ -668,9 +659,6 @@ function sutighar_store_checkout_field_snapshot( $order, $data ) {
 	if ( $district ) {
 		$order->set_billing_state( $district );
 		$order->set_shipping_state( $district );
-	}
-	if ( $postcode ) {
-		$order->set_shipping_postcode( $postcode );
 	}
 	$order->set_billing_country( 'BD' );
 	$order->set_shipping_country( 'BD' );

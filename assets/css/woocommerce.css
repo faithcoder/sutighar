@@ -687,8 +687,9 @@ body.sutighar-theme .sg-gallery-modal {
   padding: 28px;
 }
 .sg-cart-summary h2,
+.sg-checkout-summary-toggle,
 .sg-checkout-page h3 {
-  margin: 0 0 18px;
+ margin: 0 0 18px;
   color: var(--sg-ink);
   font-size: 16px;
   line-height: 1.3;
@@ -744,6 +745,32 @@ body.sutighar-theme .sg-gallery-modal {
   color: var(--sg-ink-75);
   font-size: 12px;
 }
+.sg-checkout-summary-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  text-align: left;
+}
+.sg-checkout-summary-toggle strong {
+  color: var(--sg-ink);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.sg-checkout-summary-toggle::after {
+  content: "";
+  display: none;
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
 
 .woocommerce-checkout .form-row {
   margin: 0 0 22px;
@@ -771,8 +798,6 @@ body.sutighar-theme .sg-gallery-modal {
 .woocommerce-checkout .woocommerce-notices-wrapper,
 .woocommerce-checkout .woocommerce-NoticeGroup,
 .woocommerce-checkout .woocommerce-NoticeGroup-checkout,
-.woocommerce-checkout .woocommerce-form-coupon-toggle,
-.woocommerce-checkout form.checkout_coupon,
 .woocommerce-checkout .woocommerce-error,
 .woocommerce-checkout .woocommerce-info,
 .woocommerce-checkout .woocommerce-message,
@@ -787,6 +812,43 @@ body.sutighar-theme .sg-gallery-modal {
 .woocommerce-checkout .woocommerce-invalid label,
 .woocommerce-checkout .woocommerce-invalid-required-field label {
   color: rgba(18, 42, 73, .8);
+}
+.woocommerce-checkout .woocommerce-form-coupon-toggle,
+.woocommerce-checkout form.checkout_coupon {
+  width: min(var(--sg-container), calc(100% - (var(--sg-side) * 2)));
+  margin: 0 auto 18px;
+}
+.woocommerce-checkout .woocommerce-form-coupon-toggle .woocommerce-info {
+  display: block !important;
+  margin: 0;
+  border: 0;
+  background: var(--sg-sand);
+  padding: 14px 16px;
+  color: var(--sg-ink);
+  font-size: 13px;
+}
+.woocommerce-checkout form.checkout_coupon {
+  border: 0;
+  background: var(--sg-sand);
+  padding: 16px;
+}
+.woocommerce-checkout form.checkout_coupon p {
+  margin: 0 0 12px;
+  color: var(--sg-ink-75);
+  font-size: 13px;
+}
+.woocommerce-checkout form.checkout_coupon .form-row {
+  margin-bottom: 0;
+}
+.woocommerce-checkout form.checkout_coupon .button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--sg-brand);
+  padding: 0 22px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
 }
 .sg-checkout-page .woocommerce-billing-fields > h3,
 .sg-checkout-page .woocommerce-additional-fields > h3,
@@ -895,19 +957,27 @@ body.sutighar-theme .sg-gallery-modal {
   box-sizing: border-box;
 }
 .woocommerce-checkout .form-row label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
+  position: static;
+  width: auto;
+  height: auto;
   padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+  margin: 0 0 6px;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
   border: 0;
+  display: block;
+  color: rgba(18, 42, 73, .8);
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
 }
-.woocommerce-checkout .form-row .required,
 .woocommerce-checkout .form-row .optional {
   display: none;
+}
+.woocommerce-checkout .form-row .required {
+  color: #b91c1c;
+  text-decoration: none;
 }
 .woocommerce-checkout .select2-container .select2-selection--single {
   height: 56px;
@@ -1259,6 +1329,30 @@ body.sutighar-theme .sg-gallery-modal {
   .woocommerce-checkout .sg-checkout-page #payment > [data-sg-checkout-summary-mobile] {
     display: block;
     margin: 22px 0 20px;
+  }
+  .woocommerce-checkout .sg-checkout-page #payment > [data-sg-checkout-summary-mobile] .sg-checkout-summary-toggle {
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+  .woocommerce-checkout .sg-checkout-page #payment > [data-sg-checkout-summary-mobile] .sg-checkout-summary-toggle::after {
+    display: block;
+    flex: 0 0 auto;
+  }
+  .woocommerce-checkout .sg-checkout-page #payment > [data-sg-checkout-summary-mobile].is-open .sg-checkout-summary-toggle {
+    margin-bottom: 18px;
+  }
+  .woocommerce-checkout .sg-checkout-page #payment > [data-sg-checkout-summary-mobile].is-open .sg-checkout-summary-toggle::after {
+    transform: rotate(225deg);
+  }
+  .woocommerce-checkout .sg-checkout-page #payment > [data-sg-checkout-summary-mobile] .sg-checkout-summary-content {
+    display: none;
+  }
+  .woocommerce-checkout .sg-checkout-page #payment > [data-sg-checkout-summary-mobile].is-open .sg-checkout-summary-content {
+    display: block;
+  }
+  .woocommerce-checkout .woocommerce-form-coupon-toggle,
+  .woocommerce-checkout form.checkout_coupon {
+    width: min(100% - 32px, var(--sg-container));
   }
   body.sutighar-theme .sg-gallery-modal {
     padding: 14px;
