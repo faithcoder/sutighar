@@ -94,7 +94,7 @@ function sutighar_cart_modal_body() {
 		if ( ! $product instanceof WC_Product ) {
 			continue;
 		}
-		$size = $product->get_attribute( 'pa_size' );
+		$size = sutighar_product_cart_size( $product );
 		?>
 		<div class="sg-cart-modal__item" data-cart-key="<?php echo esc_attr( $cart_key ); ?>">
 			<div class="sg-cart-modal__thumb"><?php echo $product->get_image( 'woocommerce_thumbnail' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
@@ -103,9 +103,7 @@ function sutighar_cart_modal_body() {
 					<span class="sg-cart-modal__name"><?php echo esc_html( $product->get_name() ); ?></span>
 					<button type="button" class="sg-cart-modal__remove" data-sg-cart-remove="<?php echo esc_attr( $cart_key ); ?>" aria-label="<?php esc_attr_e( 'Remove item', 'sutighar' ); ?>">×</button>
 				</div>
-				<?php if ( $size ) : ?>
-					<span class="sg-cart-modal__variant"><?php echo esc_html( $size ); ?></span>
-				<?php endif; ?>
+				<span class="sg-cart-modal__variant"><?php echo esc_html( $size ); ?></span>
 				<div class="sg-cart-modal__controls">
 					<div class="quantity">
 						<button type="button" class="sg-qty-btn" data-sg-qty="minus" data-sg-cart-qty="minus" data-key="<?php echo esc_attr( $cart_key ); ?>" aria-label="<?php esc_attr_e( 'Decrease quantity', 'sutighar' ); ?>">−</button>
@@ -128,7 +126,7 @@ function sutighar_cart_modal_footer() {
 	$total = (float) WC()->cart->get_total( 'edit' );
 	?>
 	<a class="sg-cart-modal__confirm" href="<?php echo esc_url( wc_get_checkout_url() ); ?>"><?php echo esc_html( sprintf( __( 'Confirm Order - %s', 'sutighar' ), sutighar_bdt( $total ) ) ); ?></a>
-	<a class="sg-cart-modal__viewcart" href="<?php echo esc_url( wc_get_cart_url() ); ?>"><?php esc_html_e( 'View Cart', 'sutighar' ); ?></a>
+	<button type="button" class="sg-cart-modal__viewcart" data-sg-cart-modal-close><?php esc_html_e( 'Continue Shopping', 'sutighar' ); ?></button>
 	<?php
 }
 
@@ -391,7 +389,7 @@ function sutighar_product_meta_fields() {
 				'id'          => $key,
 				'label'       => sprintf( __( 'Spec: %s', 'sutighar' ), $label ),
 				'placeholder' => $defaults[ $label ] ?? '',
-				'description' => sprintf( __( 'Default: %s', 'sutighar' ), $defaults[ $label ] ?? '' ),
+				'description' => __( 'Leave blank to hide this row on the product page.', 'sutighar' ),
 				'desc_tip'    => true,
 			)
 		);
@@ -752,8 +750,8 @@ function sutighar_default_company_links() {
 		array( __( 'About Us', 'sutighar' ), home_url( '/about/' ) ),
 		array( __( 'Contact', 'sutighar' ), home_url( '/contact/' ) ),
 		array( __( 'Return & Exchange', 'sutighar' ), home_url( '/return-exchange/' ) ),
-		array( __( 'Cart', 'sutighar' ), wc_get_cart_url() ),
-		array( __( 'Wishlist', 'sutighar' ), home_url( '/wishlist/' ) ),
+		array( __( 'Privacy policy', 'sutighar' ), home_url( '/privacy-policy/' ) ),
+		array( __( 'Terms of Service', 'sutighar' ), home_url( '/terms-of-service/' ) ),
 	);
 }
 

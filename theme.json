@@ -10,7 +10,7 @@
       "palette": [
         { "slug": "ink", "color": "#122A49", "name": "Ink" },
         { "slug": "brand", "color": "#004147", "name": "Brand" },
-        { "slug": "accent", "color": "#E97A64", "name": "Accent" },
+        { "slug": "accent", "color": "#FB9581", "name": "Accent" },
         { "slug": "sand", "color": "#F5F0ED", "name": "Sand" },
         { "slug": "white", "color": "#FFFFFF", "name": "White" }
       ]

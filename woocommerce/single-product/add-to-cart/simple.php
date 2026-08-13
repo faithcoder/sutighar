@@ -7,13 +7,15 @@ if ( ! $product->is_purchasable() ) {
 	return;
 }
 
+$stock_label = sutighar_product_stock_label( $product );
+
 if ( $product->is_in_stock() ) : ?>
 	<form class="cart sg-cart-form" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype="multipart/form-data">
 		<div class="sg-quantity-block">
 			<span class="sg-meta"><?php esc_html_e( 'Quantity', 'sutighar' ); ?></span>
 			<?php woocommerce_quantity_input( array( 'min_value' => 1, 'max_value' => $product->get_max_purchase_quantity(), 'input_value' => 1 ) ); ?>
 			<div class="sg-stock-row">
-				<span class="sg-stock-line"><?php echo $product->get_stock_quantity() ? esc_html( sprintf( __( '%d Item Left', 'sutighar' ), $product->get_stock_quantity() ) ) : esc_html__( 'In stock', 'sutighar' ); ?></span>
+				<span class="sg-stock-line <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
 				<button type="button" class="sg-size-chart-link" data-sg-size-chart><?php esc_html_e( 'Size Chart', 'sutighar' ); ?></button>
 			</div>
 		</div>
@@ -23,5 +25,13 @@ if ( $product->is_in_stock() ) : ?>
 		</div>
 		<input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $product->get_id() ); ?>">
 	</form>
+	<?php sutighar_size_chart_modal(); ?>
+<?php else : ?>
+	<div class="sg-quantity-block">
+		<div class="sg-stock-row">
+			<span class="sg-stock-line <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
+			<button type="button" class="sg-size-chart-link" data-sg-size-chart><?php esc_html_e( 'Size Chart', 'sutighar' ); ?></button>
+		</div>
+	</div>
 	<?php sutighar_size_chart_modal(); ?>
 <?php endif; ?>

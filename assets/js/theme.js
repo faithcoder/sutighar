@@ -1,21 +1,26 @@
 (function () {
   function initSutigharTheme() {
-  const header = document.querySelector('[data-sg-header]');
-  let lastY = window.scrollY;
+    const header = document.querySelector('[data-sg-header]');
+    const headerLockedCompact = document.body.classList.contains('sg-header-locked-compact');
+    let lastY = window.scrollY;
 
-  function updateHeader() {
-    if (!header) return;
-    const y = window.scrollY;
-    if (y <= 40) {
-      header.classList.remove('is-compact');
-    } else if (Math.abs(y - lastY) > 8) {
-      header.classList.toggle('is-compact', y > lastY);
-      lastY = y;
+    function updateHeader() {
+      if (!header) return;
+      const y = window.scrollY;
+      if (y <= 40) {
+        header.classList.remove('is-compact');
+      } else if (Math.abs(y - lastY) > 8) {
+        header.classList.toggle('is-compact', y > lastY);
+        lastY = y;
+      }
     }
-  }
 
-  window.addEventListener('scroll', updateHeader, { passive: true });
-  updateHeader();
+    if (headerLockedCompact) {
+      if (header) header.classList.add('is-compact');
+    } else {
+      window.addEventListener('scroll', updateHeader, { passive: true });
+      updateHeader();
+    }
 
   const closePops = () => {
     document.querySelectorAll('[data-sg-popover].is-open').forEach((panel) => panel.classList.remove('is-open'));
@@ -521,9 +526,11 @@
     const district = selectedDistrictSlug();
     if (!district) {
       value.textContent = wrap.getAttribute('data-empty-label') || '';
+      wrap.classList.remove('has-value');
       return;
     }
     value.textContent = district === 'dhaka' ? wrap.getAttribute('data-inside-label') : wrap.getAttribute('data-outside-label');
+    wrap.classList.add('has-value');
   }
 
   function syncMobileCheckoutSummary() {

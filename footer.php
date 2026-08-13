@@ -45,7 +45,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php dynamic_sidebar( 'footer_3' ); ?>
 					<?php else : ?>
 						<h3><?php esc_html_e( 'Connect', 'sutighar' ); ?></h3>
-						<?php sutighar_footer_menu( 'footer_connect', sutighar_default_connect_links() ); ?>
+						<?php $footer_social_links = sutighar_social_links(); ?>
+						<?php if ( $footer_social_links ) : ?>
+							<div class="sg-footer__socials">
+								<?php foreach ( array( 'instagram', 'messenger', 'facebook', 'whatsapp' ) as $key ) : ?>
+									<?php if ( empty( $footer_social_links[ $key ] ) ) : ?>
+										<?php continue; ?>
+									<?php endif; ?>
+									<a class="sg-footer__social" href="<?php echo esc_url( $footer_social_links[ $key ]['url'] ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( $footer_social_links[ $key ]['label'] ); ?>">
+										<img src="<?php echo esc_url( $footer_social_links[ $key ]['icon'] ); ?>" alt="" width="24" height="24" loading="lazy" decoding="async">
+									</a>
+								<?php endforeach; ?>
+							</div>
+						<?php endif; ?>
+						<div class="sg-footer__contact">
+							<?php
+							$footer_phone      = sutighar_contact_phone();
+							$footer_phone_href = sutighar_contact_phone_href();
+							$footer_email      = sutighar_contact_email();
+							$footer_address    = sutighar_contact_address();
+							?>
+							<?php if ( $footer_phone && $footer_phone_href ) : ?>
+								<a href="<?php echo esc_url( $footer_phone_href ); ?>"><?php echo esc_html( $footer_phone ); ?></a>
+							<?php endif; ?>
+							<?php if ( $footer_email ) : ?>
+								<a href="<?php echo esc_url( 'mailto:' . $footer_email ); ?>"><?php echo esc_html( $footer_email ); ?></a>
+							<?php endif; ?>
+							<?php if ( $footer_address ) : ?>
+								<p><?php echo nl2br( esc_html( $footer_address ) ); ?></p>
+							<?php endif; ?>
+						</div>
 					<?php endif; ?>
 				</div>
 			</div>

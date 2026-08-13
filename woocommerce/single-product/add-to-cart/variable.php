@@ -27,8 +27,8 @@ foreach ( $available_variations as $variation ) {
 }
 
 $variation_obj = ! empty( $chosen_variation['variation_id'] ) ? wc_get_product( $chosen_variation['variation_id'] ) : null;
-$stock_qty     = $variation_obj ? $variation_obj->get_stock_quantity() : $product->get_stock_quantity();
 $in_stock      = $variation_obj ? $variation_obj->is_in_stock() : $product->is_in_stock();
+$stock_label   = sutighar_product_stock_label( $variation_obj ? $variation_obj : $product );
 ?>
 <form class="variations_form cart sg-cart-form" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype="multipart/form-data" data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo wc_esc_json( wp_json_encode( $available_variations ) ); ?>">
 	<div hidden>
@@ -44,7 +44,7 @@ $in_stock      = $variation_obj ? $variation_obj->is_in_stock() : $product->is_i
 		<span class="sg-meta"><?php esc_html_e( 'Quantity', 'sutighar' ); ?></span>
 		<?php woocommerce_quantity_input( array( 'min_value' => 1, 'input_value' => 1 ) ); ?>
 		<div class="sg-stock-row">
-			<span class="sg-stock-line"><?php echo $in_stock ? esc_html( $stock_qty ? sprintf( __( '%d Item Left', 'sutighar' ), $stock_qty ) : __( 'In stock', 'sutighar' ) ) : esc_html__( 'Sold out', 'sutighar' ); ?></span>
+			<span class="sg-stock-line <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
 			<button type="button" class="sg-size-chart-link" data-sg-size-chart><?php esc_html_e( 'Size Chart', 'sutighar' ); ?></button>
 		</div>
 	</div>

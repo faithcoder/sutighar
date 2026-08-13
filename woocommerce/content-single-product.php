@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
 global $product;
 
 $measure = sutighar_product_size_measurements( $product );
+$measure = array_filter( $measure, 'strlen' );
 ?>
 <section class="sg-page sg-container sg-pdp">
 	<?php do_action( 'woocommerce_before_single_product' ); ?>
@@ -15,12 +16,20 @@ $measure = sutighar_product_size_measurements( $product );
 				<span class="sg-meta"><?php esc_html_e( 'Price', 'sutighar' ); ?></span>
 				<div><strong><?php echo esc_html( sutighar_product_plain_price( $product ) ); ?></strong><span>BDT</span></div>
 			</div>
-			<hr>
-			<div class="sg-size-row">
-				<div><span class="sg-meta"><?php esc_html_e( 'Size', 'sutighar' ); ?></span><strong><?php echo esc_html( $measure['size'] ); ?></strong></div>
-				<div><span class="sg-meta"><?php esc_html_e( 'Height', 'sutighar' ); ?></span><strong><?php echo esc_html( $measure['height'] ); ?></strong></div>
-				<div><span class="sg-meta"><?php esc_html_e( 'Waist', 'sutighar' ); ?></span><strong><?php echo esc_html( $measure['waist'] ); ?></strong></div>
-			</div>
+			<?php if ( $measure ) : ?>
+				<hr>
+				<div class="sg-size-row">
+					<?php if ( ! empty( $measure['size'] ) ) : ?>
+						<div><span class="sg-meta"><?php esc_html_e( 'Size', 'sutighar' ); ?></span><strong><?php echo esc_html( $measure['size'] ); ?></strong></div>
+					<?php endif; ?>
+					<?php if ( ! empty( $measure['height'] ) ) : ?>
+						<div><span class="sg-meta"><?php esc_html_e( 'Height', 'sutighar' ); ?></span><strong><?php echo esc_html( $measure['height'] ); ?></strong></div>
+					<?php endif; ?>
+					<?php if ( ! empty( $measure['waist'] ) ) : ?>
+						<div><span class="sg-meta"><?php esc_html_e( 'Waist', 'sutighar' ); ?></span><strong><?php echo esc_html( $measure['waist'] ); ?></strong></div>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
 			<hr>
 			<?php woocommerce_template_single_add_to_cart(); ?>
 			<hr>

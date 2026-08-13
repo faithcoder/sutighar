@@ -38,12 +38,12 @@ Your task is to **recreate these designs as a WordPress theme with WooCommerce t
 | `--sg-ink-40` | `rgba(18,42,73,.4)` | Meta labels, hairlines, placeholders |
 | `--sg-brand` | `#004147` | **Primary brand.** CTA fills + footer ground **only** |
 | `--sg-brand-hover` | `#00343A` | Primary CTA hover |
-| `--sg-accent` | `#E97A64` | **Secondary brand.** Add-to-Cart fill only |
+| `--sg-accent` | `#FB9581` | **Secondary brand.** Add-to-Cart fill only |
 | `--sg-sand` | `#F5F0ED` | Image wells, cards, panels, icon buttons |
 | `--sg-sand-hover` | `#ECE5E0` | Icon button hover |
 | `--sg-white` | `#FFFFFF` | Page ground |
 
-**The one rule that matters:** brand colours are *surfaces*, never type. Do not set text, links or icons in `#004147` or `#E97A64`. If you need emphasis, use `--sg-ink` at full opacity.
+**The one rule that matters:** brand colours are *surfaces*, never type. Do not set text, links or icons in `#004147` or `#FB9581`. If you need emphasis, use `--sg-ink` at full opacity.
 
 Hairlines: `rgba(0,0,0,.1)`. Input borders: `rgba(0,0,0,.15)`. Stronger rules: `rgba(0,0,0,.2)`.
 On the footer's brand ground: text `rgba(255,255,255,.8)`, links `rgba(255,255,255,.7)`, hover `#FFFFFF`, rules `rgba(255,255,255,.12)`, legal `rgba(255,255,255,.5)`.
@@ -218,7 +218,7 @@ Three columns: **thumbnail column** (284) · **main image** (587) · **info** (2
   4. **Size / Height / Waist row** — all three are **read-only text**, no dropdown. Size is a meta label + value on the left; Height and Waist sit in a 108px pair on the right. Each product **is** a single size (the names carry it, e.g. "Decent - 5 Haat"), so there is no size selector on the PDP: in WooCommerce, either model these as simple products with a size attribute, or as variable products whose PDP is entered on a specific variation. Measurements come from the size (§4).
   5. `1px` rule
   6. **Quantity stepper** — 104px wide, 44px tall, radius 5, `inset 1px rgba(0,0,0,.2)`, with **`+` on the left and `−` on the right** (34px each, separated by `1px` dividers), under a "QUANTITY" meta label. Below it, a row with the **stock line** on the left and a **"Size Chart"** link on the right (16px/600 ink, not underlined), baseline-aligned.
-  6b. **Stock line** — `{n} Item Left` at 12px/500 in the **secondary brand colour** `#E97A64`, or "Sold out" at `rgba(18,42,73,.5)` when out of stock. This is the **one deliberate exception** to the "brand colours are never type" rule in §2 — it comes straight from the client's reference comp. Do not restyle it, and do not generalise the exception anywhere else.
+  6b. **Stock line** — `{n} Item Left` at 12px/500 in the **secondary brand colour** `#FB9581`, or "Sold out" at `rgba(18,42,73,.5)` when out of stock. This is the **one deliberate exception** to the "brand colours are never type" rule in §2 — it comes straight from the client's reference comp. Do not restyle it, and do not generalise the exception anywhere else.
   7. **Buy Now** (brand fill, flex-grow) and **Add to Cart** (accent fill, flex-grow), 44px, radius 5, gap 20. Add to Cart shows "Added ✓" on success. Buy Now = add to cart **and** go straight to checkout.
   8. `1px` rule
   9. **Specification** — meta label + 6 rows, label 80px ink-80 / value right-aligned ink 500, each with a `1px` rule under

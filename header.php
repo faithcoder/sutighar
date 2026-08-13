@@ -16,8 +16,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
+<?php
+$cart_drawer_enabled       = sutighar_option_enabled( 'enable_cart_drawer', true );
+$floating_cart_enabled     = sutighar_option_enabled( 'enable_floating_cart', true );
+$floating_whatsapp_enabled = sutighar_option_enabled( 'enable_floating_whatsapp', true );
+$header_locked_compact     = sutighar_header_should_lock_compact();
+?>
 <a class="screen-reader-text" href="#main"><?php esc_html_e( 'Skip to content', 'sutighar' ); ?></a>
-<header class="sg-header" data-sg-header>
+<header class="<?php echo esc_attr( $header_locked_compact ? 'sg-header is-compact' : 'sg-header' ); ?>" data-sg-header>
 	<div class="sg-header__top">
 		<a class="sg-logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="<?php esc_attr_e( 'Sutighar home', 'sutighar' ); ?>">
 			<?php $header_logo = sutighar_logo_image( 'header_logo', 'sg-logo__custom' ); ?>
@@ -39,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php if ( function_exists( 'WC' ) && WC()->cart ) : ?>
 				<span class="sg-cart-total" data-sg-cart-total><?php echo wp_kses_post( WC()->cart->get_cart_subtotal() ); ?></span>
 			<?php endif; ?>
-			<a class="sg-icon-btn sg-cart-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Cart', 'sutighar' ); ?>" data-sg-cart-open>
+			<a class="sg-icon-btn sg-cart-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Cart', 'sutighar' ); ?>" <?php echo $cart_drawer_enabled ? 'data-sg-cart-open' : ''; ?>>
 				<?php echo sutighar_inline_icon( 'cart' ); ?>
 				<span class="sg-badge" data-sg-cart-count data-count="<?php echo esc_attr( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?>"><?php echo esc_html( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?></span>
 			</a>
@@ -99,7 +105,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<a class="sg-icon-btn" href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" aria-label="<?php esc_attr_e( 'Account', 'sutighar' ); ?>">
 					<?php echo sutighar_inline_icon( 'user' ); ?>
 				</a>
-				<a class="sg-icon-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Cart', 'sutighar' ); ?>" data-sg-cart-open>
+				<a class="sg-icon-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Cart', 'sutighar' ); ?>" <?php echo $cart_drawer_enabled ? 'data-sg-cart-open' : ''; ?>>
 					<?php echo sutighar_inline_icon( 'cart' ); ?>
 					<span class="sg-badge" data-sg-cart-count data-count="<?php echo esc_attr( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?>"><?php echo esc_html( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?></span>
 				</a>
@@ -115,49 +121,62 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<div class="sg-drawer__foot">
 			<span class="sg-drawer__connect"><?php esc_html_e( 'Connect', 'sutighar' ); ?></span>
-			<div class="sg-drawer__socials">
-				<a class="sg-social sg-social--whatsapp" href="<?php echo esc_url( sutighar_whatsapp_url() ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'WhatsApp', 'sutighar' ); ?>">
-					<?php echo sutighar_inline_icon( 'whatsapp' ); ?>
-				</a>
-				<a class="sg-social sg-social--messenger" href="https://m.me/sutighar" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Messenger', 'sutighar' ); ?>">
-					<?php echo sutighar_inline_icon( 'messenger' ); ?>
-				</a>
-				<a class="sg-social sg-social--facebook" href="https://facebook.com/sutighar" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Facebook', 'sutighar' ); ?>">
-					<?php echo sutighar_inline_icon( 'facebook' ); ?>
-				</a>
-				<a class="sg-social sg-social--instagram" href="https://instagram.com/sutighar" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Instagram', 'sutighar' ); ?>">
-					<?php echo sutighar_inline_icon( 'instagram' ); ?>
-				</a>
-			</div>
-			<div class="sg-drawer__contact">
-				<a href="<?php echo esc_url( 'tel:+' . sutighar_whatsapp_number() ); ?>"><?php echo esc_html( sutighar_phone_display() ); ?></a>
-				<a href="mailto:sutighar@gmail.com">sutighar@gmail.com</a>
-			</div>
+			<?php $social_links = sutighar_social_links(); ?>
+			<?php if ( $social_links ) : ?>
+				<div class="sg-drawer__socials">
+					<?php foreach ( $social_links as $key => $social ) : ?>
+						<a class="sg-social sg-social--<?php echo esc_attr( $key ); ?>" href="<?php echo esc_url( $social['url'] ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( $social['label'] ); ?>">
+							<img src="<?php echo esc_url( $social['icon'] ); ?>" alt="" width="24" height="24" loading="lazy" decoding="async">
+						</a>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+			<?php
+			$contact_phone      = sutighar_contact_phone();
+			$contact_phone_href = sutighar_contact_phone_href();
+			$contact_email      = sutighar_contact_email();
+			?>
+			<?php if ( $contact_phone || $contact_email ) : ?>
+				<div class="sg-drawer__contact">
+					<?php if ( $contact_phone && $contact_phone_href ) : ?>
+						<a href="<?php echo esc_url( $contact_phone_href ); ?>"><?php echo esc_html( $contact_phone ); ?></a>
+					<?php endif; ?>
+					<?php if ( $contact_email ) : ?>
+						<a href="<?php echo esc_url( 'mailto:' . $contact_email ); ?>"><?php echo esc_html( $contact_email ); ?></a>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
 		</div>
 	</div>
 </div>
 
-<a class="sg-fab" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'View cart', 'sutighar' ); ?>" data-sg-cart-open data-sg-cart-fab>
-	<?php echo sutighar_inline_icon( 'cart' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-</a>
-<a class="sg-fab sg-fab--whatsapp" href="<?php echo esc_url( sutighar_whatsapp_url() ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Chat on WhatsApp', 'sutighar' ); ?>">
-	<?php echo sutighar_inline_icon( 'whatsapp' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-</a>
+<?php if ( $floating_cart_enabled ) : ?>
+	<a class="sg-fab" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'View cart', 'sutighar' ); ?>" <?php echo $cart_drawer_enabled ? 'data-sg-cart-open' : ''; ?> data-sg-cart-fab>
+		<?php echo sutighar_inline_icon( 'cart' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	</a>
+<?php endif; ?>
+<?php if ( $floating_whatsapp_enabled ) : ?>
+	<a class="sg-fab sg-fab--whatsapp" href="<?php echo esc_url( sutighar_whatsapp_url() ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Chat on WhatsApp', 'sutighar' ); ?>">
+		<?php echo sutighar_inline_icon( 'whatsapp' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	</a>
+<?php endif; ?>
 
-<div class="sg-cart-modal" data-sg-cart-modal aria-hidden="true">
-	<div class="sg-cart-modal__backdrop" data-sg-cart-modal-close></div>
-	<div class="sg-cart-modal__panel" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Shopping cart', 'sutighar' ); ?>">
-		<div class="sg-cart-modal__head">
-			<h2><?php esc_html_e( 'Shopping Cart', 'sutighar' ); ?></h2>
-			<button type="button" data-sg-cart-modal-close aria-label="<?php esc_attr_e( 'Close cart', 'sutighar' ); ?>">×</button>
-		</div>
-		<div class="sg-cart-modal__body" data-sg-cart-modal-body>
-			<?php sutighar_cart_modal_body(); ?>
-		</div>
-		<div class="sg-cart-modal__foot" data-sg-cart-modal-foot>
-			<?php sutighar_cart_modal_footer(); ?>
+<?php if ( $cart_drawer_enabled ) : ?>
+	<div class="sg-cart-modal" data-sg-cart-modal aria-hidden="true">
+		<div class="sg-cart-modal__backdrop" data-sg-cart-modal-close></div>
+		<div class="sg-cart-modal__panel" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Shopping cart', 'sutighar' ); ?>">
+			<div class="sg-cart-modal__head">
+				<h2><?php esc_html_e( 'Shopping Cart', 'sutighar' ); ?></h2>
+				<button type="button" data-sg-cart-modal-close aria-label="<?php esc_attr_e( 'Close cart', 'sutighar' ); ?>">×</button>
+			</div>
+			<div class="sg-cart-modal__body" data-sg-cart-modal-body>
+				<?php sutighar_cart_modal_body(); ?>
+			</div>
+			<div class="sg-cart-modal__foot" data-sg-cart-modal-foot>
+				<?php sutighar_cart_modal_footer(); ?>
+			</div>
 		</div>
 	</div>
-</div>
+<?php endif; ?>
 
 <main id="main">

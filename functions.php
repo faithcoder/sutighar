@@ -12,6 +12,7 @@ define( 'SUTIGHAR_DIR', get_template_directory() );
 define( 'SUTIGHAR_URI', get_template_directory_uri() );
 
 require_once SUTIGHAR_DIR . '/inc/helpers.php';
+require_once SUTIGHAR_DIR . '/inc/svg.php';
 require_once SUTIGHAR_DIR . '/inc/wishlist.php';
 require_once SUTIGHAR_DIR . '/inc/woocommerce.php';
 require_once SUTIGHAR_DIR . '/inc/gateways.php';
@@ -37,7 +38,7 @@ function sutighar_setup() {
 			'flex-width'  => true,
 		)
 	);
-	add_editor_style( array( 'style.css', 'assets/css/woocommerce.css' ) );
+	add_editor_style( array( 'assets/css/main.css', 'assets/css/woocommerce.css' ) );
 	add_theme_support(
 		'woocommerce',
 		array(
@@ -73,7 +74,7 @@ function sutighar_asset_version( $relative_path ) {
 	return SUTIGHAR_VERSION;
 }
 function sutighar_assets() {
-	wp_enqueue_style( 'sutighar-style', get_stylesheet_uri(), array(), sutighar_asset_version( 'style.css' ) );
+	wp_enqueue_style( 'sutighar-style', SUTIGHAR_URI . '/assets/css/main.css', array(), sutighar_asset_version( 'assets/css/main.css' ) );
 	wp_enqueue_style( 'sutighar-woocommerce', SUTIGHAR_URI . '/assets/css/woocommerce.css', array( 'sutighar-style' ), sutighar_asset_version( 'assets/css/woocommerce.css' ) );
 	wp_enqueue_script( 'sutighar-theme', SUTIGHAR_URI . '/assets/js/theme.js', array(), sutighar_asset_version( 'assets/js/theme.js' ), true );
 	wp_localize_script(
@@ -120,8 +121,23 @@ function sutighar_widgets_init() {
 }
 
 add_filter( 'body_class', 'sutighar_body_class' );
+function sutighar_header_should_lock_compact() {
+	if ( is_front_page() || is_home() || is_cart() || is_checkout() || is_page_template( 'page-wishlist.php' ) ) {
+		return false;
+	}
+
+	if ( function_exists( 'is_woocommerce' ) && is_woocommerce() ) {
+		return false;
+	}
+
+	return true;
+}
+
 function sutighar_body_class( $classes ) {
 	$classes[] = 'sutighar-theme';
+	if ( sutighar_header_should_lock_compact() ) {
+		$classes[] = 'sg-header-locked-compact';
+	}
 	return $classes;
 }
 

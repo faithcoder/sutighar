@@ -16,6 +16,11 @@ function sutighar_option( $key, $default = '' ) {
 	return '' === $value ? $default : $value;
 }
 
+function sutighar_option_enabled( $key, $default = true ) {
+	$value = sutighar_option( $key, $default ? '1' : '0' );
+	return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+}
+
 function sutighar_default_whatsapp_number() {
 	return '8801616322116';
 }
@@ -39,6 +44,44 @@ function sutighar_phone_display() {
 	return '+' . $number;
 }
 
+function sutighar_default_contact_email() {
+	return 'sutighar@gmail.com';
+}
+
+function sutighar_default_contact_address() {
+	return __( 'Shiddhirganj, Narayanganj Dhaka, Bangladesh.', 'sutighar' );
+}
+
+function sutighar_contact_phone() {
+	return trim( sutighar_option( 'contact_phone', sutighar_phone_display() ) );
+}
+
+function sutighar_contact_phone_href() {
+	$phone = sutighar_contact_phone();
+	if ( '' === $phone ) {
+		return '';
+	}
+
+	$number = preg_replace( '/[^\d+]+/', '', $phone );
+	if ( '' === $number ) {
+		return '';
+	}
+
+	if ( '+' !== substr( $number, 0, 1 ) ) {
+		$number = '+' . $number;
+	}
+
+	return 'tel:' . $number;
+}
+
+function sutighar_contact_email() {
+	return sanitize_email( sutighar_option( 'contact_email', sutighar_default_contact_email() ) );
+}
+
+function sutighar_contact_address() {
+	return trim( sutighar_option( 'contact_address', sutighar_default_contact_address() ) );
+}
+
 function sutighar_whatsapp_url( $message = '' ) {
 	$url = 'https://wa.me/' . rawurlencode( sutighar_whatsapp_number() );
 	if ( '' !== $message ) {
@@ -46,6 +89,50 @@ function sutighar_whatsapp_url( $message = '' ) {
 	}
 
 	return $url;
+}
+
+function sutighar_social_link_definitions() {
+	return array(
+		'whatsapp'  => array(
+			'label' => __( 'WhatsApp', 'sutighar' ),
+			'url'   => sutighar_whatsapp_url(),
+			'icon'  => 'assets/icons/whatsapp.svg',
+		),
+		'messenger' => array(
+			'label' => __( 'Messenger', 'sutighar' ),
+			'url'   => 'https://m.me/sutighar',
+			'icon'  => 'assets/icons/messenger.svg',
+		),
+		'facebook'  => array(
+			'label' => __( 'Facebook', 'sutighar' ),
+			'url'   => 'https://facebook.com/sutighar',
+			'icon'  => 'assets/icons/facebook.svg',
+		),
+		'instagram' => array(
+			'label' => __( 'Instagram', 'sutighar' ),
+			'url'   => 'https://instagram.com/sutighar',
+			'icon'  => 'assets/icons/instagram.svg',
+		),
+	);
+}
+
+function sutighar_social_links() {
+	$links = array();
+
+	foreach ( sutighar_social_link_definitions() as $key => $social ) {
+		$url = trim( get_option( 'sutighar_social_' . $key . '_url', $social['url'] ) );
+		if ( '' === $url ) {
+			continue;
+		}
+
+		$links[ $key ] = array(
+			'label' => $social['label'],
+			'url'   => $url,
+			'icon'  => sutighar_asset( $social['icon'] ),
+		);
+	}
+
+	return $links;
 }
 
 function sutighar_plain_price( $amount, $args = array() ) {
@@ -67,25 +154,194 @@ function sutighar_plain_text( $text ) {
 	return trim( preg_replace( '/[ \t]+/', ' ', $text ) );
 }
 
+function sutighar_youtube_embed_url( $url ) {
+	$parts = wp_parse_url( $url );
+	if ( empty( $parts['host'] ) ) {
+		return '';
+	}
+
+	$host     = strtolower( preg_replace( '/^www\./', '', $parts['host'] ) );
+	$video_id = '';
+
+	if ( 'youtu.be' === $host && ! empty( $parts['path'] ) ) {
+		$video_id = trim( $parts['path'], '/' );
+	} elseif ( in_array( $host, array( 'youtube.com', 'm.youtube.com', 'music.youtube.com', 'youtube-nocookie.com' ), true ) ) {
+		$path = isset( $parts['path'] ) ? trim( $parts['path'], '/' ) : '';
+		if ( ! empty( $parts['query'] ) ) {
+			parse_str( $parts['query'], $query );
+			if ( ! empty( $query['v'] ) ) {
+				$video_id = $query['v'];
+			}
+		}
+		if ( '' === $video_id && preg_match( '~^(embed|shorts)/([^/?#]+)~', $path, $matches ) ) {
+			$video_id = $matches[2];
+		}
+	}
+
+	if ( ! preg_match( '/^[A-Za-z0-9_-]{6,}$/', $video_id ) ) {
+		return '';
+	}
+
+	return 'https://www.youtube.com/embed/' . rawurlencode( $video_id );
+}
+
+function sutighar_video_url_mime_type( $url ) {
+	$path = wp_parse_url( $url, PHP_URL_PATH );
+	$ext  = $path ? strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ) : '';
+	$map  = array(
+		'm4v'  => 'video/mp4',
+		'mp4'  => 'video/mp4',
+		'mov'  => 'video/quicktime',
+		'ogg'  => 'video/ogg',
+		'ogv'  => 'video/ogg',
+		'webm' => 'video/webm',
+	);
+
+	return isset( $map[ $ext ] ) ? $map[ $ext ] : '';
+}
+
+function sutighar_product_media_embed_html( $url ) {
+	$url = esc_url_raw( html_entity_decode( trim( $url ), ENT_QUOTES | ENT_HTML5, get_bloginfo( 'charset' ) ) );
+	if ( '' === $url ) {
+		return '';
+	}
+
+	$youtube_url = sutighar_youtube_embed_url( $url );
+	if ( $youtube_url ) {
+		return sprintf(
+			'<div class="sg-pdp__media sg-pdp__media--youtube"><iframe src="%s" title="%s" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>',
+			esc_url( $youtube_url ),
+			esc_attr__( 'Product video', 'sutighar' )
+		);
+	}
+
+	$mime_type = sutighar_video_url_mime_type( $url );
+	if ( $mime_type ) {
+		return sprintf(
+			'<div class="sg-pdp__media sg-pdp__media--hosted"><video controls playsinline preload="metadata"><source src="%s" type="%s"></video></div>',
+			esc_url( $url ),
+			esc_attr( $mime_type )
+		);
+	}
+
+	return '';
+}
+
+function sutighar_embed_product_description_media( $content ) {
+	$content = preg_replace_callback(
+		'~\[embed[^\]]*\]\s*(?P<url>https?://[^\s\[]+)\s*\[/embed\]~i',
+		function ( $matches ) {
+			$embed = sutighar_product_media_embed_html( $matches['url'] );
+			return $embed ? $embed : $matches[0];
+		},
+		$content
+	);
+
+	$content = preg_replace_callback(
+		'~<(?P<tag>p|div)\b[^>]*>\s*<a\b[^>]*href=(["\'])(?P<url>https?://.+?)\2[^>]*>.*?</a>\s*</(?P=tag)>~is',
+		function ( $matches ) {
+			$embed = sutighar_product_media_embed_html( $matches['url'] );
+			return $embed ? $embed : $matches[0];
+		},
+		$content
+	);
+
+	$content = preg_replace_callback(
+		'~<a\b[^>]*href=(["\'])(?P<url>https?://.+?)\1[^>]*>.*?</a>~is',
+		function ( $matches ) {
+			$embed = sutighar_product_media_embed_html( $matches['url'] );
+			return $embed ? $embed : $matches[0];
+		},
+		$content
+	);
+
+	$content = preg_replace_callback(
+		'~<(?P<tag>p|div)\b(?P<attrs>[^>]*)>\s*(?P<url>https?://[^\s<>"\']+)\s*</(?P=tag)>~i',
+		function ( $matches ) {
+			$embed = sutighar_product_media_embed_html( $matches['url'] );
+			return $embed ? $embed : $matches[0];
+		},
+		$content
+	);
+
+	return preg_replace_callback(
+		'~(?m)^[ \t]*(https?://[^\s<>"\']+)[ \t]*$~',
+		function ( $matches ) {
+			$embed = sutighar_product_media_embed_html( $matches[1] );
+			return $embed ? $embed : $matches[0];
+		},
+		$content
+	);
+}
+
+function sutighar_link_product_description_urls( $content ) {
+	$tokens = preg_split( '/(<[^>]+>)/', $content, -1, PREG_SPLIT_DELIM_CAPTURE );
+	if ( ! is_array( $tokens ) ) {
+		return $content;
+	}
+
+	$inside_link = false;
+	foreach ( $tokens as $index => $token ) {
+		if ( '' === $token ) {
+			continue;
+		}
+		if ( '<' === $token[0] ) {
+			if ( preg_match( '/^<a\b/i', $token ) ) {
+				$inside_link = true;
+			} elseif ( preg_match( '/^<\/a>/i', $token ) ) {
+				$inside_link = false;
+			}
+			continue;
+		}
+		if ( ! $inside_link ) {
+			$tokens[ $index ] = make_clickable( $token );
+		}
+	}
+
+	return implode( '', $tokens );
+}
+
 function sutighar_product_description_html( $product ) {
 	if ( ! $product instanceof WC_Product ) {
 		return '';
 	}
 
-	$content = $product->get_short_description();
-	if ( '' === trim( $content ) ) {
-		$content = get_post_field( 'post_content', $product->get_id() );
+	$contents          = array();
+	$short_description = trim( $product->get_short_description() );
+	$description       = trim( get_post_field( 'post_content', $product->get_id() ) );
+	if ( '' !== $short_description ) {
+		$contents[] = $short_description;
 	}
+	if ( '' !== $description && $description !== $short_description ) {
+		$contents[] = $description;
+	}
+	$content = implode( "\n\n", $contents );
 
 	if ( '' === trim( $content ) ) {
 		return '';
 	}
 
 	$content = html_entity_decode( $content, ENT_QUOTES, get_bloginfo( 'charset' ) );
+	$content = sutighar_embed_product_description_media( $content );
+	$content = do_blocks( $content );
+	$content = sutighar_embed_product_description_media( $content );
 	$content = do_shortcode( $content );
+	if ( isset( $GLOBALS['wp_embed'] ) && is_object( $GLOBALS['wp_embed'] ) ) {
+		$content = $GLOBALS['wp_embed']->run_shortcode( $content );
+		$content = $GLOBALS['wp_embed']->autoembed( $content );
+	}
+	$content = sutighar_link_product_description_urls( $content );
 	$content = wpautop( $content );
 	$allowed = wp_kses_allowed_html( 'post' );
 
+	$allowed['div'] = array(
+		'class' => true,
+		'style' => true,
+	);
+	$allowed['figure'] = array(
+		'class' => true,
+		'style' => true,
+	);
 	$allowed['video'] = array(
 		'autoplay'    => true,
 		'class'       => true,
@@ -115,9 +371,12 @@ function sutighar_product_description_html( $product ) {
 		'allow'           => true,
 		'allowfullscreen' => true,
 		'class'           => true,
+		'frameborder'     => true,
 		'height'          => true,
 		'loading'         => true,
+		'name'            => true,
 		'referrerpolicy'  => true,
+		'sandbox'         => true,
 		'src'             => true,
 		'style'           => true,
 		'title'           => true,
@@ -398,7 +657,11 @@ function sutighar_inline_icon( $name ) {
 		'instagram' => '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z"></path></svg>',
 	);
 
-	return isset( $icons[ $name ] ) ? $icons[ $name ] : '';
+	if ( ! isset( $icons[ $name ] ) ) {
+		return '';
+	}
+
+	return preg_replace( '/^<svg\b/', '<svg xmlns="http://www.w3.org/2000/svg" focusable="false"', $icons[ $name ], 1 );
 }
 
 function sutighar_price( $price ) {
@@ -435,29 +698,78 @@ function sutighar_product_size_measurements( $product ) {
 		$meta_waist  = $product->get_meta( '_sg_waist' );
 		if ( $meta_size || $meta_height || $meta_waist ) {
 			return array(
-				'size'   => $meta_size ? $meta_size : __( 'One size', 'sutighar' ),
-				'height' => $meta_height ? $meta_height : '—',
-				'waist'  => $meta_waist ? $meta_waist : '—',
+				'size'   => $meta_size,
+				'height' => $meta_height,
+				'waist'  => $meta_waist,
 			);
 		}
 	}
 
 	$size = $product instanceof WC_Product ? $product->get_attribute( 'pa_size' ) : '';
-	$size = $size ? $size : $product->get_meta( '_sg_size' );
-	$map  = array(
-		'Kids'     => array( 42, 72 ),
-		'5 Haat'   => array( 51, 98 ),
-		'5.5 Haat' => array( 51, 98 ),
-		'6 Haat'   => array( 54, 104 ),
-	);
+	return array( 'size' => $size, 'height' => '', 'waist' => '' );
+}
 
-	foreach ( $map as $label => $values ) {
-		if ( false !== stripos( $size, $label ) || false !== stripos( $product->get_name(), $label ) ) {
-			return array( 'size' => $label, 'height' => $values[0], 'waist' => $values[1] );
+function sutighar_product_cart_size( $product ) {
+	if ( ! $product instanceof WC_Product ) {
+		return __( '5 Haat', 'sutighar' );
+	}
+
+	$parent = null;
+	if ( $product->is_type( 'variation' ) && $product->get_parent_id() ) {
+		$parent = wc_get_product( $product->get_parent_id() );
+	}
+
+	$size = $product->get_meta( '_sg_size' );
+	if ( ! $size && $parent instanceof WC_Product ) {
+		$size = $parent->get_meta( '_sg_size' );
+	}
+	if ( ! $size ) {
+		$size = $product->get_attribute( 'pa_size' );
+	}
+	if ( ! $size && $parent instanceof WC_Product ) {
+		$size = $parent->get_attribute( 'pa_size' );
+	}
+
+	if ( $size ) {
+		return sutighar_plain_text( $size );
+	}
+
+	foreach ( array( 'Kids', '5 Haat', '5.5 Haat', '6 Haat' ) as $label ) {
+		if ( false !== stripos( $product->get_name(), $label ) ) {
+			return $label;
+		}
+		if ( $parent instanceof WC_Product && false !== stripos( $parent->get_name(), $label ) ) {
+			return $label;
 		}
 	}
 
-	return array( 'size' => $size ? $size : __( 'One size', 'sutighar' ), 'height' => '—', 'waist' => '—' );
+	return __( '5 Haat', 'sutighar' );
+}
+
+function sutighar_product_stock_label( $product ) {
+	if ( ! $product instanceof WC_Product || ! $product->is_in_stock() ) {
+		return array(
+			'text'  => __( 'Stock out', 'sutighar' ),
+			'class' => 'is-out',
+		);
+	}
+
+	$quantity = $product->get_stock_quantity();
+	if ( null !== $quantity && $quantity > 0 && $quantity < 10 ) {
+		return array(
+			'text'  => sprintf(
+				/* translators: %d: remaining stock quantity. */
+				__( '%d Item Left', 'sutighar' ),
+				$quantity
+			),
+			'class' => 'is-low',
+		);
+	}
+
+	return array(
+		'text'  => __( 'Available', 'sutighar' ),
+		'class' => 'is-available',
+	);
 }
 
 function sutighar_product_spec_value( $product, $label ) {
@@ -481,8 +793,7 @@ function sutighar_product_spec_value( $product, $label ) {
 		return $value;
 	}
 
-	$defaults = sutighar_default_specs();
-	return $defaults[ $label ] ?? '';
+	return '';
 }
 
 function sutighar_default_specs() {
