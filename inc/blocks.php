@@ -46,7 +46,7 @@ function sutighar_register_blocks() {
 			),
 			'attributes'      => array(
 				'align'     => array( 'type' => 'string', 'default' => 'full' ),
-				'cardOne'   => array( 'type' => 'string', 'default' => 'Premium Quality' ),
+				'cardOne'   => array( 'type' => 'string', 'default' => 'Hand-picked Collection' ),
 				'cardTwo'   => array( 'type' => 'string', 'default' => 'Easy Return' ),
 				'cardThree' => array( 'type' => 'string', 'default' => 'National Delivery' ),
 				'cardFour'  => array( 'type' => 'string', 'default' => 'Safe Payment' ),
@@ -176,11 +176,26 @@ function sutighar_feature_icon( $index ) {
 
 function sutighar_render_feature_cards_block( $attributes ) {
 	$cards = array(
-		$attributes['cardOne'] ?? 'Premium Quality',
-		$attributes['cardTwo'] ?? 'Easy Return',
-		$attributes['cardThree'] ?? 'National Delivery',
-		$attributes['cardFour'] ?? 'Safe Payment',
+		array(
+			'label' => $attributes['cardOne'] ?? 'Hand-picked Collection',
+			'icon'  => 'solar_hand-heart-linear.svg',
+		),
+		array(
+			'label' => $attributes['cardTwo'] ?? 'Easy Return',
+			'icon'  => 'hugeicons_delivery-return-02.svg',
+		),
+		array(
+			'label' => $attributes['cardThree'] ?? 'National Delivery',
+			'icon'  => 'carbon_delivery.svg',
+		),
+		array(
+			'label' => $attributes['cardFour'] ?? 'Safe Payment',
+			'icon'  => 'bi_cash-coin.svg',
+		),
 	);
+	if ( 'Premium Quality' === $cards[0]['label'] ) {
+		$cards[0]['label'] = 'Hand-picked Collection';
+	}
 
 	ob_start();
 	?>
@@ -194,10 +209,10 @@ function sutighar_render_feature_cards_block( $attributes ) {
 			<?php endforeach; ?>
 		</nav>
 		<div class="sg-feature-cards sg-container">
-			<?php foreach ( $cards as $index => $label ) : ?>
+			<?php foreach ( $cards as $card ) : ?>
 				<div class="sg-feature-card">
-					<span class="sg-feature-card__icon"><?php echo sutighar_feature_icon( $index ); ?></span>
-					<span><?php echo esc_html( $label ); ?></span>
+					<span class="sg-feature-card__icon"><?php echo sutighar_icon_img( $card['icon'], 'sg-feature-card__img' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+					<span><?php echo esc_html( $card['label'] ); ?></span>
 				</div>
 			<?php endforeach; ?>
 		</div>

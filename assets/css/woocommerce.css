@@ -208,10 +208,10 @@ body.sutighar-theme .sg-gallery-modal {
 }
 .sg-pdp__info .product_title {
   margin: 0;
-  font-size: 24px;
-  line-height: 30px;
-  font-weight: 400;
-  letter-spacing: -.02em;
+  font-size: var(--sg-h4-size);
+  line-height: var(--sg-h4-line);
+  font-weight: var(--sg-h4-weight);
+  letter-spacing: var(--sg-h4-letter);
 }
 .sg-pdp__info hr {
   width: 100%;
@@ -302,6 +302,10 @@ body.sutighar-theme .sg-gallery-modal {
   user-select: none;
 }
 .sg-qty-btn:hover { color: var(--sg-ink); }
+.sg-qty-btn:disabled {
+  cursor: not-allowed;
+  opacity: .35;
+}
 .sg-qty-btn[data-sg-qty="plus"] {
   order: 1;
   border-right: 1px solid rgba(0, 0, 0, .12);
@@ -362,8 +366,8 @@ body.sutighar-theme .sg-gallery-modal {
 }
 .sg-pdp__desc p {
   color: var(--sg-ink-75);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: var(--sg-body-size);
+  line-height: var(--sg-body-line);
 }
 .sg-pdp__desc a {
   color: var(--sg-brand);
@@ -418,10 +422,10 @@ body.sutighar-theme .sg-gallery-modal {
 .sg-similar-section > h2 {
   margin: 0;
   color: var(--sg-ink);
-  font-size: 38px;
-  line-height: 48px;
-  font-weight: 400;
-  letter-spacing: -.02em;
+  font-size: var(--sg-h2-size);
+  line-height: var(--sg-h2-line);
+  font-weight: var(--sg-h2-weight);
+  letter-spacing: var(--sg-h2-letter);
 }
 .sg-similar-section > .sg-product-grid {
   margin-top: 16px;
@@ -500,14 +504,16 @@ body.sutighar-theme .sg-gallery-modal {
 .sg-empty h2 {
   margin: 0;
   color: var(--sg-ink);
-  font-size: 24px;
-  line-height: 1.3;
-  font-weight: 400;
+  font-size: var(--sg-h4-size);
+  line-height: var(--sg-h4-line);
+  font-weight: var(--sg-h4-weight);
+  letter-spacing: var(--sg-h4-letter);
 }
 .sg-empty p {
   margin: 0;
   color: var(--sg-ink-75);
-  font-size: 14px;
+  font-size: var(--sg-body-size);
+  line-height: var(--sg-body-line);
 }
 .sg-thankyou-page.sg-page {
   padding-top: 40px;
@@ -529,13 +535,15 @@ body.sutighar-theme .sg-gallery-modal {
 }
 .sg-thankyou h2 {
   margin-top: 18px;
-  font-size: 38px;
-  line-height: 1.3;
+  font-size: var(--sg-h3-size);
+  line-height: var(--sg-h3-line);
+  font-weight: var(--sg-h3-weight);
+  letter-spacing: var(--sg-h3-letter);
 }
 .sg-thankyou > p {
   max-width: 640px;
-  font-size: 15px;
-  line-height: 1.7;
+  font-size: var(--sg-body-size);
+  line-height: var(--sg-body-line);
 }
 .sg-thankyou-summary {
   width: 100%;
@@ -659,6 +667,13 @@ body.sutighar-theme .sg-gallery-modal {
   color: var(--sg-ink-75);
   font-size: 12px;
 }
+.sg-cart-stock {
+  display: block;
+  width: max-content;
+  margin-top: -4px;
+  font-size: 12px;
+  line-height: 18px;
+}
 .sg-cart-item__price {
   margin-left: auto;
   text-align: right;
@@ -724,11 +739,12 @@ body.sutighar-theme .sg-gallery-modal {
 .sg-cart-summary h2,
 .sg-checkout-summary-toggle,
 .sg-checkout-page h3 {
- margin: 0 0 18px;
+  margin: 0 0 18px;
   color: var(--sg-ink);
-  font-size: 16px;
-  line-height: 1.3;
-  font-weight: 600;
+  font-size: var(--sg-h6-size);
+  line-height: var(--sg-h6-line);
+  font-weight: var(--sg-h6-weight);
+  letter-spacing: var(--sg-h6-letter);
 }
 .sg-checkout-page h3 + #payment {
   margin-top: 14px;
@@ -1261,10 +1277,10 @@ body.sutighar-theme .sg-gallery-modal {
 }
 .sg-confirmation h1 {
   margin: 24px 0 12px;
-  font-size: 38px;
-  line-height: 48px;
-  font-weight: 400;
-  letter-spacing: -.02em;
+  font-size: var(--sg-h3-size);
+  line-height: var(--sg-h3-line);
+  font-weight: var(--sg-h3-weight);
+  letter-spacing: var(--sg-h3-letter);
 }
 
 .woocommerce-account .woocommerce {

@@ -64,7 +64,7 @@
     category: 'sutighar',
     attributes: {
       align: { type: 'string', default: 'full' },
-      cardOne: { type: 'string', default: 'Premium Quality' },
+      cardOne: { type: 'string', default: 'Hand-picked Collection' },
       cardTwo: { type: 'string', default: 'Easy Return' },
       cardThree: { type: 'string', default: 'National Delivery' },
       cardFour: { type: 'string', default: 'Safe Payment' }

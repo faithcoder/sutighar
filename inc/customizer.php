@@ -139,7 +139,7 @@ function sutighar_customize_register( $wp_customize ) {
 	$display_fields = array(
 		'enable_cart_drawer'       => __( 'Enable cart drawer', 'sutighar' ),
 		'enable_floating_cart'     => __( 'Enable floating cart button', 'sutighar' ),
-		'enable_floating_whatsapp' => __( 'Enable floating WhatsApp button', 'sutighar' ),
+		'enable_floating_whatsapp' => __( 'Enable floating mobile menu button', 'sutighar' ),
 	);
 
 	foreach ( $display_fields as $key => $label ) {

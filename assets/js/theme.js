@@ -29,8 +29,16 @@
 
   // ---- Mobile drawer menu ----
   const drawer = document.querySelector('[data-sg-drawer]');
-  const drawerToggle = document.querySelector('[data-sg-drawer-toggle]');
+  const drawerToggles = Array.from(document.querySelectorAll('[data-sg-drawer-toggle]'));
   let lastDrawerFocus = null;
+
+  function setDrawerToggleState(isOpen) {
+    drawerToggles.forEach((toggle) => {
+      toggle.classList.toggle('is-open', isOpen);
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      toggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+    });
+  }
 
   function openDrawer() {
     if (!drawer) return;
@@ -38,11 +46,7 @@
     drawer.classList.add('is-open');
     drawer.setAttribute('aria-hidden', 'false');
     document.documentElement.classList.add('sg-drawer-open');
-    if (drawerToggle) {
-      drawerToggle.classList.add('is-open');
-      drawerToggle.setAttribute('aria-expanded', 'true');
-      drawerToggle.setAttribute('aria-label', 'Close menu');
-    }
+    setDrawerToggleState(true);
     const firstLink = drawer.querySelector('a[href], button');
     if (firstLink) firstLink.focus();
   }
@@ -52,11 +56,7 @@
     drawer.classList.remove('is-open');
     drawer.setAttribute('aria-hidden', 'true');
     document.documentElement.classList.remove('sg-drawer-open');
-    if (drawerToggle) {
-      drawerToggle.classList.remove('is-open');
-      drawerToggle.setAttribute('aria-expanded', 'false');
-      drawerToggle.setAttribute('aria-label', 'Open menu');
-    }
+    setDrawerToggleState(false);
     if (lastDrawerFocus && lastDrawerFocus.focus) lastDrawerFocus.focus();
   }
   window.sgCloseDrawer = closeDrawer;
@@ -180,12 +180,14 @@
     const qtyBtn = event.target.closest('[data-sg-cart-qty]');
     if (qtyBtn && cartModal && cartModal.classList.contains('is-open')) {
       event.preventDefault();
+      event.stopImmediatePropagation();
       const key = qtyBtn.getAttribute('data-key');
       const row = qtyBtn.closest('.sg-cart-modal__item');
       const input = row && row.querySelector('input.qty');
       if (!key || !input) return;
       const current = parseInt(input.value, 10) || 1;
-      const next = qtyBtn.getAttribute('data-sg-cart-qty') === 'plus' ? current + 1 : Math.max(1, current - 1);
+      const max = input.max === '' ? Infinity : parseInt(input.max, 10);
+      const next = qtyBtn.getAttribute('data-sg-cart-qty') === 'plus' ? Math.min(max, current + 1) : Math.max(1, current - 1);
       if (next === current) return;
       cartAjax('sg_update_cart_item', { cart_key: key, quantity: String(next) });
     }
@@ -232,7 +234,9 @@
       const min = input.min === '' ? 0 : parseFloat(input.min);
       const max = input.max === '' ? Infinity : parseFloat(input.max);
       const current = parseFloat(input.value || '0');
-      input.value = Math.max(min, Math.min(max, current + step));
+      const next = Math.max(min, Math.min(max, current + step));
+      if (next === current) return;
+      input.value = next;
       input.dispatchEvent(new Event('change', { bubbles: true }));
     }
   });

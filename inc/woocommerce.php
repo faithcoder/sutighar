@@ -78,6 +78,22 @@ function sutighar_cart_fragments( $fragments ) {
 	return $fragments;
 }
 
+add_filter( 'woocommerce_update_cart_validation', 'sutighar_limit_cart_quantity_to_stock', 10, 4 );
+function sutighar_limit_cart_quantity_to_stock( $passed, $cart_item_key, $values, $quantity ) {
+	$product = isset( $values['data'] ) ? $values['data'] : null;
+	if ( ! $product instanceof WC_Product ) {
+		return $passed;
+	}
+
+	$max_quantity = $product->get_max_purchase_quantity();
+	if ( $max_quantity > 0 && $quantity > $max_quantity && WC()->cart ) {
+		WC()->cart->set_quantity( $cart_item_key, $max_quantity, false );
+		return false;
+	}
+
+	return $passed;
+}
+
 function sutighar_cart_modal_body() {
 	if ( ! WC()->cart || WC()->cart->is_empty() ) {
 		?>
@@ -94,7 +110,11 @@ function sutighar_cart_modal_body() {
 		if ( ! $product instanceof WC_Product ) {
 			continue;
 		}
-		$size = sutighar_product_cart_size( $product );
+		$size         = sutighar_product_cart_size( $product );
+		$stock_label  = sutighar_product_stock_label( $product );
+		$max_quantity = $product->get_max_purchase_quantity();
+		$input_max    = $max_quantity > 0 ? $max_quantity : '';
+		$at_max       = $max_quantity > 0 && $item['quantity'] >= $max_quantity;
 		?>
 		<div class="sg-cart-modal__item" data-cart-key="<?php echo esc_attr( $cart_key ); ?>">
 			<div class="sg-cart-modal__thumb"><?php echo $product->get_image( 'woocommerce_thumbnail' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></div>
@@ -105,10 +125,13 @@ function sutighar_cart_modal_body() {
 				</div>
 				<span class="sg-cart-modal__variant"><?php echo esc_html( $size ); ?></span>
 				<div class="sg-cart-modal__controls">
-					<div class="quantity">
-						<button type="button" class="sg-qty-btn" data-sg-qty="minus" data-sg-cart-qty="minus" data-key="<?php echo esc_attr( $cart_key ); ?>" aria-label="<?php esc_attr_e( 'Decrease quantity', 'sutighar' ); ?>">−</button>
-						<input type="text" class="qty" value="<?php echo esc_attr( $item['quantity'] ); ?>" readonly>
-						<button type="button" class="sg-qty-btn" data-sg-qty="plus" data-sg-cart-qty="plus" data-key="<?php echo esc_attr( $cart_key ); ?>" aria-label="<?php esc_attr_e( 'Increase quantity', 'sutighar' ); ?>">+</button>
+					<div class="sg-cart-modal__qty">
+						<div class="quantity">
+							<button type="button" class="sg-qty-btn" data-sg-qty="minus" data-sg-cart-qty="minus" data-key="<?php echo esc_attr( $cart_key ); ?>" aria-label="<?php esc_attr_e( 'Decrease quantity', 'sutighar' ); ?>">−</button>
+							<input type="text" class="qty" value="<?php echo esc_attr( $item['quantity'] ); ?>" min="1" <?php echo '' !== $input_max ? 'max="' . esc_attr( $input_max ) . '"' : ''; ?> readonly>
+							<button type="button" class="sg-qty-btn" data-sg-qty="plus" data-sg-cart-qty="plus" data-key="<?php echo esc_attr( $cart_key ); ?>" <?php echo '' !== $input_max ? 'data-max="' . esc_attr( $input_max ) . '"' : ''; ?> aria-label="<?php esc_attr_e( 'Increase quantity', 'sutighar' ); ?>" <?php disabled( $at_max ); ?>>+</button>
+						</div>
+						<span class="sg-stock-line sg-cart-stock <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
 					</div>
 					<div class="sg-cart-modal__price"><?php echo esc_html( sutighar_bdt( isset( $item['line_subtotal'] ) ? $item['line_subtotal'] : $product->get_price() * $item['quantity'] ) ); ?></div>
 				</div>
@@ -145,6 +168,24 @@ function sutighar_ajax_add_to_cart() {
 		}
 	}
 
+	$product = wc_get_product( $variation_id ? $variation_id : $product_id );
+	if ( ! $product || ! WC()->cart ) {
+		wp_send_json_error();
+	}
+
+	$max_quantity = $product->get_max_purchase_quantity();
+	if ( $max_quantity > 0 ) {
+		$cart_id       = WC()->cart->generate_cart_id( $product_id, $variation_id, $variation );
+		$cart_key      = WC()->cart->find_product_in_cart( $cart_id );
+		$cart_item     = $cart_key ? WC()->cart->get_cart_item( $cart_key ) : null;
+		$cart_quantity = $cart_item && isset( $cart_item['quantity'] ) ? absint( $cart_item['quantity'] ) : 0;
+		$remaining     = max( 0, $max_quantity - $cart_quantity );
+		if ( 1 > $remaining ) {
+			wp_send_json_error();
+		}
+		$quantity = min( $quantity, $remaining );
+	}
+
 	$added = WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation );
 	if ( ! $added ) {
 		wp_send_json_error();
@@ -160,7 +201,22 @@ function sutighar_ajax_update_cart_item() {
 	$cart_key = isset( $_POST['cart_key'] ) ? sanitize_text_field( wp_unslash( $_POST['cart_key'] ) ) : '';
 	$quantity = isset( $_POST['quantity'] ) ? max( 1, absint( $_POST['quantity'] ) ) : 0;
 
-	if ( ! $cart_key || ! WC()->cart->set_quantity( $cart_key, $quantity ) ) {
+	if ( ! $cart_key || ! WC()->cart ) {
+		wp_send_json_error();
+	}
+
+	$cart_item = WC()->cart->get_cart_item( $cart_key );
+	$product   = isset( $cart_item['data'] ) ? $cart_item['data'] : null;
+	if ( ! $cart_item || ! $product instanceof WC_Product ) {
+		wp_send_json_error();
+	}
+
+	$max_quantity = $product->get_max_purchase_quantity();
+	if ( $max_quantity > 0 ) {
+		$quantity = min( $quantity, $max_quantity );
+	}
+
+	if ( ! WC()->cart->set_quantity( $cart_key, $quantity ) ) {
 		wp_send_json_error();
 	}
 

@@ -664,6 +664,24 @@ function sutighar_inline_icon( $name ) {
 	return preg_replace( '/^<svg\b/', '<svg xmlns="http://www.w3.org/2000/svg" focusable="false"', $icons[ $name ], 1 );
 }
 
+function sutighar_icon_img( $filename, $class = '' ) {
+	$filename = sanitize_file_name( $filename );
+	if ( '' === $filename ) {
+		return '';
+	}
+
+	$path = SUTIGHAR_DIR . '/assets/icons/' . $filename;
+	if ( ! file_exists( $path ) ) {
+		return '';
+	}
+
+	return sprintf(
+		'<img class="%1$s" src="%2$s" alt="" width="24" height="24" loading="lazy" decoding="async" aria-hidden="true">',
+		esc_attr( trim( 'sg-icon-img ' . $class ) ),
+		esc_url( sutighar_asset( 'assets/icons/' . $filename ) )
+	);
+}
+
 function sutighar_price( $price ) {
 	return wc_price(
 		$price,

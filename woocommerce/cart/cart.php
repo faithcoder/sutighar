@@ -23,6 +23,7 @@ do_action( 'woocommerce_before_cart' );
 						if ( ! $product || ! $product->exists() || $cart_item['quantity'] <= 0 ) {
 							continue;
 						}
+						$stock_label = sutighar_product_stock_label( $product );
 						?>
 						<div class="sg-cart-item">
 							<a class="sg-cart-item__image" href="<?php echo esc_url( $product->get_permalink() ); ?>">
@@ -31,6 +32,7 @@ do_action( 'woocommerce_before_cart' );
 							<div class="sg-cart-item__body">
 								<a class="sg-cart-item__name" href="<?php echo esc_url( $product->get_permalink() ); ?>"><?php echo esc_html( $product->get_name() ); ?></a>
 								<div class="sg-cart-item__meta"><?php echo wp_kses_post( wc_get_formatted_cart_item_data( $cart_item ) ); ?> <?php echo wp_kses_post( WC()->cart->get_product_price( $product ) ); ?> <?php esc_html_e( 'each', 'sutighar' ); ?></div>
+								<span class="sg-stock-line sg-cart-stock <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
 								<div class="sg-cart-item__actions">
 									<?php
 									woocommerce_quantity_input(

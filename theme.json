@@ -27,16 +27,84 @@
           "slug": "inter",
           "name": "Inter"
         }
+      ],
+      "fontSizes": [
+        { "slug": "heading-1", "size": "88px", "name": "Heading 1" },
+        { "slug": "heading-2", "size": "64px", "name": "Heading 2" },
+        { "slug": "heading-3", "size": "44px", "name": "Heading 3" },
+        { "slug": "heading-4", "size": "24px", "name": "Heading 4" },
+        { "slug": "heading-5", "size": "20px", "name": "Heading 5" },
+        { "slug": "heading-6", "size": "16px", "name": "Heading 6" },
+        { "slug": "body", "size": "14px", "name": "Body" },
+        { "slug": "body-small", "size": "12px", "name": "Body small" }
       ]
     }
   },
   "styles": {
     "typography": {
-      "fontFamily": "var:preset|font-family|poppins"
+      "fontFamily": "var:preset|font-family|poppins",
+      "fontSize": "var:preset|font-size|body",
+      "lineHeight": "22px"
     },
     "color": {
       "text": "#122A49",
       "background": "#FFFFFF"
+    },
+    "elements": {
+      "h1": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|poppins",
+          "fontSize": "var:preset|font-size|heading-1",
+          "fontWeight": "300",
+          "lineHeight": "86px",
+          "letterSpacing": "-0.04em"
+        }
+      },
+      "h2": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|poppins",
+          "fontSize": "var:preset|font-size|heading-2",
+          "fontWeight": "300",
+          "lineHeight": "72px",
+          "letterSpacing": "-0.04em"
+        }
+      },
+      "h3": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|poppins",
+          "fontSize": "var:preset|font-size|heading-3",
+          "fontWeight": "400",
+          "lineHeight": "54px",
+          "letterSpacing": "-0.02em"
+        }
+      },
+      "h4": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|poppins",
+          "fontSize": "var:preset|font-size|heading-4",
+          "fontWeight": "400",
+          "lineHeight": "30px",
+          "letterSpacing": "-0.02em"
+        }
+      },
+      "h5": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|poppins",
+          "fontSize": "var:preset|font-size|heading-5",
+          "fontWeight": "400",
+          "lineHeight": "28px",
+          "letterSpacing": "0"
+        }
+      },
+      "h6": {
+        "typography": {
+          "fontFamily": "var:preset|font-family|poppins",
+          "fontSize": "var:preset|font-size|heading-6",
+          "fontWeight": "400",
+          "lineHeight": "22px",
+          "letterSpacing": "0"
+        }
+      }
     }
   }
 }

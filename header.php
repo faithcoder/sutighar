@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php
 $cart_drawer_enabled       = sutighar_option_enabled( 'enable_cart_drawer', true );
 $floating_cart_enabled     = sutighar_option_enabled( 'enable_floating_cart', true );
-$floating_whatsapp_enabled = sutighar_option_enabled( 'enable_floating_whatsapp', true );
+$mobile_menu_fab_enabled   = sutighar_option_enabled( 'enable_floating_whatsapp', true );
 $header_locked_compact     = sutighar_header_should_lock_compact();
 ?>
 <a class="screen-reader-text" href="#main"><?php esc_html_e( 'Skip to content', 'sutighar' ); ?></a>
@@ -46,7 +46,7 @@ $header_locked_compact     = sutighar_header_should_lock_compact();
 				<span class="sg-cart-total" data-sg-cart-total><?php echo wp_kses_post( WC()->cart->get_cart_subtotal() ); ?></span>
 			<?php endif; ?>
 			<a class="sg-icon-btn sg-cart-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Cart', 'sutighar' ); ?>" <?php echo $cart_drawer_enabled ? 'data-sg-cart-open' : ''; ?>>
-				<?php echo sutighar_inline_icon( 'cart' ); ?>
+				<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-cart-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<span class="sg-badge" data-sg-cart-count data-count="<?php echo esc_attr( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?>"><?php echo esc_html( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?></span>
 			</a>
 			<a class="sg-icon-btn sg-wishlist-btn" href="<?php echo esc_url( home_url( '/wishlist/' ) ); ?>" aria-label="<?php esc_attr_e( 'Wishlist', 'sutighar' ); ?>">
@@ -55,7 +55,7 @@ $header_locked_compact     = sutighar_header_should_lock_compact();
 			</a>
 			<div class="sg-pop sg-account-pop">
 				<button class="sg-icon-btn" type="button" aria-label="<?php esc_attr_e( 'Account menu', 'sutighar' ); ?>" aria-expanded="false" aria-controls="sg-account-menu" data-sg-pop-toggle="account">
-					<?php echo sutighar_inline_icon( 'user' ); ?>
+					<?php echo sutighar_icon_img( 'user-solid.svg', 'sg-user-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</button>
 				<nav id="sg-account-menu" class="sg-popover" data-sg-popover="account" aria-label="<?php esc_attr_e( 'Account', 'sutighar' ); ?>">
 					<?php if ( has_nav_menu( 'account_menu' ) ) : ?>
@@ -76,7 +76,7 @@ $header_locked_compact     = sutighar_header_should_lock_compact();
 				</nav>
 			</div>
 			<button class="sg-icon-btn sg-menu-toggle" type="button" aria-label="<?php esc_attr_e( 'Open menu', 'sutighar' ); ?>" aria-expanded="false" aria-controls="sg-drawer" data-sg-drawer-toggle>
-				<?php echo sutighar_inline_icon( 'menu' ); ?>
+				<?php echo sutighar_icon_img( 'codex_menu-small.svg', 'sg-menu-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<?php echo sutighar_inline_icon( 'close' ); ?>
 			</button>
 		</div>
@@ -98,15 +98,11 @@ $header_locked_compact     = sutighar_header_should_lock_compact();
 				<?php endif; ?>
 			</a>
 			<div class="sg-drawer__icons">
-				<a class="sg-icon-btn" href="<?php echo esc_url( home_url( '/wishlist/' ) ); ?>" aria-label="<?php esc_attr_e( 'Wishlist', 'sutighar' ); ?>">
-					<?php echo sutighar_inline_icon( 'heart' ); ?>
-					<span class="sg-badge" data-sg-wishlist-count data-count="<?php echo esc_attr( sutighar_wishlist_count() ); ?>"><?php echo esc_html( sutighar_wishlist_count() ); ?></span>
-				</a>
 				<a class="sg-icon-btn" href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" aria-label="<?php esc_attr_e( 'Account', 'sutighar' ); ?>">
-					<?php echo sutighar_inline_icon( 'user' ); ?>
+					<?php echo sutighar_icon_img( 'user-solid.svg', 'sg-user-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</a>
 				<a class="sg-icon-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Cart', 'sutighar' ); ?>" <?php echo $cart_drawer_enabled ? 'data-sg-cart-open' : ''; ?>>
-					<?php echo sutighar_inline_icon( 'cart' ); ?>
+					<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-cart-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<span class="sg-badge" data-sg-cart-count data-count="<?php echo esc_attr( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?>"><?php echo esc_html( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?></span>
 				</a>
 				<button class="sg-icon-btn" type="button" aria-label="<?php esc_attr_e( 'Close menu', 'sutighar' ); ?>" data-sg-drawer-close>
@@ -152,13 +148,14 @@ $header_locked_compact     = sutighar_header_should_lock_compact();
 
 <?php if ( $floating_cart_enabled ) : ?>
 	<a class="sg-fab" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'View cart', 'sutighar' ); ?>" <?php echo $cart_drawer_enabled ? 'data-sg-cart-open' : ''; ?> data-sg-cart-fab>
-		<?php echo sutighar_inline_icon( 'cart' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-cart-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<span class="sg-badge" data-sg-cart-count data-count="<?php echo esc_attr( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?>"><?php echo esc_html( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?></span>
 	</a>
 <?php endif; ?>
-<?php if ( $floating_whatsapp_enabled ) : ?>
-	<a class="sg-fab sg-fab--whatsapp" href="<?php echo esc_url( sutighar_whatsapp_url() ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Chat on WhatsApp', 'sutighar' ); ?>">
-		<?php echo sutighar_inline_icon( 'whatsapp' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-	</a>
+<?php if ( $mobile_menu_fab_enabled ) : ?>
+	<button class="sg-fab sg-fab--menu" type="button" aria-label="<?php esc_attr_e( 'Open menu', 'sutighar' ); ?>" aria-expanded="false" aria-controls="sg-drawer" data-sg-drawer-toggle>
+		<?php echo sutighar_icon_img( 'codex_menu-small.svg', 'sg-menu-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	</button>
 <?php endif; ?>
 
 <?php if ( $cart_drawer_enabled ) : ?>
