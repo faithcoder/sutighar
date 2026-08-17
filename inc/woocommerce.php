@@ -18,8 +18,12 @@ function sutighar_price_format() {
 }
 
 add_filter( 'woocommerce_get_price_decimals', '__return_zero' );
+add_filter( 'woocommerce_placeholder_img_src', 'sutighar_woocommerce_placeholder_img_src' );
 add_filter( 'woocommerce_product_add_to_cart_text', 'sutighar_add_to_cart_text' );
 add_filter( 'woocommerce_product_single_add_to_cart_text', 'sutighar_add_to_cart_text' );
+function sutighar_woocommerce_placeholder_img_src() {
+	return sutighar_asset( 'assets/images/product-placeholder.svg' );
+}
 function sutighar_add_to_cart_text() {
 	return __( 'Add to Cart', 'sutighar' );
 }
@@ -43,6 +47,7 @@ remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 )
 remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10 );
 remove_action( 'woocommerce_before_shop_loop', 'woocommerce_result_count', 20 );
 remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
+remove_action( 'woocommerce_after_shop_loop', 'woocommerce_pagination', 10 );
 remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', 20 );
 remove_action( 'woocommerce_cart_is_empty', 'wc_empty_cart_message', 10 );
 remove_action( 'woocommerce_cart_is_empty', 'woocommerce_output_all_notices', 5 );
@@ -261,7 +266,7 @@ function sutighar_home_products_section( $title, $args, $url = '' ) {
 	?>
 	<section class="sg-section sg-container">
 		<div class="sg-section__head">
-			<h2><?php echo esc_html( $title ); ?></h2>
+			<h3><?php echo esc_html( $title ); ?></h3>
 			<a class="sg-see-all" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Browse All', 'sutighar' ); ?></a>
 		</div>
 		<ul class="products sg-product-grid">

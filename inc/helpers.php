@@ -83,7 +83,7 @@ function sutighar_contact_address() {
 }
 
 function sutighar_whatsapp_url( $message = '' ) {
-	$url = 'https://wa.me/' . rawurlencode( sutighar_whatsapp_number() );
+	$url = 'https://wa.me/' . preg_replace( '/\D+/', '', sutighar_whatsapp_number() );
 	if ( '' !== $message ) {
 		$url .= '?text=' . rawurlencode( $message );
 	}
@@ -185,6 +185,16 @@ function sutighar_youtube_embed_url( $url ) {
 	return 'https://www.youtube.com/embed/' . rawurlencode( $video_id );
 }
 
+function sutighar_is_youtube_short_url( $url ) {
+	$parts = wp_parse_url( $url );
+	if ( empty( $parts['host'] ) || empty( $parts['path'] ) ) {
+		return false;
+	}
+
+	$host = strtolower( preg_replace( '/^www\./', '', $parts['host'] ) );
+	return in_array( $host, array( 'youtube.com', 'm.youtube.com', 'youtube-nocookie.com' ), true ) && 0 === strpos( trim( $parts['path'], '/' ), 'shorts/' );
+}
+
 function sutighar_video_url_mime_type( $url ) {
 	$path = wp_parse_url( $url, PHP_URL_PATH );
 	$ext  = $path ? strtolower( pathinfo( $path, PATHINFO_EXTENSION ) ) : '';
@@ -208,8 +218,10 @@ function sutighar_product_media_embed_html( $url ) {
 
 	$youtube_url = sutighar_youtube_embed_url( $url );
 	if ( $youtube_url ) {
+		$class = sutighar_is_youtube_short_url( $url ) ? ' sg-pdp__media--short' : '';
 		return sprintf(
-			'<div class="sg-pdp__media sg-pdp__media--youtube"><iframe src="%s" title="%s" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>',
+			'<div class="sg-pdp__media sg-pdp__media--youtube%s"><iframe src="%s" title="%s" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>',
+			esc_attr( $class ),
 			esc_url( $youtube_url ),
 			esc_attr__( 'Product video', 'sutighar' )
 		);
@@ -849,15 +861,33 @@ function sutighar_size_chart_modal() {
 		<div class="sg-modal__backdrop" data-sg-size-close></div>
 		<div class="sg-modal__panel" role="dialog" aria-modal="true" aria-labelledby="sg-size-title">
 			<div class="sg-modal__head">
-				<h2 id="sg-size-title"><?php esc_html_e( 'Size Chart', 'sutighar' ); ?></h2>
+				<h2 id="sg-size-title"><?php esc_html_e( 'Size Chart', 'sutighar' ); ?> <span><?php esc_html_e( 'in Inch', 'sutighar' ); ?></span></h2>
 				<button type="button" data-sg-size-close aria-label="<?php esc_attr_e( 'Close size chart', 'sutighar' ); ?>">×</button>
 			</div>
-			<div class="sg-size-chart">
-				<?php foreach ( array( 'Kids' => array( 42, 72 ), '5 Haat' => array( 51, 98 ), '5.5 Haat' => array( 51, 98 ), '6 Haat' => array( 54, 104 ) ) as $label => $row ) : ?>
-					<div><strong><?php echo esc_html( $label ); ?></strong><span><?php echo esc_html( sprintf( __( 'Height %1$s″ · Waist %2$s″', 'sutighar' ), $row[0], $row[1] ) ); ?></span></div>
-				<?php endforeach; ?>
-			</div>
-			<p><?php esc_html_e( 'Measurements in inches, taken flat before wash. Allow about 1″ shrinkage on first wash.', 'sutighar' ); ?></p>
+			<table class="sg-size-chart">
+				<thead>
+					<tr>
+						<th scope="col"><?php esc_html_e( 'সাইজ', 'sutighar' ); ?><small><?php esc_html_e( '(ইঞ্চি)', 'sutighar' ); ?></small></th>
+						<th scope="col"><?php esc_html_e( '৫ হাত', 'sutighar' ); ?></th>
+						<th scope="col"><?php esc_html_e( '৫.৫ হাত', 'sutighar' ); ?></th>
+						<th scope="col"><?php esc_html_e( '৬ হাত', 'sutighar' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'লম্বা', 'sutighar' ); ?></th>
+						<td><?php esc_html_e( '৪৬-৪৮', 'sutighar' ); ?></td>
+						<td><?php esc_html_e( '৪৮-৫০', 'sutighar' ); ?></td>
+						<td><?php esc_html_e( '৫০-৫২', 'sutighar' ); ?></td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'কোমর', 'sutighar' ); ?></th>
+						<td><?php esc_html_e( '৮৮-৯০', 'sutighar' ); ?></td>
+						<td><?php esc_html_e( '৯১-৯৮', 'sutighar' ); ?></td>
+						<td><?php esc_html_e( '৯৮-১০৪', 'sutighar' ); ?></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<?php

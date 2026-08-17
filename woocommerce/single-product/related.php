@@ -6,7 +6,7 @@ if ( empty( $related_products ) ) {
 }
 ?>
 <section class="sg-similar-section">
-	<h2><?php esc_html_e( 'Similar Product', 'sutighar' ); ?></h2>
+	<h3><?php esc_html_e( 'Similar Product', 'sutighar' ); ?></h3>
 	<ul class="products sg-product-grid">
 		<?php
 		foreach ( $related_products as $related_product ) {

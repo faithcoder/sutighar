@@ -5,7 +5,7 @@ global $product;
 
 $ids = $product->get_gallery_image_ids();
 $main_id = $product->get_image_id();
-$fallback_full = sutighar_asset( 'assets/images/product-600.png' );
+$fallback_full = sutighar_asset( 'assets/images/product-placeholder.svg' );
 $gallery_items = array();
 if ( ! $main_id ) {
 	$main_full = $fallback_full;

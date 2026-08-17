@@ -28,6 +28,17 @@ if ( is_shop() ) {
 			<?php wc_get_template_part( 'content', 'product' ); ?>
 		<?php endwhile; ?>
 		<?php woocommerce_product_loop_end(); ?>
+		<?php
+		$current_page = max( 1, absint( get_query_var( 'paged' ) ) );
+		$total_pages  = absint( $GLOBALS['wp_query']->max_num_pages ?? 0 );
+		?>
+		<?php if ( $total_pages > $current_page ) : ?>
+			<div class="sg-load-more-wrap">
+				<a class="sg-load-more" href="<?php echo esc_url( get_pagenum_link( $current_page + 1 ) ); ?>" data-sg-load-more data-loading-label="<?php esc_attr_e( 'Loading...', 'sutighar' ); ?>">
+					<?php esc_html_e( 'Load more', 'sutighar' ); ?>
+				</a>
+			</div>
+		<?php endif; ?>
 		<?php do_action( 'woocommerce_after_shop_loop' ); ?>
 	<?php else : ?>
 		<div class="sg-empty">

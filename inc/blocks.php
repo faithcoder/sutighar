@@ -256,10 +256,10 @@ function sutighar_render_product_section_block( $attributes ) {
 
 	ob_start();
 	?>
-	<section <?php echo get_block_wrapper_attributes( array( 'class' => 'sg-section sg-product-section-band alignfull' ) ); ?>>
+		<section <?php echo get_block_wrapper_attributes( array( 'class' => 'sg-section sg-product-section-band alignfull' ) ); ?>>
 		<div class="sg-container">
 			<div class="sg-section__head">
-				<h2><?php echo esc_html( $title ); ?></h2>
+				<h3><?php echo esc_html( $title ); ?></h3>
 				<a class="sg-see-all" href="<?php echo esc_url( $browse_url ); ?>"><?php echo esc_html( $browse_label ); ?></a>
 			</div>
 			<ul class="products sg-product-grid">

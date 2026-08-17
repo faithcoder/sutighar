@@ -38,13 +38,21 @@
 .sg-pdp__main {
   cursor: zoom-in;
 }
-.sg-pdp__thumb { flex: 1 1 0; }
+.sg-pdp__thumb {
+  flex: 1 1 0;
+}
 .sg-pdp__main { aspect-ratio: 587 / 734; }
 .sg-pdp__thumb img,
 .sg-pdp__main img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform .35s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sg-pdp__main:hover img {
+    transform: scale(1.08);
+  }
 }
 body.sutighar-theme .sg-gallery-modal[hidden] { display: none; }
 html.sg-modal-open {
@@ -208,10 +216,10 @@ body.sutighar-theme .sg-gallery-modal {
 }
 .sg-pdp__info .product_title {
   margin: 0;
-  font-size: var(--sg-h4-size);
-  line-height: var(--sg-h4-line);
-  font-weight: var(--sg-h4-weight);
-  letter-spacing: var(--sg-h4-letter);
+  font-size: var(--sg-h5-size);
+  line-height: var(--sg-h5-line);
+  font-weight: var(--sg-h5-weight);
+  letter-spacing: var(--sg-h5-letter);
 }
 .sg-pdp__info hr {
   width: 100%;
@@ -236,6 +244,11 @@ body.sutighar-theme .sg-gallery-modal {
   line-height: 1.2;
   font-weight: 500;
   letter-spacing: -.01em;
+}
+.sg-pdp__price div {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
 }
 .sg-pdp__price div > span:last-child {
   font-size: 20px;
@@ -306,11 +319,11 @@ body.sutighar-theme .sg-gallery-modal {
   cursor: not-allowed;
   opacity: .35;
 }
-.sg-qty-btn[data-sg-qty="plus"] {
+.sg-qty-btn[data-sg-qty="minus"] {
   order: 1;
   border-right: 1px solid rgba(0, 0, 0, .12);
 }
-.sg-qty-btn[data-sg-qty="minus"] {
+.sg-qty-btn[data-sg-qty="plus"] {
   order: 3;
   border-left: 1px solid rgba(0, 0, 0, .12);
 }
@@ -335,8 +348,9 @@ body.sutighar-theme .sg-gallery-modal {
   background: transparent;
   padding: 0;
   color: var(--sg-ink);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
   cursor: pointer;
 }
 .sg-buy-row {
@@ -375,6 +389,15 @@ body.sutighar-theme .sg-gallery-modal {
   text-underline-offset: 3px;
   overflow-wrap: anywhere;
 }
+.sg-pdp__desc img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  margin: 18px 0;
+  object-fit: contain;
+  background: var(--sg-sand);
+}
 .sg-pdp__desc video,
 .sg-pdp__desc iframe {
   display: block;
@@ -386,12 +409,16 @@ body.sutighar-theme .sg-gallery-modal {
 .sg-pdp__desc .wp-block-embed,
 .sg-pdp__desc .wp-block-video,
 .sg-pdp__desc .wp-video {
-  width: min(270px, 100%) !important;
+  width: 100% !important;
   max-width: 100%;
-  aspect-ratio: 270 / 338;
+  aspect-ratio: 4 / 5;
   margin: 18px 0;
   overflow: hidden;
   background: var(--sg-sand);
+}
+.sg-pdp__desc .sg-pdp__media--short {
+  aspect-ratio: 9 / 16;
+  background: #fff;
 }
 .sg-pdp__desc video {
   height: auto;
@@ -402,6 +429,7 @@ body.sutighar-theme .sg-gallery-modal {
   height: 100%;
   margin-top: 0;
   object-fit: cover;
+  background: #fff;
 }
 .sg-pdp__desc iframe {
   height: 100%;
@@ -414,18 +442,28 @@ body.sutighar-theme .sg-gallery-modal {
 }
 .sg-pdp__desc .wp-block-embed__wrapper {
   position: relative;
-  aspect-ratio: 270 / 338;
+  aspect-ratio: 4 / 5;
+}
+.sg-pdp__desc .wp-block-embed__wrapper iframe,
+.sg-pdp__desc .wp-block-video video,
+.sg-pdp__desc .wp-video video {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+.sg-pdp__desc .wp-video {
+  height: auto !important;
 }
 .sg-similar-section {
   margin-top: 100px;
 }
-.sg-similar-section > h2 {
+.sg-similar-section > h3 {
   margin: 0;
   color: var(--sg-ink);
-  font-size: var(--sg-h2-size);
-  line-height: var(--sg-h2-line);
-  font-weight: var(--sg-h2-weight);
-  letter-spacing: var(--sg-h2-letter);
+  font-size: var(--sg-h3-size);
+  line-height: var(--sg-h3-line);
+  font-weight: var(--sg-h3-weight);
+  letter-spacing: var(--sg-h3-letter);
+  margin-bottom: 15px;
 }
 .sg-similar-section > .sg-product-grid {
   margin-top: 16px;
@@ -447,10 +485,10 @@ body.sutighar-theme .sg-gallery-modal {
 }
 .sg-modal__panel {
   position: relative;
-  width: min(420px, 100%);
-  border-radius: 8px;
+  width: min(500px, 100%);
+  border-radius: 0;
   background: #fff;
-  padding: 32px;
+  padding: 56px 36px 62px;
 }
 .sg-modal__head {
   display: flex;
@@ -460,8 +498,17 @@ body.sutighar-theme .sg-gallery-modal {
 }
 .sg-modal__head h2 {
   margin: 0;
-  font-size: 20px;
-  font-weight: 500;
+  color: #000;
+  font-size: clamp(38px, 8vw, 48px);
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: -.02em;
+}
+.sg-modal__head h2 span {
+  margin-left: 4px;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: 0;
 }
 .sg-modal__head button {
   width: 34px;
@@ -471,14 +518,41 @@ body.sutighar-theme .sg-gallery-modal {
   font-size: 26px;
   cursor: pointer;
 }
-.sg-size-chart { margin-top: 20px; }
-.sg-size-chart div {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--sg-line);
-  font-size: 14px;
+.sg-size-chart {
+  width: 100%;
+  margin-top: 36px;
+  border-collapse: collapse;
+  color: #222;
+  table-layout: fixed;
+  font-family: var(--sg-font);
+}
+.sg-size-chart th,
+.sg-size-chart td {
+  height: 58px;
+  border: 1px solid #d9dee5;
+  padding: 12px 14px;
+  vertical-align: middle;
+  text-align: left;
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+.sg-size-chart thead th:first-child {
+  width: 72px;
+  font-size: 17px;
+  line-height: 1.1;
+}
+.sg-size-chart th small {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 400;
+}
+.sg-size-chart tbody th {
+  width: 72px;
+  font-size: 17px;
+  font-weight: 500;
 }
 .sg-modal p {
   margin: 18px 0 0;
@@ -1480,6 +1554,16 @@ body.sutighar-theme .sg-gallery-modal {
   .single-product .sg-pdp__info > hr:nth-of-type(3) { order: 8; }
   .single-product .sg-spec { order: 9; }
   .single-product .sg-pdp__desc { order: 10; }
+  .single-product .sg-pdp__desc .sg-pdp__media,
+  .single-product .sg-pdp__desc .wp-block-embed,
+  .single-product .sg-pdp__desc .wp-block-video,
+  .single-product .sg-pdp__desc .wp-video,
+  .single-product .sg-pdp__desc .wp-block-embed__wrapper,
+  .single-product .sg-pdp__desc iframe,
+  .single-product .sg-pdp__desc video {
+    width: 100% !important;
+    max-width: none !important;
+  }
   .sg-size-row {
     flex-wrap: wrap;
   }

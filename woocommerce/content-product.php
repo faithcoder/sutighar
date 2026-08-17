@@ -18,7 +18,7 @@ $permalink = $product->get_permalink();
 		} else {
 			printf(
 				'<img src="%s" width="600" height="750" loading="lazy" decoding="async" alt="%s">',
-				esc_url( sutighar_asset( 'assets/images/product-600.png' ) ),
+				esc_url( sutighar_asset( 'assets/images/product-placeholder.svg' ) ),
 				esc_attr( $product->get_name() . ' — cotton lungi by Sutighar' )
 			);
 		}

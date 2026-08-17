@@ -7,6 +7,10 @@ defined( 'ABSPATH' ) || exit;
 		<?php if ( $order ) : ?>
 			<?php
 			$shipping_total = (float) $order->get_shipping_total();
+			$customer_name  = trim( $order->get_formatted_billing_full_name() );
+			if ( '' === $customer_name ) {
+				$customer_name = trim( $order->get_billing_first_name() );
+			}
 			$delivery_parts = array_filter(
 				array(
 					$order->get_billing_first_name(),
@@ -17,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
 				)
 			);
 			?>
-			<h2><?php echo esc_html( sprintf( __( 'Thank you, %s.', 'sutighar' ), $order->get_billing_first_name() ? $order->get_billing_first_name() : __( 'friend', 'sutighar' ) ) ); ?></h2>
+			<h2><?php echo esc_html( sprintf( __( 'Thank you, %s.', 'sutighar' ), $customer_name ? $customer_name : __( 'friend', 'sutighar' ) ) ); ?></h2>
 			<p><?php esc_html_e( "Your order is placed. Tap below to send it to us on WhatsApp — we'll confirm within a few hours.", 'sutighar' ); ?></p>
 			<div class="sg-thankyou-summary">
 				<span class="sg-thankyou-kicker"><?php echo esc_html( sprintf( __( 'Order %1$s · %2$s', 'sutighar' ), $order->get_order_number(), wc_format_datetime( $order->get_date_created(), 'd M Y' ) ) ); ?></span>

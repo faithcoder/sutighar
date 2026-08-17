@@ -16,6 +16,7 @@ require_once SUTIGHAR_DIR . '/inc/svg.php';
 require_once SUTIGHAR_DIR . '/inc/wishlist.php';
 require_once SUTIGHAR_DIR . '/inc/woocommerce.php';
 require_once SUTIGHAR_DIR . '/inc/gateways.php';
+require_once SUTIGHAR_DIR . '/inc/steadfast.php';
 require_once SUTIGHAR_DIR . '/inc/customizer.php';
 require_once SUTIGHAR_DIR . '/inc/blocks.php';
 
