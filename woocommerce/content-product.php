@@ -27,7 +27,7 @@ $permalink = $product->get_permalink();
 	<button class="sg-heart <?php echo $saved ? 'is-saved' : ''; ?>" type="button" data-sg-wishlist-toggle data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" aria-pressed="<?php echo $saved ? 'true' : 'false'; ?>" aria-label="<?php esc_attr_e( 'Save to wishlist', 'sutighar' ); ?>">
 		<?php echo sutighar_inline_icon( 'heart' ); ?>
 	</button>
-	<a href="<?php echo esc_url( $permalink ); ?>" style="display:grid;gap:8px">
+	<a href="<?php echo esc_url( $permalink ); ?>" style="display:grid;gap:5px">
 		<h2 class="woocommerce-loop-product__title"><?php echo esc_html( $product->get_name() ); ?></h2>
 		<span class="price"><?php echo wp_kses_post( $product->get_price_html() ); ?></span>
 	</a>

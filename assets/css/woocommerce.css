@@ -1559,7 +1559,7 @@ body.sutighar-theme .sg-gallery-modal {
   .sg-pdp__info {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
   }
   .single-product .sg-cart-form {
     display: contents;
