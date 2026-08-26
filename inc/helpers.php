@@ -17,7 +17,13 @@ function sutighar_option( $key, $default = '' ) {
 }
 
 function sutighar_option_enabled( $key, $default = true ) {
-	$value = sutighar_option( $key, $default ? '1' : '0' );
+	$missing = '__sutighar_missing__';
+	$value   = get_option( 'sutighar_' . $key, $missing );
+
+	if ( $missing === $value ) {
+		return (bool) $default;
+	}
+
 	return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
 }
 

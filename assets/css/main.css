@@ -1167,8 +1167,8 @@ body.sg-layout-list ul.products .sg-heart {
   margin: 0 0 16px;
   color: rgba(0, 0, 0, .38);
   font-family: var(--sg-font);
-  font-size: 16px;
-  line-height: 22px;
+  font-size: 11px;
+  line-height: 14px;
   font-weight: 500;
   letter-spacing: .02em;
   text-transform: uppercase;
@@ -1180,8 +1180,8 @@ body.sg-layout-list ul.products .sg-heart {
   margin-top: 10px;
   color: var(--sg-ink);
   font-family: var(--sg-font);
-  font-size: 24px;
-  line-height: 34px;
+  font-size: 14px;
+  line-height: 22px;
   font-weight: 400;
 }
 .sg-filter-panel input[type="checkbox"] {
@@ -1233,15 +1233,23 @@ body.sg-layout-list ul.products .sg-heart {
   height: 54px;
   padding: 0 28px;
   border-radius: 6px;
-  font-size: 24px;
-  line-height: 34px;
+  font-family: var(--sg-font);
+  font-size: 14px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 .sg-filter-panel__actions a {
   color: rgba(18, 42, 73, .58);
-  font-size: 20px;
-  line-height: 28px;
+  font-family: var(--sg-font);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  letter-spacing: 0;
   text-decoration: underline;
   text-underline-offset: 3px;
+  text-decoration-thickness: auto;
+  text-decoration-skip-ink: auto;
 }
 
 .sg-page { padding: 64px 0 100px; }
