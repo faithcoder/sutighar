@@ -1694,10 +1694,17 @@ label { color: var(--sg-ink); font-size: 12px; font-weight: 500; }
   .sg-icon-btn { width: 44px !important; height: 44px !important; }
   .sg-account-pop .sg-icon-btn { width: 44px !important; height: 44px !important; }
   .sg-account-pop .sg-user-icon { width: 28px; height: 28px; }
-  .sg-hero { height: 420px; min-height: 0; }
+  .sg-hero { height: 550px; min-height: 0; }
   .sg-hero::after { width: 100%; }
-  .sg-hero__copy { top: 80px; gap: 8px; }
-  .sg-hero h1 { max-width: 7.5em; font-size: var(--sg-h3-size); line-height: var(--sg-h3-line); letter-spacing: var(--sg-h3-letter); }
+  .sg-hero__copy { top: 80px; gap: 16px; }
+  .sg-hero h1 {
+    max-width: 7.5em;
+    font-family: var(--sg-font);
+    font-size: 50px;
+    line-height: 52px;
+    font-weight: 300;
+    letter-spacing: -.04em;
+  }
   .sg-hero p { max-width: 21em; font-size: 17px; line-height: 28px; }
   .sg-hero .sg-btn { height: 56px; padding: 8px 24px; font-size: 17px; line-height: 32px; }
   .sg-feature-band {
