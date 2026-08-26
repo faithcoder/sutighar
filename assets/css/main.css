@@ -1024,6 +1024,8 @@ ul.products .product { margin: 0 !important; width: auto !important; float: none
 }
 .sg-pill--filter {
   justify-self: start;
+  font-size: 12px;
+  line-height: 18px;
 }
 .sg-pill--filter .sg-filter-icon {
   width: 16px;
@@ -1077,28 +1079,53 @@ ul.products .product { margin: 0 !important; width: auto !important; float: none
   gap: 12px;
 }
 .sg-density button {
-  min-width: 28px;
+  min-width: 36px;
   height: 32px;
   border: 0;
   background: transparent;
   cursor: pointer;
-  display: grid;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
 }
 .sg-density__dots {
-  display: grid;
-  grid-auto-flow: column;
-  gap: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
 }
-.sg-density__dots span {
-  width: 5px;
-  height: 5px;
+.sg-density__list {
+  display: inline-grid;
+  gap: 5px;
+  width: 16px;
+}
+.sg-density__list span {
+  position: relative;
+  display: block;
+  height: 2px;
   border-radius: 99px;
   background: rgba(18, 42, 73, .34);
 }
-.sg-density button.is-active .sg-density__dots span { background: var(--sg-ink); }
+.sg-density__list span::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 99px;
+  background: inherit;
+  transform: translateY(-50%);
+}
+.sg-density__dots span {
+  width: 4px;
+  height: 4px;
+  border-radius: 99px;
+  background: rgba(18, 42, 73, .34);
+}
+.sg-density button.is-active .sg-density__dots span,
+.sg-density button.is-active .sg-density__list span { background: var(--sg-ink); }
 .sg-filter-panel {
   position: absolute;
   top: calc(100% + 10px);

@@ -288,9 +288,19 @@ function sutighar_home_products_section( $title, $args, $url = '' ) {
 
 add_action( 'woocommerce_before_shop_loop', 'sutighar_catalog_toolbar', 20 );
 function sutighar_catalog_toolbar() {
-	$has_orderby     = isset( $_GET['orderby'] );
-	$orderby         = $has_orderby ? wc_clean( wp_unslash( $_GET['orderby'] ) ) : get_option( 'woocommerce_default_catalog_orderby', 'menu_order' );
-	$selected_option = $has_orderby ? $orderby : '';
+	$has_orderby         = isset( $_GET['orderby'] );
+	$orderby             = $has_orderby ? wc_clean( wp_unslash( $_GET['orderby'] ) ) : get_option( 'woocommerce_default_catalog_orderby', 'menu_order' );
+	$selected_option     = $has_orderby ? $orderby : '';
+	$show_category       = sutighar_option_enabled( 'enable_filter_category', true );
+	$show_size           = sutighar_option_enabled( 'enable_filter_size', true );
+	$show_availability   = sutighar_option_enabled( 'enable_filter_availability', true );
+	$enabled_filter_keys = array_filter(
+		array(
+			'product_cat'  => $show_category,
+			'filter_size'  => $show_size,
+			'stock_status' => $show_availability,
+		)
+	);
 	?>
 	<div class="sg-toolbar">
 		<div class="sg-pop">
@@ -299,27 +309,37 @@ function sutighar_catalog_toolbar() {
 				<span><?php esc_html_e( 'Filter', 'sutighar' ); ?></span>
 			</button>
 			<form id="sg-filter-panel" class="sg-filter-panel" data-sg-popover="filter" method="get">
-				<fieldset>
-					<legend><?php esc_html_e( 'Category', 'sutighar' ); ?></legend>
-					<?php foreach ( sutighar_categories() as $slug => $item ) : ?>
-						<?php if ( 'all' === $slug ) { continue; } ?>
-						<label><input type="checkbox" name="product_cat[]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( in_array( $slug, (array) ( $_GET['product_cat'] ?? array() ), true ) ); ?>><?php echo esc_html( $item['label'] ); ?></label>
-					<?php endforeach; ?>
-				</fieldset>
-				<hr>
-				<fieldset>
-					<legend><?php esc_html_e( 'Size', 'sutighar' ); ?></legend>
-					<?php foreach ( array( 'kids' => 'Kids', '5-haat' => '5 Haat', '5-5-haat' => '5.5 Haat', '6-haat' => '6 Haat' ) as $slug => $label ) : ?>
-						<label><input type="checkbox" name="filter_size[]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( in_array( $slug, (array) ( $_GET['filter_size'] ?? array() ), true ) ); ?>><?php echo esc_html( $label ); ?></label>
-					<?php endforeach; ?>
-				</fieldset>
-				<hr>
-				<fieldset>
-					<legend><?php esc_html_e( 'Availability', 'sutighar' ); ?></legend>
-					<label><input type="checkbox" name="stock_status[]" value="instock" <?php checked( in_array( 'instock', (array) ( $_GET['stock_status'] ?? array() ), true ) ); ?>><?php esc_html_e( 'In stock', 'sutighar' ); ?></label>
-					<label><input type="checkbox" name="stock_status[]" value="outofstock" <?php checked( in_array( 'outofstock', (array) ( $_GET['stock_status'] ?? array() ), true ) ); ?>><?php esc_html_e( 'Out of stock', 'sutighar' ); ?></label>
-				</fieldset>
-				<hr>
+				<?php if ( $show_category ) : ?>
+					<fieldset>
+						<legend><?php esc_html_e( 'Category', 'sutighar' ); ?></legend>
+						<?php foreach ( sutighar_categories() as $slug => $item ) : ?>
+							<?php if ( 'all' === $slug ) { continue; } ?>
+							<label><input type="checkbox" name="product_cat[]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( in_array( $slug, (array) ( $_GET['product_cat'] ?? array() ), true ) ); ?>><?php echo esc_html( $item['label'] ); ?></label>
+						<?php endforeach; ?>
+					</fieldset>
+				<?php endif; ?>
+				<?php if ( $show_category && ( $show_size || $show_availability ) ) : ?>
+					<hr>
+				<?php endif; ?>
+				<?php if ( $show_size ) : ?>
+					<fieldset>
+						<legend><?php esc_html_e( 'Size', 'sutighar' ); ?></legend>
+						<?php foreach ( array( 'kids' => 'Kids', '5-haat' => '5 Haat', '5-5-haat' => '5.5 Haat', '6-haat' => '6 Haat' ) as $slug => $label ) : ?>
+							<label><input type="checkbox" name="filter_size[]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( in_array( $slug, (array) ( $_GET['filter_size'] ?? array() ), true ) ); ?>><?php echo esc_html( $label ); ?></label>
+						<?php endforeach; ?>
+					</fieldset>
+				<?php endif; ?>
+				<?php if ( $show_size && $show_availability ) : ?>
+					<hr>
+				<?php endif; ?>
+				<?php if ( $show_availability ) : ?>
+					<fieldset>
+						<legend><?php esc_html_e( 'Availability', 'sutighar' ); ?></legend>
+						<label><input type="checkbox" name="stock_status[]" value="instock" <?php checked( in_array( 'instock', (array) ( $_GET['stock_status'] ?? array() ), true ) ); ?>><?php esc_html_e( 'In stock', 'sutighar' ); ?></label>
+						<label><input type="checkbox" name="stock_status[]" value="outofstock" <?php checked( in_array( 'outofstock', (array) ( $_GET['stock_status'] ?? array() ), true ) ); ?>><?php esc_html_e( 'Out of stock', 'sutighar' ); ?></label>
+					</fieldset>
+					<hr>
+				<?php endif; ?>
 				<fieldset>
 					<legend><?php esc_html_e( 'Price', 'sutighar' ); ?></legend>
 					<div style="display:flex;gap:8px">
@@ -334,12 +354,19 @@ function sutighar_catalog_toolbar() {
 		</div>
 		<div class="sg-density" data-sg-density>
 			<?php foreach ( range( 2, 6 ) as $cols ) : ?>
-				<button type="button" data-cols="<?php echo esc_attr( $cols ); ?>" aria-label="<?php echo esc_attr( sprintf( __( '%d columns', 'sutighar' ), $cols ) ); ?>" class="<?php echo 4 === $cols ? 'is-active' : ''; ?>"><span class="sg-density__dots" aria-hidden="true"><?php echo str_repeat( '<span></span>', $cols ); ?></span></button>
+				<button type="button" data-cols="<?php echo esc_attr( $cols ); ?>" aria-label="<?php echo esc_attr( 2 === $cols ? __( 'List view', 'sutighar' ) : sprintf( __( '%d columns', 'sutighar' ), $cols ) ); ?>" class="<?php echo 4 === $cols ? 'is-active' : ''; ?>">
+					<?php if ( 2 === $cols ) : ?>
+						<span class="sg-density__list" aria-hidden="true"><span></span><span></span></span>
+					<?php else : ?>
+						<span class="sg-density__dots" aria-hidden="true"><?php echo str_repeat( '<span></span>', $cols ); ?></span>
+					<?php endif; ?>
+				</button>
 			<?php endforeach; ?>
 		</div>
 		<form class="sg-toolbar__sort" method="get">
 			<?php foreach ( $_GET as $key => $value ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
 				<?php if ( 'orderby' === $key ) { continue; } ?>
+				<?php if ( in_array( $key, array( 'product_cat', 'filter_size', 'stock_status' ), true ) && ! isset( $enabled_filter_keys[ $key ] ) ) { continue; } ?>
 				<?php if ( is_array( $value ) ) : ?>
 					<?php foreach ( $value as $item ) : ?>
 						<input type="hidden" name="<?php echo esc_attr( sanitize_key( $key ) ); ?>[]" value="<?php echo esc_attr( wc_clean( wp_unslash( $item ) ) ); ?>">
@@ -389,7 +416,7 @@ function sutighar_apply_catalog_filters( $query ) {
 	$tax_query  = (array) $query->get( 'tax_query' );
 	$meta_query = (array) $query->get( 'meta_query' );
 
-	if ( ! empty( $_GET['product_cat'] ) && is_array( $_GET['product_cat'] ) ) {
+	if ( sutighar_option_enabled( 'enable_filter_category', true ) && ! empty( $_GET['product_cat'] ) && is_array( $_GET['product_cat'] ) ) {
 		$tax_query[] = array(
 			'taxonomy' => 'product_cat',
 			'field'    => 'slug',
@@ -397,7 +424,7 @@ function sutighar_apply_catalog_filters( $query ) {
 		);
 	}
 
-	if ( ! empty( $_GET['filter_size'] ) && is_array( $_GET['filter_size'] ) ) {
+	if ( sutighar_option_enabled( 'enable_filter_size', true ) && ! empty( $_GET['filter_size'] ) && is_array( $_GET['filter_size'] ) ) {
 		$tax_query[] = array(
 			'taxonomy' => 'pa_size',
 			'field'    => 'slug',
@@ -405,7 +432,7 @@ function sutighar_apply_catalog_filters( $query ) {
 		);
 	}
 
-	if ( ! empty( $_GET['stock_status'] ) && is_array( $_GET['stock_status'] ) ) {
+	if ( sutighar_option_enabled( 'enable_filter_availability', true ) && ! empty( $_GET['stock_status'] ) && is_array( $_GET['stock_status'] ) ) {
 		$meta_query[] = array(
 			'key'     => '_stock_status',
 			'value'   => array_map( 'sanitize_key', wp_unslash( $_GET['stock_status'] ) ),

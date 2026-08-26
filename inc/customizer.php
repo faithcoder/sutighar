@@ -162,6 +162,41 @@ function sutighar_customize_register( $wp_customize ) {
 	}
 
 	$wp_customize->add_section(
+		'sutighar_catalog_filters',
+		array(
+			'title'       => __( 'Catalog Filters', 'sutighar' ),
+			'description' => __( 'Show or hide filter groups in the shop and product archive filter panel.', 'sutighar' ),
+			'panel'       => 'sutighar_panel',
+			'priority'    => 22,
+		)
+	);
+
+	$catalog_filter_fields = array(
+		'enable_filter_category'     => __( 'Show category filter', 'sutighar' ),
+		'enable_filter_size'         => __( 'Show size filter', 'sutighar' ),
+		'enable_filter_availability' => __( 'Show availability filter', 'sutighar' ),
+	);
+
+	foreach ( $catalog_filter_fields as $key => $label ) {
+		$wp_customize->add_setting(
+			'sutighar_' . $key,
+			array(
+				'default'           => true,
+				'type'              => 'option',
+				'sanitize_callback' => 'sutighar_sanitize_checkbox',
+			)
+		);
+		$wp_customize->add_control(
+			'sutighar_' . $key,
+			array(
+				'label'   => $label,
+				'section' => 'sutighar_catalog_filters',
+				'type'    => 'checkbox',
+			)
+		);
+	}
+
+	$wp_customize->add_section(
 		'sutighar_social_links',
 		array(
 			'title'       => __( 'Social Links', 'sutighar' ),
