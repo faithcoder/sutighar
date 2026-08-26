@@ -1280,6 +1280,12 @@ body.sg-layout-list ul.products .sg-heart {
   line-height: 20px;
   font-weight: 500;
   text-decoration: none;
+  transition: background-color .2s ease, color .2s ease;
+}
+.sg-load-more:hover,
+.sg-load-more:focus-visible {
+  background: #F2856F;
+  color: #fff;
 }
 .sg-load-more.is-loading {
   opacity: .65;
