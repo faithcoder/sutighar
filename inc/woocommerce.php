@@ -288,12 +288,14 @@ function sutighar_home_products_section( $title, $args, $url = '' ) {
 
 add_action( 'woocommerce_before_shop_loop', 'sutighar_catalog_toolbar', 20 );
 function sutighar_catalog_toolbar() {
-	$orderby = isset( $_GET['orderby'] ) ? wc_clean( wp_unslash( $_GET['orderby'] ) ) : get_option( 'woocommerce_default_catalog_orderby', 'menu_order' );
+	$has_orderby     = isset( $_GET['orderby'] );
+	$orderby         = $has_orderby ? wc_clean( wp_unslash( $_GET['orderby'] ) ) : get_option( 'woocommerce_default_catalog_orderby', 'menu_order' );
+	$selected_option = $has_orderby ? $orderby : '';
 	?>
 	<div class="sg-toolbar">
 		<div class="sg-pop">
-			<button class="sg-pill" type="button" data-sg-pop-toggle="filter" aria-expanded="false" aria-controls="sg-filter-panel">
-				<?php echo sutighar_inline_icon( 'filter' ); ?>
+			<button class="sg-pill sg-pill--filter" type="button" data-sg-pop-toggle="filter" aria-expanded="false" aria-controls="sg-filter-panel">
+				<?php echo sutighar_icon_img( 'mynaui_filter.svg', 'sg-filter-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<span><?php esc_html_e( 'Filter', 'sutighar' ); ?></span>
 			</button>
 			<form id="sg-filter-panel" class="sg-filter-panel" data-sg-popover="filter" method="get">
@@ -332,15 +334,30 @@ function sutighar_catalog_toolbar() {
 		</div>
 		<div class="sg-density" data-sg-density>
 			<?php foreach ( range( 2, 6 ) as $cols ) : ?>
-				<button type="button" data-cols="<?php echo esc_attr( $cols ); ?>" aria-label="<?php echo esc_attr( sprintf( __( '%d columns', 'sutighar' ), $cols ) ); ?>" class="<?php echo 4 === $cols ? 'is-active' : ''; ?>"><?php echo str_repeat( '<span></span>', $cols ); ?></button>
+				<button type="button" data-cols="<?php echo esc_attr( $cols ); ?>" aria-label="<?php echo esc_attr( sprintf( __( '%d columns', 'sutighar' ), $cols ) ); ?>" class="<?php echo 4 === $cols ? 'is-active' : ''; ?>"><span class="sg-density__dots" aria-hidden="true"><?php echo str_repeat( '<span></span>', $cols ); ?></span></button>
 			<?php endforeach; ?>
 		</div>
 		<form class="sg-toolbar__sort" method="get">
-			<select class="sg-pill" name="orderby" onchange="this.form.submit()">
+			<?php foreach ( $_GET as $key => $value ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+				<?php if ( 'orderby' === $key ) { continue; } ?>
+				<?php if ( is_array( $value ) ) : ?>
+					<?php foreach ( $value as $item ) : ?>
+						<input type="hidden" name="<?php echo esc_attr( sanitize_key( $key ) ); ?>[]" value="<?php echo esc_attr( wc_clean( wp_unslash( $item ) ) ); ?>">
+					<?php endforeach; ?>
+				<?php else : ?>
+					<input type="hidden" name="<?php echo esc_attr( sanitize_key( $key ) ); ?>" value="<?php echo esc_attr( wc_clean( wp_unslash( $value ) ) ); ?>">
+				<?php endif; ?>
+			<?php endforeach; ?>
+			<label class="screen-reader-text" for="sg-catalog-orderby"><?php esc_html_e( 'Sort products', 'sutighar' ); ?></label>
+			<span class="sg-sort-select">
+				<select id="sg-catalog-orderby" name="orderby" onchange="this.form.submit()">
+					<option value="<?php echo esc_attr( $orderby ); ?>" <?php selected( $selected_option, '' ); ?>><?php esc_html_e( 'Sort by', 'sutighar' ); ?></option>
 				<?php foreach ( sutighar_catalog_ordering_options() as $id => $name ) : ?>
-					<option value="<?php echo esc_attr( $id ); ?>" <?php selected( $orderby, $id ); ?>><?php echo esc_html( $name ); ?></option>
+					<option value="<?php echo esc_attr( $id ); ?>" <?php selected( $selected_option, $id ); ?>><?php echo esc_html( $name ); ?></option>
 				<?php endforeach; ?>
-			</select>
+				</select>
+				<?php echo sutighar_icon_img( 'group-chevron-down.svg', 'sg-sort-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</span>
 		</form>
 	</div>
 	<?php
