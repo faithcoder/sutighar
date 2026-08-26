@@ -169,16 +169,16 @@ body.sg-header-locked-compact .sg-header-spacer { height: 60px; }
   width: 44px;
   height: 44px;
   background: var(--sg-ink);
-  mask: url(assets/icons/logo-icon.svg) center / contain no-repeat;
-  -webkit-mask: url(assets/icons/logo-icon.svg) center / contain no-repeat;
+  mask: url("../icons/logo-icon.svg") center / contain no-repeat;
+  -webkit-mask: url("../icons/logo-icon.svg") center / contain no-repeat;
   transition: width .28s cubic-bezier(.4,0,.2,1), height .28s cubic-bezier(.4,0,.2,1);
 }
 .sg-logo__wordmark {
   width: 87.44px;
   height: 36.97px;
   background: var(--sg-ink);
-  mask: url(assets/icons/logo-wordmark.svg) center / contain no-repeat;
-  -webkit-mask: url(assets/icons/logo-wordmark.svg) center / contain no-repeat;
+  mask: url("../icons/logo-wordmark.svg") center / contain no-repeat;
+  -webkit-mask: url("../icons/logo-wordmark.svg") center / contain no-repeat;
 }
 .sg-header .sg-logo__custom,
 .sg-header .sg-logo img {
@@ -912,8 +912,8 @@ input.button,
   width: 16px;
   height: 16px;
   background: var(--sg-ink);
-  mask: url(assets/icons/icon-arrow-right.svg) center / 11.5px 10px no-repeat;
-  -webkit-mask: url(assets/icons/icon-arrow-right.svg) center / 11.5px 10px no-repeat;
+  mask: url("../icons/ep_right.svg") center / 16px 16px no-repeat;
+  -webkit-mask: url("../icons/ep_right.svg") center / 16px 16px no-repeat;
 }
 
 ul.products,
@@ -1373,8 +1373,8 @@ ul.products .product { margin: 0 !important; width: auto !important; float: none
   width: 108.7px;
   height: 108.7px;
   background: #fff;
-  mask: url(assets/icons/logo-icon.svg) center / contain no-repeat;
-  -webkit-mask: url(assets/icons/logo-icon.svg) center / contain no-repeat;
+  mask: url("../icons/logo-icon.svg") center / contain no-repeat;
+  -webkit-mask: url("../icons/logo-icon.svg") center / contain no-repeat;
 }
 .sg-footer__logo-word {
   display: block;
@@ -1382,8 +1382,8 @@ ul.products .product { margin: 0 !important; width: auto !important; float: none
   height: 38px;
   margin-top: 16px;
   background: #fff;
-  mask: url(assets/icons/logo-wordmark.svg) center / contain no-repeat;
-  -webkit-mask: url(assets/icons/logo-wordmark.svg) center / contain no-repeat;
+  mask: url("../icons/logo-wordmark.svg") center / contain no-repeat;
+  -webkit-mask: url("../icons/logo-wordmark.svg") center / contain no-repeat;
 }
 .sg-footer__logo-custom {
   width: auto;
