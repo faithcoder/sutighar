@@ -874,7 +874,7 @@ input.button,
 }
 .sg-rule { border: 0; border-top: 1px solid var(--sg-line-strong); margin: 0; }
 .sg-section { padding-top: 64px; }
-.sg-section + .sg-section { padding-top: 100px; }
+.sg-section + .sg-section { padding-top: 60px; }
 .sg-product-section-band {
   width: 100%;
   background: #fff;
@@ -884,7 +884,7 @@ input.button,
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  margin-bottom: 40px;
+  margin-bottom: 14px;
 }
 .sg-section h1,
 .sg-section h2,
