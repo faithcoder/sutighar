@@ -205,7 +205,7 @@ body.sg-header-locked-compact .sg-header-spacer { height: 60px; }
 .sg-catnav__inner {
   display: flex;
   justify-content: center;
-  gap: clamp(34px, 3vw, 58px);
+  gap: clamp(16px, 1vw, 58px);
   min-width: max-content;
 }
 .sg-catnav__item {
