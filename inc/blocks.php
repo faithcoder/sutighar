@@ -166,7 +166,14 @@ function sutighar_render_hero_block( $attributes ) {
 			<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $title ); ?>" width="1440" height="597" loading="eager" fetchpriority="high" decoding="async">
 		</picture>
 		<div class="sg-hero__copy">
-			<h1><?php echo esc_html( $title ); ?></h1>
+			<h1>
+				<?php if ( 'Home of Quality Lungi' === $title ) : ?>
+					<span><?php echo esc_html_x( 'Home of', 'Hero title first line', 'sutighar' ); ?></span>
+					<span><?php echo esc_html_x( 'Quality Lungi', 'Hero title second line', 'sutighar' ); ?></span>
+				<?php else : ?>
+					<?php echo esc_html( $title ); ?>
+				<?php endif; ?>
+			</h1>
 			<?php if ( '' !== $subtitle ) : ?>
 				<p><?php echo esc_html( $subtitle ); ?></p>
 			<?php endif; ?>

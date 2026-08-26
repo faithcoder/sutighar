@@ -777,6 +777,9 @@ input.button,
   font-weight: var(--sg-h1-weight);
   letter-spacing: var(--sg-h1-letter);
 }
+.sg-hero h1 span {
+  display: block;
+}
 .sg-hero p {
   max-width: 520px;
   margin: 0;
