@@ -358,7 +358,7 @@ function sutighar_catalog_toolbar() {
 			</button>
 			<?php foreach ( array( 2, 3, 4, 6, 8 ) as $cols ) : ?>
 				<button type="button" data-layout="grid" data-cols="<?php echo esc_attr( $cols ); ?>" aria-label="<?php echo esc_attr( sprintf( __( '%d columns', 'sutighar' ), $cols ) ); ?>" class="<?php echo 4 === $cols ? 'is-active' : ''; ?>">
-					<span class="sg-density__dots" aria-hidden="true"><?php echo str_repeat( '<span></span>', $cols ); ?></span>
+					<span class="sg-density__dots" style="--sg-density-cols: <?php echo esc_attr( $cols ); ?>" aria-hidden="true"><?php echo str_repeat( '<span></span>', $cols * 2 ); ?></span>
 				</button>
 			<?php endforeach; ?>
 		</div>

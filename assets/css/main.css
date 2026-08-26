@@ -1097,10 +1097,10 @@ body.sg-layout-list ul.products .sg-heart {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 14px;
 }
 .sg-density button {
-  min-width: 24px;
+  min-width: 18px;
   height: 32px;
   border: 0;
   background: transparent;
@@ -1111,10 +1111,11 @@ body.sg-layout-list ul.products .sg-heart {
   padding: 0;
 }
 .sg-density__dots {
-  display: inline-flex;
+  display: inline-grid;
+  grid-template-columns: repeat(var(--sg-density-cols, 4), 4px);
+  gap: 4px 5px;
   align-items: center;
-  gap: 3px;
-  white-space: nowrap;
+  justify-content: center;
 }
 .sg-density__list {
   display: inline-grid;
