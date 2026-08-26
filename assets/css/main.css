@@ -1696,7 +1696,7 @@ label { color: var(--sg-ink); font-size: 12px; font-weight: 500; }
   .sg-account-pop .sg-user-icon { width: 28px; height: 28px; }
   .sg-hero { height: 550px; min-height: 0; }
   .sg-hero::after { width: 100%; }
-  .sg-hero__copy { top: 80px; gap: 16px; }
+  .sg-hero__copy { top: 80px; gap: 26px; }
   .sg-hero h1 {
     max-width: 7.5em;
     font-family: var(--sg-font);
