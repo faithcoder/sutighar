@@ -373,7 +373,7 @@ function sutighar_catalog_toolbar() {
 		</div>
 		<div class="sg-density" data-sg-density>
 			<button type="button" data-layout="list" aria-label="<?php esc_attr_e( 'List view', 'sutighar' ); ?>">
-				<span class="sg-density__list" aria-hidden="true"><span></span><span></span><span></span></span>
+				<span class="sg-density__list" aria-hidden="true"><span></span><span></span></span>
 			</button>
 			<?php foreach ( array( 2, 3, 4, 6, 8 ) as $cols ) : ?>
 				<button type="button" data-layout="grid" data-cols="<?php echo esc_attr( $cols ); ?>" aria-label="<?php echo esc_attr( sprintf( __( '%d columns', 'sutighar' ), $cols ) ); ?>" class="<?php echo 4 === $cols ? 'is-active' : ''; ?>">

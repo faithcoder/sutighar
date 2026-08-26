@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function sutighar_sanitize_checkbox( $checked ) {
-	return ( isset( $checked ) && true == $checked );
+	return ( isset( $checked ) && true == $checked ) ? '1' : '0';
 }
 
 add_action( 'customize_register', 'sutighar_customize_register' );
@@ -146,7 +146,7 @@ function sutighar_customize_register( $wp_customize ) {
 		$wp_customize->add_setting(
 			'sutighar_' . $key,
 			array(
-				'default'           => true,
+				'default'           => '1',
 				'type'              => 'option',
 				'sanitize_callback' => 'sutighar_sanitize_checkbox',
 			)
@@ -182,7 +182,7 @@ function sutighar_customize_register( $wp_customize ) {
 		$wp_customize->add_setting(
 			'sutighar_' . $key,
 			array(
-				'default'           => true,
+				'default'           => '1',
 				'type'              => 'option',
 				'sanitize_callback' => 'sutighar_sanitize_checkbox',
 			)
@@ -290,7 +290,7 @@ function sutighar_customize_register( $wp_customize ) {
 		$wp_customize->add_setting(
 			'sutighar_' . $key,
 			array(
-				'default'           => true,
+				'default'           => '1',
 				'type'              => 'option',
 				'sanitize_callback' => 'sutighar_sanitize_checkbox',
 			)
