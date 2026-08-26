@@ -23,10 +23,13 @@
     attributes: {
       align: { type: 'string', default: 'full' },
       title: { type: 'string', default: 'Home of Quality Lungi' },
+      subtitle: { type: 'string', default: 'Sutighar is the Home of Quality Lungi: hand-picked cotton, for everyday comfort.' },
       buttonText: { type: 'string', default: 'Browse All Lungi' },
       buttonUrl: { type: 'string', default: '' },
       imageId: { type: 'number', default: 0 },
-      imageUrl: { type: 'string', default: '' }
+      imageUrl: { type: 'string', default: '' },
+      mobileImageId: { type: 'number', default: 0 },
+      mobileImageUrl: { type: 'string', default: '' }
     },
     supports: { align: ['full'] },
     edit: function (props) {
@@ -42,6 +45,7 @@
             PanelBody,
             { title: 'Hero options', initialOpen: true },
             el(TextControl, { label: 'Headline', value: a.title, onChange: (value) => set({ title: value }) }),
+            el(TextControl, { label: 'Subtitle', value: a.subtitle, onChange: (value) => set({ subtitle: value }) }),
             el(TextControl, { label: 'Button text', value: a.buttonText, onChange: (value) => set({ buttonText: value }) }),
             el(TextControl, { label: 'Button URL', value: a.buttonUrl, placeholder: data.shopUrl || '/shop/', onChange: (value) => set({ buttonUrl: value }) }),
             el(MediaUploadCheck, {}, el(MediaUpload, {
@@ -49,6 +53,12 @@
               allowedTypes: ['image'],
               value: a.imageId,
               render: ({ open }) => el(Button, { variant: 'secondary', onClick: open }, a.imageUrl ? 'Replace hero image' : 'Choose hero image')
+            })),
+            el(MediaUploadCheck, {}, el(MediaUpload, {
+              onSelect: (media) => set({ mobileImageId: media.id, mobileImageUrl: media.url }),
+              allowedTypes: ['image'],
+              value: a.mobileImageId,
+              render: ({ open }) => el(Button, { variant: 'secondary', onClick: open }, a.mobileImageUrl ? 'Replace mobile hero image' : 'Choose mobile hero image')
             }))
           )
         ),

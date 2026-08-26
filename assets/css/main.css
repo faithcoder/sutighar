@@ -731,13 +731,19 @@ input.button,
   background: rgb(217, 217, 217);
   overflow: hidden;
 }
+.sg-hero picture,
 .sg-hero img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+}
+.sg-hero picture {
+  display: block;
+}
+.sg-hero img {
   object-fit: cover;
-  object-position: center 34%;
+  object-position: center center;
 }
 .sg-hero::before,
 .sg-hero::after {
@@ -770,6 +776,14 @@ input.button,
   line-height: var(--sg-h1-line);
   font-weight: var(--sg-h1-weight);
   letter-spacing: var(--sg-h1-letter);
+}
+.sg-hero p {
+  max-width: 520px;
+  margin: 0;
+  color: #fff;
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 400;
 }
 .sg-hero .sg-btn {
   height: 56px;
@@ -1529,6 +1543,7 @@ label { color: var(--sg-ink); font-size: 12px; font-weight: 500; }
   .sg-hero::after { width: 100%; }
   .sg-hero__copy { top: 80px; gap: 8px; }
   .sg-hero h1 { max-width: 7.5em; font-size: var(--sg-h3-size); line-height: var(--sg-h3-line); letter-spacing: var(--sg-h3-letter); }
+  .sg-hero p { max-width: 21em; font-size: 17px; line-height: 28px; }
   .sg-hero .sg-btn { height: 56px; padding: 8px 24px; font-size: 17px; line-height: 32px; }
   .sg-feature-band {
     border-bottom: 1px solid var(--sg-line);

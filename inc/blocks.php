@@ -131,7 +131,7 @@ function sutighar_block_editor_data() {
 			array(
 				'categories' => $categories,
 				'shopUrl'    => function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' ),
-				'heroUrl'    => sutighar_asset( 'assets/images/hero-1440.png' ),
+				'heroUrl'    => sutighar_asset( 'assets/images/hero-desktop.webp' ),
 			)
 		) . ';',
 		'before'
@@ -139,23 +139,37 @@ function sutighar_block_editor_data() {
 }
 
 function sutighar_render_hero_block( $attributes ) {
-	$title      = ! empty( $attributes['title'] ) ? $attributes['title'] : 'Home of Quality Lungi';
-	$button     = ! empty( $attributes['buttonText'] ) ? $attributes['buttonText'] : 'Browse All Lungi';
-	$button_url = ! empty( $attributes['buttonUrl'] ) ? $attributes['buttonUrl'] : ( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' ) );
-	$image_url  = ! empty( $attributes['imageUrl'] ) ? $attributes['imageUrl'] : sutighar_asset( 'assets/images/hero-1440.png' );
+	$title            = ! empty( $attributes['title'] ) ? $attributes['title'] : 'Home of Quality Lungi';
+	$subtitle         = isset( $attributes['subtitle'] ) ? trim( (string) $attributes['subtitle'] ) : 'Sutighar is the Home of Quality Lungi: hand-picked cotton, for everyday comfort.';
+	$button           = ! empty( $attributes['buttonText'] ) ? $attributes['buttonText'] : 'Browse All Lungi';
+	$button_url       = ! empty( $attributes['buttonUrl'] ) ? $attributes['buttonUrl'] : ( function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' ) );
+	$image_url        = ! empty( $attributes['imageUrl'] ) ? $attributes['imageUrl'] : sutighar_asset( 'assets/images/hero-desktop.webp' );
+	$mobile_image_url = ! empty( $attributes['mobileImageUrl'] ) ? $attributes['mobileImageUrl'] : sutighar_asset( 'assets/images/hero-mobile.webp' );
 	if ( ! empty( $attributes['imageId'] ) ) {
 		$attachment = wp_get_attachment_image_url( (int) $attributes['imageId'], 'full' );
 		if ( $attachment ) {
 			$image_url = $attachment;
 		}
 	}
+	if ( ! empty( $attributes['mobileImageId'] ) ) {
+		$mobile_attachment = wp_get_attachment_image_url( (int) $attributes['mobileImageId'], 'full' );
+		if ( $mobile_attachment ) {
+			$mobile_image_url = $mobile_attachment;
+		}
+	}
 
 	ob_start();
 	?>
 	<section <?php echo get_block_wrapper_attributes( array( 'class' => 'sg-hero alignfull' ) ); ?>>
-		<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $title ); ?>" width="1440" height="1020" loading="eager" fetchpriority="high" decoding="async">
+		<picture>
+			<source media="(max-width: 719px)" srcset="<?php echo esc_url( $mobile_image_url ); ?>">
+			<img src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $title ); ?>" width="1440" height="597" loading="eager" fetchpriority="high" decoding="async">
+		</picture>
 		<div class="sg-hero__copy">
 			<h1><?php echo esc_html( $title ); ?></h1>
+			<?php if ( '' !== $subtitle ) : ?>
+				<p><?php echo esc_html( $subtitle ); ?></p>
+			<?php endif; ?>
 			<a class="sg-btn" href="<?php echo esc_url( $button_url ); ?>"><?php echo esc_html( $button ); ?></a>
 		</div>
 	</section>
@@ -282,7 +296,7 @@ function sutighar_render_product_section_block( $attributes ) {
 }
 
 function sutighar_default_home_blocks() {
-	return '<!-- wp:sutighar/hero {"align":"full","title":"Home of Quality Lungi","buttonText":"Browse All Lungi"} /-->' .
+	return '<!-- wp:sutighar/hero {"align":"full","title":"Home of Quality Lungi","subtitle":"Sutighar is the Home of Quality Lungi: hand-picked cotton, for everyday comfort.","buttonText":"Browse All Lungi"} /-->' .
 		'<!-- wp:sutighar/feature-cards /-->' .
 		'<!-- wp:sutighar/product-section {"align":"full","title":"New Arrival","limit":8,"orderby":"date","order":"DESC"} /-->' .
 		'<!-- wp:sutighar/product-section {"align":"full","title":"Solid","category":"solid","limit":4} /-->' .
