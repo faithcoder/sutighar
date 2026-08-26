@@ -353,13 +353,12 @@ function sutighar_catalog_toolbar() {
 			</form>
 		</div>
 		<div class="sg-density" data-sg-density>
-			<?php foreach ( range( 2, 6 ) as $cols ) : ?>
-				<button type="button" data-cols="<?php echo esc_attr( $cols ); ?>" aria-label="<?php echo esc_attr( 2 === $cols ? __( 'List view', 'sutighar' ) : sprintf( __( '%d columns', 'sutighar' ), $cols ) ); ?>" class="<?php echo 4 === $cols ? 'is-active' : ''; ?>">
-					<?php if ( 2 === $cols ) : ?>
-						<span class="sg-density__list" aria-hidden="true"><span></span><span></span></span>
-					<?php else : ?>
-						<span class="sg-density__dots" aria-hidden="true"><?php echo str_repeat( '<span></span>', $cols ); ?></span>
-					<?php endif; ?>
+			<button type="button" data-layout="list" aria-label="<?php esc_attr_e( 'List view', 'sutighar' ); ?>">
+				<span class="sg-density__list" aria-hidden="true"><span></span><span></span><span></span></span>
+			</button>
+			<?php foreach ( array( 2, 3, 4, 6, 8 ) as $cols ) : ?>
+				<button type="button" data-layout="grid" data-cols="<?php echo esc_attr( $cols ); ?>" aria-label="<?php echo esc_attr( sprintf( __( '%d columns', 'sutighar' ), $cols ) ); ?>" class="<?php echo 4 === $cols ? 'is-active' : ''; ?>">
+					<span class="sg-density__dots" aria-hidden="true"><?php echo str_repeat( '<span></span>', $cols ); ?></span>
 				</button>
 			<?php endforeach; ?>
 		</div>

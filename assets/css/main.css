@@ -928,6 +928,10 @@ ul.products,
 ul.products::before,
 ul.products::after { display: none !important; }
 ul.products .product { margin: 0 !important; width: auto !important; float: none !important; }
+body.sg-layout-list ul.products {
+  grid-template-columns: 1fr !important;
+  gap: 24px;
+}
 .sg-card {
   position: relative;
   display: flex;
@@ -951,6 +955,23 @@ ul.products .product { margin: 0 !important; width: auto !important; float: none
   transition: transform .5s ease;
 }
 .sg-card__image:hover img { transform: scale(1.02); }
+body.sg-layout-list ul.products .sg-card {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+}
+body.sg-layout-list ul.products .sg-card__image {
+  aspect-ratio: 1 / 1;
+}
+body.sg-layout-list ul.products .sg-card > a:not(.sg-card__image) {
+  display: grid !important;
+  gap: 6px !important;
+}
+body.sg-layout-list ul.products .sg-heart {
+  left: 132px;
+  right: auto;
+}
 .sg-card h2,
 .sg-card h3,
 .woocommerce-loop-product__title {
@@ -1079,7 +1100,7 @@ ul.products .product { margin: 0 !important; width: auto !important; float: none
   gap: 12px;
 }
 .sg-density button {
-  min-width: 36px;
+  min-width: 24px;
   height: 32px;
   border: 0;
   background: transparent;
@@ -1097,7 +1118,7 @@ ul.products .product { margin: 0 !important; width: auto !important; float: none
 }
 .sg-density__list {
   display: inline-grid;
-  gap: 5px;
+  gap: 4px;
   width: 16px;
 }
 .sg-density__list span {
@@ -1656,6 +1677,13 @@ label { color: var(--sg-ink); font-size: 12px; font-weight: 500; }
   .sg-section__head { margin-bottom: 24px; align-items: flex-end; }
   .sg-section h1, .sg-section h2, .sg-section h3, .woocommerce-products-header__title, .entry-title { font-size: var(--sg-h3-size); line-height: var(--sg-h3-line); }
   ul.products, .sg-product-grid { --sg-cols: 2; gap: 32px 14px; }
+  body.sg-layout-list ul.products .sg-card {
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 14px;
+  }
+  body.sg-layout-list ul.products .sg-heart {
+    left: 68px;
+  }
   .sg-toolbar { grid-template-columns: 1fr auto; }
   .sg-density { display: none; }
   .sg-footer { padding-top: 40px; }

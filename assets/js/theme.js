@@ -305,16 +305,35 @@
 
   const density = document.querySelector('[data-sg-density]');
   if (density) {
-    const applyCols = (cols) => {
-      document.documentElement.style.setProperty('--sg-cols', cols);
-      localStorage.setItem('sgCols', cols);
-      density.querySelectorAll('button').forEach((b) => b.classList.toggle('is-active', b.dataset.cols === String(cols)));
+    const productGrids = Array.from(document.querySelectorAll('ul.products'));
+    const applyLayout = (layout, cols) => {
+      const isList = layout === 'list';
+      document.body.classList.toggle('sg-layout-list', isList);
+      productGrids.forEach((grid) => {
+        grid.style.setProperty('--sg-cols', isList ? '1' : cols);
+      });
+      localStorage.setItem('sgProductLayout', isList ? 'list' : `grid:${cols}`);
+      localStorage.removeItem('sgCols');
+      density.querySelectorAll('button').forEach((button) => {
+        const buttonIsActive = isList
+          ? button.dataset.layout === 'list'
+          : button.dataset.layout === 'grid' && button.dataset.cols === String(cols);
+        button.classList.toggle('is-active', buttonIsActive);
+      });
     };
-    const saved = localStorage.getItem('sgCols');
-    if (saved) applyCols(saved);
+    const saved = localStorage.getItem('sgProductLayout');
+    const legacyCols = localStorage.getItem('sgCols');
+    if (saved === 'list') {
+      applyLayout('list', '4');
+    } else if (saved && saved.startsWith('grid:')) {
+      applyLayout('grid', saved.split(':')[1] || '4');
+    } else if (legacyCols) {
+      applyLayout('grid', legacyCols);
+    }
     density.addEventListener('click', (event) => {
-      const btn = event.target.closest('button[data-cols]');
-      if (btn) applyCols(btn.dataset.cols);
+      const btn = event.target.closest('button[data-layout]');
+      if (!btn) return;
+      applyLayout(btn.dataset.layout, btn.dataset.cols || '4');
     });
   }
 
