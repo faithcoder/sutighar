@@ -16,7 +16,7 @@
   --sg-input: rgba(0, 0, 0, .15);
   --sg-container: 1200px;
   --sg-side: clamp(20px, 8.33vw, 120px);
-  --sg-header-expanded: 105px;
+  --sg-header-expanded: 104px;
   --sg-header-mobile: 68px;
   --sg-font: Poppins, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   --sg-h1-size: 88px;
@@ -242,7 +242,6 @@ body.sg-header-locked-compact .sg-header-spacer { height: 60px; }
   white-space: nowrap;
   transition: font-size .28s cubic-bezier(.4,0,.2,1);
 }
-.sg-header.is-compact .sg-cart-total { font-size: 13px; }
 .sg-icon-btn {
   width: 44px;
   height: 44px;
@@ -279,10 +278,6 @@ body.sg-header-locked-compact .sg-header-spacer { height: 60px; }
 .sg-icon-btn .sg-cart-icon { width: 20px; height: 20px; }
 .sg-icon-btn .sg-user-icon { width: 18px; height: 18px; }
 .sg-icon-btn .sg-menu-icon { width: 22px; height: 22px; }
-.sg-header.is-compact .sg-actions { gap: 8px; }
-.sg-header.is-compact .sg-icon-btn { width: 36px; height: 36px; }
-.sg-header.is-compact .sg-icon-btn svg { width: 16px; height: 16px; }
-.sg-header.is-compact .sg-icon-btn .sg-icon-img { width: 17px; height: 17px; }
 .sg-badge {
   position: absolute;
   top: -2px;
