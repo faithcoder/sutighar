@@ -306,12 +306,25 @@
   const density = document.querySelector('[data-sg-density]');
   if (density) {
     const productGrids = Array.from(document.querySelectorAll('ul.products'));
-    const applyLayout = (layout, cols) => {
-      const isList = layout === 'list';
+    const mobileGrid = window.matchMedia('(max-width: 719px)');
+    let currentLayout = localStorage.getItem('sgProductLayout') || '';
+    let currentCols = '4';
+    const syncGridVars = () => {
+      const isList = currentLayout === 'list';
       document.body.classList.toggle('sg-layout-list', isList);
       productGrids.forEach((grid) => {
-        grid.style.setProperty('--sg-cols', isList ? '1' : cols);
+        if (!isList && mobileGrid.matches) {
+          grid.style.removeProperty('--sg-cols');
+        } else {
+          grid.style.setProperty('--sg-cols', isList ? '1' : currentCols);
+        }
       });
+    };
+    const applyLayout = (layout, cols) => {
+      const isList = layout === 'list';
+      currentLayout = isList ? 'list' : 'grid';
+      currentCols = cols;
+      syncGridVars();
       localStorage.setItem('sgProductLayout', isList ? 'list' : `grid:${cols}`);
       localStorage.removeItem('sgCols');
       density.querySelectorAll('button').forEach((button) => {
@@ -335,6 +348,11 @@
       if (!btn) return;
       applyLayout(btn.dataset.layout, btn.dataset.cols || '4');
     });
+    if (typeof mobileGrid.addEventListener === 'function') {
+      mobileGrid.addEventListener('change', syncGridVars);
+    } else if (typeof mobileGrid.addListener === 'function') {
+      mobileGrid.addListener(syncGridVars);
+    }
   }
 
   const modal = document.querySelector('[data-sg-size-modal]');
