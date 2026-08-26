@@ -766,7 +766,7 @@ input.button,
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;
+  gap: 40px;
 }
 .sg-hero h1 {
   max-width: 7em;
@@ -787,7 +787,6 @@ input.button,
 }
 .sg-hero .sg-btn {
   height: 56px;
-  margin-top: 40px;
   border-radius: 7px;
   padding: 8px 24px;
   background: #fff;
