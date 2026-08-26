@@ -175,6 +175,7 @@ function sutighar_customize_register( $wp_customize ) {
 		'enable_filter_category'     => __( 'Show category filter', 'sutighar' ),
 		'enable_filter_size'         => __( 'Show size filter', 'sutighar' ),
 		'enable_filter_availability' => __( 'Show availability filter', 'sutighar' ),
+		'enable_filter_price'        => __( 'Show price filter', 'sutighar' ),
 	);
 
 	foreach ( $catalog_filter_fields as $key => $label ) {
