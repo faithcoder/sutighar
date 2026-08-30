@@ -6,7 +6,6 @@ defined( 'ABSPATH' ) || exit;
 		<?php echo sutighar_inline_icon( $order ? 'check' : 'cart' ); ?>
 		<?php if ( $order ) : ?>
 			<?php
-			$shipping_total = (float) $order->get_shipping_total();
 			$customer_name  = trim( $order->get_formatted_billing_full_name() );
 			if ( '' === $customer_name ) {
 				$customer_name = trim( $order->get_billing_first_name() );
@@ -29,7 +28,10 @@ defined( 'ABSPATH' ) || exit;
 					<div class="sg-summary-line"><span><?php echo esc_html( $item->get_name() . ' × ' . $item->get_quantity() ); ?></span><strong><?php echo wp_kses_post( wc_price( $item->get_total(), array( 'decimals' => 0 ) ) ); ?></strong></div>
 				<?php endforeach; ?>
 				<div class="sg-thankyou-rule"></div>
-				<div class="sg-thankyou-total"><?php echo wp_kses_post( sprintf( __( 'Total %1$s (shipping %2$s)', 'sutighar' ), $order->get_formatted_order_total(), $shipping_total > 0 ? wc_price( $shipping_total, array( 'decimals' => 0 ) ) : __( 'free', 'sutighar' ) ) ); ?></div>
+				<?php foreach ( $order->get_fees() as $fee ) : ?>
+					<div class="sg-summary-line"><span><?php echo esc_html( $fee->get_name() ); ?></span><strong><?php echo wp_kses_post( wc_price( $fee->get_total(), array( 'currency' => $order->get_currency(), 'decimals' => 0 ) ) ); ?></strong></div>
+				<?php endforeach; ?>
+				<div class="sg-thankyou-total"><?php echo wp_kses_post( sprintf( __( 'Total %s', 'sutighar' ), $order->get_formatted_order_total() ) ); ?></div>
 				<div class="sg-thankyou-payment"><?php echo esc_html( sprintf( __( 'Payment: %s', 'sutighar' ), $order->get_payment_method_title() ) ); ?></div>
 				<?php if ( $order->get_meta( '_sg_transaction_id' ) ) : ?>
 					<div class="sg-thankyou-payment"><?php echo esc_html( sprintf( __( 'Transaction ID: %s', 'sutighar' ), $order->get_meta( '_sg_transaction_id' ) ) ); ?></div>

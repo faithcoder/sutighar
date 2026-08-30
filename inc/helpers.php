@@ -907,9 +907,15 @@ function sutighar_whatsapp_order_url( $order ) {
 	$customer_name = trim( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() );
 	$shipping      = (float) $order->get_shipping_total();
 	$fee_total     = 0.0;
+	$discount_total = 0.0;
 
 	foreach ( $order->get_fees() as $fee ) {
-		$fee_total += (float) $fee->get_total();
+		$fee_amount = (float) $fee->get_total();
+		if ( $fee_amount < 0 ) {
+			$discount_total += abs( $fee_amount );
+			continue;
+		}
+		$fee_total += $fee_amount;
 	}
 
 	$delivery_charge = $shipping + $fee_total;
@@ -938,6 +944,7 @@ function sutighar_whatsapp_order_url( $order ) {
 			'*Order Summary*',
 			'Subtotal: ' . sutighar_plain_price( $order->get_subtotal() ),
 			'Delivery charge: ' . ( $delivery_charge > 0 ? sutighar_plain_price( $delivery_charge ) : 'Free' ),
+			$discount_total > 0 ? 'Custom discount: -' . sutighar_plain_price( $discount_total ) : '',
 			'Total: ' . sutighar_plain_price( $order->get_total() ),
 			'',
 			'*Customer Details*',
@@ -949,6 +956,9 @@ function sutighar_whatsapp_order_url( $order ) {
 			'Address: ' . ( $order->get_billing_address_1() ? sutighar_plain_text( $order->get_billing_address_1() ) : '-' ),
 		)
 	);
+	$lines = array_values( array_filter( $lines, static function ( $line ) {
+		return '' === $line || ( is_string( $line ) && '' !== trim( $line ) );
+	} ) );
 
 	if ( $order->get_customer_note() ) {
 		$lines[] = 'Notes: ' . sutighar_plain_text( $order->get_customer_note() );
