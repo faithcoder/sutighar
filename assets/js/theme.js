@@ -242,6 +242,42 @@
   });
 
   document.addEventListener('click', async (event) => {
+    const btn = event.target.closest('[data-sg-card-add-to-cart]');
+    if (!btn || !window.sutighar || !window.sutighar.cartNonce || btn.dataset.sgAdding === '1') return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    const body = new FormData();
+    body.append('action', 'sg_add_to_cart');
+    body.append('nonce', window.sutighar.cartNonce);
+    body.append('product_id', btn.getAttribute('data-product-id'));
+    body.append('quantity', '1');
+
+    btn.dataset.sgAdding = '1';
+    btn.classList.add('is-adding');
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(window.sutighar.ajaxUrl, { method: 'POST', credentials: 'same-origin', body });
+      const json = await res.json();
+      if (json && json.fragments) {
+        applyCartFragments(json.fragments);
+        btn.classList.add('is-added');
+        openCartModal();
+        setTimeout(() => btn.classList.remove('is-added'), 1200);
+      }
+    } catch (error) {
+      // Keep the card usable if the network request fails.
+    } finally {
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.classList.remove('is-adding');
+        delete btn.dataset.sgAdding;
+      }, 500);
+    }
+  });
+
+  document.addEventListener('click', async (event) => {
     const btn = event.target.closest('[data-sg-wishlist-toggle]');
     if (!btn || !window.sutighar) return;
     event.preventDefault();

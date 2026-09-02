@@ -475,8 +475,8 @@ html.sg-drawer-open { overflow: hidden; }
   top: calc(50% + 0px);
 }
 .sg-fab .sg-icon-img {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
 }
 .sg-fab .sg-cart-icon {
   width: 34px;
@@ -980,7 +980,7 @@ body.sg-layout-list ul.products .sg-card > a:not(.sg-card__image) {
   display: grid !important;
   gap: 6px !important;
 }
-body.sg-layout-list ul.products .sg-heart {
+body.sg-layout-list ul.products .sg-card-cart {
   left: 132px;
   right: auto;
 }
@@ -1006,7 +1006,7 @@ body.sg-layout-list ul.products .sg-heart {
   font-weight: 600;
   letter-spacing: 0;
 }
-.sg-heart {
+.sg-card-cart {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -1023,11 +1023,25 @@ body.sg-layout-list ul.products .sg-heart {
   cursor: pointer;
   transition: opacity .18s ease, background .18s ease;
 }
-.sg-card:hover .sg-heart,
-.sg-card:focus-within .sg-heart { opacity: 1; }
-.sg-heart svg { display: block; flex: 0 0 auto; overflow: visible; width: 16px; height: 16px; fill: none; stroke: var(--sg-ink); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.sg-heart.is-saved { background: var(--sg-ink); opacity: 1; }
-.sg-heart.is-saved svg { fill: #fff; stroke: #fff; }
+.sg-card:hover .sg-card-cart,
+.sg-card:focus-within .sg-card-cart { opacity: 1; }
+.sg-card-cart__icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.sg-card-cart.is-adding {
+  pointer-events: none;
+  opacity: 1;
+}
+.sg-card-cart.is-added {
+  background: var(--sg-ink);
+  opacity: 1;
+}
+.sg-card-cart.is-added .sg-card-cart__icon {
+  filter: brightness(0) invert(1);
+}
 
 .sg-toolbar {
   margin: 28px 0 36px;
@@ -1706,7 +1720,6 @@ label { color: var(--sg-ink); font-size: 12px; font-weight: 500; }
   .sg-catnav,
   .sg-cart-total,
   .sg-cart-btn,
-  .sg-add-cart-btn,
   .sg-menu-toggle {
     display: none;
   }
@@ -1766,7 +1779,7 @@ label { color: var(--sg-ink); font-size: 12px; font-weight: 500; }
     grid-template-columns: 104px minmax(0, 1fr);
     gap: 14px;
   }
-  body.sg-layout-list ul.products .sg-heart {
+  body.sg-layout-list ul.products .sg-card-cart {
     left: 68px;
   }
   .sg-toolbar { grid-template-columns: 1fr auto; }
@@ -1802,5 +1815,5 @@ label { color: var(--sg-ink); font-size: 12px; font-weight: 500; }
   }
 }
 @media (hover: none) {
-  .sg-heart { opacity: 1; }
+  .sg-card-cart { opacity: 1; }
 }

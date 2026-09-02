@@ -49,9 +49,6 @@ $header_locked_compact     = sutighar_header_should_lock_compact();
 				<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-cart-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<span class="sg-badge" data-sg-cart-count data-count="<?php echo esc_attr( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?>"><?php echo esc_html( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?></span>
 			</a>
-			<a class="sg-icon-btn sg-add-cart-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Add to cart', 'sutighar' ); ?>" <?php echo $cart_drawer_enabled ? 'data-sg-cart-open' : ''; ?>>
-				<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-cart-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-			</a>
 			<div class="sg-pop sg-account-pop">
 				<button class="sg-icon-btn" type="button" aria-label="<?php esc_attr_e( 'Account menu', 'sutighar' ); ?>" aria-expanded="false" aria-controls="sg-account-menu" data-sg-pop-toggle="account">
 					<?php echo sutighar_icon_img( 'user-solid.svg', 'sg-user-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

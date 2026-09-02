@@ -7,8 +7,8 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 	return;
 }
 
-$saved = in_array( $product->get_id(), sutighar_wishlist_ids(), true );
-$permalink = $product->get_permalink();
+$permalink       = $product->get_permalink();
+$can_quick_cart  = $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock();
 ?>
 <li <?php wc_product_class( 'sg-card', $product ); ?>>
 	<a class="sg-card__image" href="<?php echo esc_url( $permalink ); ?>" aria-label="<?php echo esc_attr( $product->get_name() ); ?>">
@@ -24,9 +24,15 @@ $permalink = $product->get_permalink();
 		}
 		?>
 	</a>
-	<button class="sg-heart <?php echo $saved ? 'is-saved' : ''; ?>" type="button" data-sg-wishlist-toggle data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" aria-pressed="<?php echo $saved ? 'true' : 'false'; ?>" aria-label="<?php esc_attr_e( 'Save to wishlist', 'sutighar' ); ?>">
-		<?php echo sutighar_inline_icon( 'heart' ); ?>
-	</button>
+	<?php if ( $can_quick_cart ) : ?>
+		<button class="sg-card-cart" type="button" data-sg-card-add-to-cart data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" aria-label="<?php esc_attr_e( 'Add to cart', 'sutighar' ); ?>">
+			<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-card-cart__icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</button>
+	<?php else : ?>
+		<a class="sg-card-cart" href="<?php echo esc_url( $permalink ); ?>" aria-label="<?php esc_attr_e( 'View product options', 'sutighar' ); ?>">
+			<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-card-cart__icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</a>
+	<?php endif; ?>
 	<a href="<?php echo esc_url( $permalink ); ?>" style="display:grid;gap:5px">
 		<h2 class="woocommerce-loop-product__title"><?php echo esc_html( $product->get_name() ); ?></h2>
 		<span class="price"><?php echo wp_kses_post( $product->get_price_html() ); ?></span>
