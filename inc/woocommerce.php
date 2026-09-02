@@ -872,6 +872,7 @@ function sutighar_default_company_links() {
 	return array(
 		array( __( 'About Us', 'sutighar' ), home_url( '/about/' ) ),
 		array( __( 'Contact', 'sutighar' ), home_url( '/contact/' ) ),
+		array( __( 'Wishlist', 'sutighar' ), home_url( '/wishlist/' ) ),
 		array( __( 'Return & Exchange', 'sutighar' ), home_url( '/return-exchange/' ) ),
 		array( __( 'Privacy policy', 'sutighar' ), home_url( '/privacy-policy/' ) ),
 		array( __( 'Terms of Service', 'sutighar' ), home_url( '/terms-of-service/' ) ),

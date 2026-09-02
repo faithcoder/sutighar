@@ -49,9 +49,8 @@ $header_locked_compact     = sutighar_header_should_lock_compact();
 				<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-cart-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<span class="sg-badge" data-sg-cart-count data-count="<?php echo esc_attr( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?>"><?php echo esc_html( WC()->cart ? WC()->cart->get_cart_contents_count() : 0 ); ?></span>
 			</a>
-			<a class="sg-icon-btn sg-wishlist-btn" href="<?php echo esc_url( home_url( '/wishlist/' ) ); ?>" aria-label="<?php esc_attr_e( 'Wishlist', 'sutighar' ); ?>">
-				<?php echo sutighar_inline_icon( 'heart' ); ?>
-				<span class="sg-badge" data-sg-wishlist-count data-count="<?php echo esc_attr( sutighar_wishlist_count() ); ?>"><?php echo esc_html( sutighar_wishlist_count() ); ?></span>
+			<a class="sg-icon-btn sg-add-cart-btn" href="<?php echo esc_url( wc_get_cart_url() ); ?>" aria-label="<?php esc_attr_e( 'Add to cart', 'sutighar' ); ?>" <?php echo $cart_drawer_enabled ? 'data-sg-cart-open' : ''; ?>>
+				<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-cart-icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</a>
 			<div class="sg-pop sg-account-pop">
 				<button class="sg-icon-btn" type="button" aria-label="<?php esc_attr_e( 'Account menu', 'sutighar' ); ?>" aria-expanded="false" aria-controls="sg-account-menu" data-sg-pop-toggle="account">
@@ -67,7 +66,6 @@ $header_locked_compact     = sutighar_header_should_lock_compact();
 						<?php else : ?>
 							<a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>"><?php esc_html_e( 'Login / Register', 'sutighar' ); ?></a>
 						<?php endif; ?>
-						<a href="<?php echo esc_url( home_url( '/wishlist/' ) ); ?>"><?php esc_html_e( 'Wishlist', 'sutighar' ); ?></a>
 						<a href="<?php echo esc_url( wc_get_cart_url() ); ?>"><?php esc_html_e( 'Cart', 'sutighar' ); ?></a>
 						<a href="<?php echo esc_url( home_url( '/about/' ) ); ?>"><?php esc_html_e( 'About Sutighar', 'sutighar' ); ?></a>
 						<a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>"><?php esc_html_e( 'Contact', 'sutighar' ); ?></a>
