@@ -431,7 +431,7 @@ function sutighar_logo_image( $key, $class ) {
 
 function sutighar_categories() {
 	$defaults = array(
-		'all'          => array( 'label' => __( 'Browse All', 'sutighar' ), 'image' => 'nav-browse-all.png', 'url' => wc_get_page_permalink( 'shop' ) ),
+		'all'          => array( 'label' => __( 'Browse All', 'sutighar' ), 'image' => 'nav-browse-all.jpg', 'url' => wc_get_page_permalink( 'shop' ) ),
 		'solid'        => array( 'label' => __( 'Solid', 'sutighar' ), 'image' => 'nav-solid.png' ),
 		'stripe-check' => array( 'label' => __( 'Stripe & Check', 'sutighar' ), 'image' => 'nav-stripe.png' ),
 		'jacquard'     => array( 'label' => __( 'Jacquard', 'sutighar' ), 'image' => 'nav-jacquard.png' ),
