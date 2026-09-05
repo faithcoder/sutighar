@@ -36,11 +36,11 @@ $can_quick_cart  = $product->is_type( 'simple' ) && $product->is_purchasable() &
 	</a>
 	<?php if ( $can_quick_cart ) : ?>
 		<button class="sg-card-cart" type="button" data-sg-card-add-to-cart data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" aria-label="<?php esc_attr_e( 'Add to cart', 'sutighar' ); ?>">
-			<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-card-cart__icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo sutighar_icon_img( 'solar_cart-outline.png', 'sg-card-cart__icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</button>
 	<?php else : ?>
 		<a class="sg-card-cart" href="<?php echo esc_url( $permalink ); ?>" aria-label="<?php esc_attr_e( 'View product options', 'sutighar' ); ?>">
-			<?php echo sutighar_icon_img( 'solar_cart-bold.svg', 'sg-card-cart__icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo sutighar_icon_img( 'solar_cart-outline.png', 'sg-card-cart__icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</a>
 	<?php endif; ?>
 	<a href="<?php echo esc_url( $permalink ); ?>" style="display:grid;gap:5px">

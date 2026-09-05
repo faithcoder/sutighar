@@ -980,15 +980,11 @@ body.sg-layout-list ul.products .sg-card {
   gap: 20px;
 }
 body.sg-layout-list ul.products .sg-card__image {
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
 }
 body.sg-layout-list ul.products .sg-card > a:not(.sg-card__image) {
   display: grid !important;
   gap: 6px !important;
-}
-body.sg-layout-list ul.products .sg-card-cart {
-  left: 132px;
-  right: auto;
 }
 .sg-card h2,
 .sg-card h3,
@@ -1014,13 +1010,14 @@ body.sg-layout-list ul.products .sg-card-cart {
 }
 .sg-card-cart {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  right: 13px;
+  bottom: 13px;
   z-index: 2;
-  width: 34px;
-  height: 34px;
-  border: 0;
-  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  padding: 5.78px;
+  border: 1px solid rgba(18, 42, 73, .1);
+  border-radius: 45px;
   background: rgba(255,255,255,.92);
   box-shadow: 0 1px 4px rgba(0,0,0,.12);
   opacity: 0;
@@ -1033,8 +1030,8 @@ body.sg-layout-list ul.products .sg-card-cart {
 .sg-card:focus-within .sg-card-cart { opacity: 1; }
 .sg-card-cart__icon {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
 }
 .sg-card-cart.is-adding {
@@ -1784,9 +1781,6 @@ label { color: var(--sg-ink); font-size: 12px; font-weight: 500; }
   body.sg-layout-list ul.products .sg-card {
     grid-template-columns: 104px minmax(0, 1fr);
     gap: 14px;
-  }
-  body.sg-layout-list ul.products .sg-card-cart {
-    left: 68px;
   }
   .sg-toolbar { grid-template-columns: 1fr auto; }
   .sg-density { display: none; }
