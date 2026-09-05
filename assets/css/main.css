@@ -950,10 +950,16 @@ body.sg-layout-list ul.products {
   flex-direction: column;
   gap: 14px;
 }
-.sg-card__image {
+.sg-card__media {
   position: relative;
   width: 100%;
   aspect-ratio: 4 / 5;
+}
+.sg-card__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   background: var(--sg-sand);
   overflow: hidden;
   display: block;
@@ -979,10 +985,11 @@ body.sg-layout-list ul.products .sg-card {
   align-items: center;
   gap: 20px;
 }
-body.sg-layout-list ul.products .sg-card__image {
+body.sg-layout-list ul.products .sg-card__media {
   aspect-ratio: 4 / 5;
 }
-body.sg-layout-list ul.products .sg-card > a:not(.sg-card__image) {
+.sg-card__details,
+body.sg-layout-list ul.products .sg-card__details {
   display: grid !important;
   gap: 6px !important;
 }
