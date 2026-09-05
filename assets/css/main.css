@@ -966,7 +966,12 @@ body.sg-layout-list ul.products {
   object-position: center;
   transition: transform .5s ease;
 }
-.sg-card__image:hover img { transform: scale(1.12); }
+.sg-card__image:hover img,
+.sg-card__image:focus img,
+.sg-card__image:active img,
+.sg-card__image.is-zooming img {
+  transform: scale(1.12);
+}
 body.sg-layout-list ul.products .sg-card {
   display: grid;
   grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);
@@ -1816,4 +1821,8 @@ label { color: var(--sg-ink); font-size: 12px; font-weight: 500; }
 }
 @media (hover: none) {
   .sg-card-cart { opacity: 1; }
+  .sg-card__image:active img,
+  .sg-card__image.is-zooming img {
+    transform: scale(1.12);
+  }
 }

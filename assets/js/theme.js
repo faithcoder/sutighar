@@ -93,6 +93,25 @@
     if (window.innerWidth > 719) closeDrawer();
   });
 
+  document.addEventListener('pointerdown', (event) => {
+    const imageLink = event.target.closest('.sg-card__image');
+    if (!imageLink || event.pointerType === 'mouse') return;
+    imageLink.classList.add('is-zooming');
+  }, { passive: true });
+
+  document.addEventListener('pointerup', (event) => {
+    const imageLink = event.target.closest('.sg-card__image');
+    if (imageLink) {
+      setTimeout(() => imageLink.classList.remove('is-zooming'), 220);
+    }
+  }, { passive: true });
+
+  document.addEventListener('pointercancel', () => {
+    document.querySelectorAll('.sg-card__image.is-zooming').forEach((imageLink) => {
+      imageLink.classList.remove('is-zooming');
+    });
+  }, { passive: true });
+
   // ---- Cart drawer ----
   const cartModal = document.querySelector('[data-sg-cart-modal]');
   let lastCartModalFocus = null;

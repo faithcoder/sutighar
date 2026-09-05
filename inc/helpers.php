@@ -627,9 +627,6 @@ function sutighar_render_drawer_nav_items() {
 		$labels = sutighar_drawer_nav_labels();
 		foreach ( $menu_items as $item ) {
 			$classes = 'sg-drawer__link';
-			if ( sutighar_is_active_menu_item( $item ) ) {
-				$classes .= ' is-active';
-			}
 			$slug  = sutighar_menu_item_slug( $item );
 			$label = ( $slug && isset( $labels[ $slug ] ) ) ? $labels[ $slug ] : $item->title;
 			?>
@@ -645,9 +642,6 @@ function sutighar_render_drawer_nav_items() {
 	$labels = sutighar_drawer_nav_labels();
 	foreach ( sutighar_categories() as $slug => $item ) {
 		$classes = 'sg-drawer__link';
-		if ( sutighar_is_active_category( $slug ) ) {
-			$classes .= ' is-active';
-		}
 		?>
 		<a class="<?php echo esc_attr( $classes ); ?>" href="<?php echo esc_url( $item['url'] ); ?>">
 			<span class="sg-drawer__thumb" role="img" aria-label="<?php echo esc_attr( $item['label'] ); ?>" style="background-image:url('<?php echo esc_url( sutighar_category_thumb_url( $item ) ); ?>')"></span>
