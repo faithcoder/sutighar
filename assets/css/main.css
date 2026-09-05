@@ -952,7 +952,8 @@ body.sg-layout-list ul.products {
 }
 .sg-card__image {
   position: relative;
-  aspect-ratio: 284.5 / 355.625;
+  width: 100%;
+  aspect-ratio: 4 / 5;
   background: var(--sg-sand);
   overflow: hidden;
   display: block;

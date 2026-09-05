@@ -14,7 +14,17 @@ $can_quick_cart  = $product->is_type( 'simple' ) && $product->is_purchasable() &
 	<a class="sg-card__image" href="<?php echo esc_url( $permalink ); ?>" aria-label="<?php echo esc_attr( $product->get_name() ); ?>">
 		<?php
 		if ( has_post_thumbnail( $product->get_id() ) ) {
-			echo $product->get_image( 'woocommerce_thumbnail', array( 'loading' => 'lazy', 'decoding' => 'async' ) );
+			echo wp_get_attachment_image(
+				$product->get_image_id(),
+				'large',
+				false,
+				array(
+					'loading'  => 'lazy',
+					'decoding' => 'async',
+					'sizes'    => '(max-width: 719px) 150px, 285px',
+					'alt'      => $product->get_name(),
+				)
+			);
 		} else {
 			printf(
 				'<img src="%s" width="600" height="750" loading="lazy" decoding="async" alt="%s">',

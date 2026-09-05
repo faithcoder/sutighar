@@ -286,11 +286,125 @@ function sutighar_home_products_section( $title, $args, $url = '' ) {
 	<?php
 }
 
+function sutighar_catalog_request_list( $key, $sanitize_callback = 'wc_clean' ) {
+	if ( ! isset( $_GET[ $key ] ) ) {
+		return array();
+	}
+
+	$value = wp_unslash( $_GET[ $key ] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$items = is_array( $value ) ? $value : array( $value );
+	$items = array_filter(
+		array_map(
+			static function ( $item ) use ( $sanitize_callback ) {
+				if ( is_array( $item ) ) {
+					return '';
+				}
+				return is_callable( $sanitize_callback ) ? call_user_func( $sanitize_callback, $item ) : wc_clean( $item );
+			},
+			$items
+		)
+	);
+
+	return array_values( array_unique( $items ) );
+}
+
+function sutighar_catalog_price_value( $key ) {
+	if ( ! isset( $_GET[ $key ] ) ) {
+		return '';
+	}
+
+	$value = wc_clean( wp_unslash( $_GET[ $key ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( is_array( $value ) || '' === $value ) {
+		return '';
+	}
+
+	return max( 0, wc_format_decimal( $value ) );
+}
+
+function sutighar_catalog_size_meta_values( $slugs ) {
+	$map = array(
+		'5-haat'   => array( '5 Haat', '5 haat', '5 হাত', '৫ হাত' ),
+		'5-5-haat' => array( '5.5 Haat', '5.5 haat', '5.5 হাত', '৫.৫ হাত' ),
+		'6-haat'   => array( '6 Haat', '6 haat', '6 হাত', '৬ হাত' ),
+		'kids'     => array( 'Kids', 'kids' ),
+	);
+	$values = array();
+	foreach ( $slugs as $slug ) {
+		if ( isset( $map[ $slug ] ) ) {
+			$values = array_merge( $values, $map[ $slug ] );
+		}
+	}
+
+	return array_values( array_unique( $values ) );
+}
+
+function sutighar_catalog_product_ids_for_size_filter( $slugs ) {
+	$slugs       = array_values( array_filter( array_map( 'sanitize_title', (array) $slugs ) ) );
+	$meta_values = sutighar_catalog_size_meta_values( $slugs );
+	if ( ! $slugs && ! $meta_values ) {
+		return array();
+	}
+
+	$ids = array();
+	if ( taxonomy_exists( 'pa_size' ) && $slugs ) {
+		$tax_ids = get_posts(
+			array(
+				'post_type'              => 'product',
+				'post_status'            => 'publish',
+				'fields'                 => 'ids',
+				'posts_per_page'         => -1,
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+				'tax_query'              => array(
+					array(
+						'taxonomy' => 'pa_size',
+						'field'    => 'slug',
+						'terms'    => $slugs,
+					),
+				),
+			)
+		);
+		$ids     = array_merge( $ids, array_map( 'absint', $tax_ids ) );
+	}
+
+	if ( $meta_values ) {
+		$meta_ids = get_posts(
+			array(
+				'post_type'              => 'product',
+				'post_status'            => 'publish',
+				'fields'                 => 'ids',
+				'posts_per_page'         => -1,
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+				'meta_query'             => array(
+					array(
+						'key'     => '_sg_size',
+						'value'   => $meta_values,
+						'compare' => 'IN',
+					),
+				),
+			)
+		);
+		$ids      = array_merge( $ids, array_map( 'absint', $meta_ids ) );
+	}
+
+	return array_values( array_unique( array_filter( $ids ) ) );
+}
+
 add_action( 'woocommerce_before_shop_loop', 'sutighar_catalog_toolbar', 20 );
 function sutighar_catalog_toolbar() {
 	$has_orderby         = isset( $_GET['orderby'] );
-	$orderby             = $has_orderby ? wc_clean( wp_unslash( $_GET['orderby'] ) ) : get_option( 'woocommerce_default_catalog_orderby', 'menu_order' );
+	$ordering_options    = sutighar_catalog_ordering_options();
+	$orderby             = $has_orderby ? sanitize_key( wp_unslash( $_GET['orderby'] ) ) : get_option( 'woocommerce_default_catalog_orderby', 'menu_order' );
+	$orderby             = isset( $ordering_options[ $orderby ] ) ? $orderby : 'menu_order';
 	$selected_option     = $has_orderby ? $orderby : '';
+	$selected_categories = sutighar_catalog_request_list( 'product_cat', 'sanitize_title' );
+	$selected_sizes      = sutighar_catalog_request_list( 'filter_size', 'sanitize_title' );
+	$selected_stock      = sutighar_catalog_request_list( 'stock_status', 'sanitize_key' );
+	$min_price           = sutighar_catalog_price_value( 'min_price' );
+	$max_price           = sutighar_catalog_price_value( 'max_price' );
 	$show_category       = sutighar_option_enabled( 'enable_filter_category', true );
 	$show_size           = sutighar_option_enabled( 'enable_filter_size', true );
 	$show_availability   = sutighar_option_enabled( 'enable_filter_availability', true );
@@ -317,7 +431,7 @@ function sutighar_catalog_toolbar() {
 						<legend><?php esc_html_e( 'Category', 'sutighar' ); ?></legend>
 						<?php foreach ( sutighar_categories() as $slug => $item ) : ?>
 							<?php if ( 'all' === $slug ) { continue; } ?>
-							<label><input type="checkbox" name="product_cat[]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( in_array( $slug, (array) ( $_GET['product_cat'] ?? array() ), true ) ); ?>><?php echo esc_html( $item['label'] ); ?></label>
+							<label><input type="checkbox" name="product_cat[]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( in_array( $slug, $selected_categories, true ) ); ?>><?php echo esc_html( $item['label'] ); ?></label>
 						<?php endforeach; ?>
 					</fieldset>
 				<?php endif; ?>
@@ -328,7 +442,7 @@ function sutighar_catalog_toolbar() {
 					<fieldset>
 						<legend><?php esc_html_e( 'Size', 'sutighar' ); ?></legend>
 						<?php foreach ( array( '5-haat' => '5 Haat', '5-5-haat' => '5.5 Haat', '6-haat' => '6 Haat', 'kids' => 'Kids' ) as $slug => $label ) : ?>
-							<label><input type="checkbox" name="filter_size[]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( in_array( $slug, (array) ( $_GET['filter_size'] ?? array() ), true ) ); ?>><?php echo esc_html( $label ); ?></label>
+							<label><input type="checkbox" name="filter_size[]" value="<?php echo esc_attr( $slug ); ?>" <?php checked( in_array( $slug, $selected_sizes, true ) ); ?>><?php echo esc_html( $label ); ?></label>
 						<?php endforeach; ?>
 					</fieldset>
 				<?php endif; ?>
@@ -338,8 +452,8 @@ function sutighar_catalog_toolbar() {
 				<?php if ( $show_availability ) : ?>
 					<fieldset>
 						<legend><?php esc_html_e( 'Availability', 'sutighar' ); ?></legend>
-						<label><input type="checkbox" name="stock_status[]" value="instock" <?php checked( in_array( 'instock', (array) ( $_GET['stock_status'] ?? array() ), true ) ); ?>><?php esc_html_e( 'In stock', 'sutighar' ); ?></label>
-						<label><input type="checkbox" name="stock_status[]" value="outofstock" <?php checked( in_array( 'outofstock', (array) ( $_GET['stock_status'] ?? array() ), true ) ); ?>><?php esc_html_e( 'Out of stock', 'sutighar' ); ?></label>
+						<label><input type="checkbox" name="stock_status[]" value="instock" <?php checked( in_array( 'instock', $selected_stock, true ) ); ?>><?php esc_html_e( 'In stock', 'sutighar' ); ?></label>
+						<label><input type="checkbox" name="stock_status[]" value="outofstock" <?php checked( in_array( 'outofstock', $selected_stock, true ) ); ?>><?php esc_html_e( 'Out of stock', 'sutighar' ); ?></label>
 					</fieldset>
 				<?php endif; ?>
 				<?php if ( $show_availability && $show_price ) : ?>
@@ -349,8 +463,8 @@ function sutighar_catalog_toolbar() {
 					<fieldset>
 						<legend><?php esc_html_e( 'Price', 'sutighar' ); ?></legend>
 						<div class="sg-filter-panel__price">
-							<input type="number" name="min_price" value="<?php echo esc_attr( $_GET['min_price'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'Min', 'sutighar' ); ?>">
-							<input type="number" name="max_price" value="<?php echo esc_attr( $_GET['max_price'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'Max', 'sutighar' ); ?>">
+							<input type="number" name="min_price" value="<?php echo esc_attr( $min_price ); ?>" min="0" step="1" placeholder="<?php esc_attr_e( 'Min', 'sutighar' ); ?>">
+							<input type="number" name="max_price" value="<?php echo esc_attr( $max_price ); ?>" min="0" step="1" placeholder="<?php esc_attr_e( 'Max', 'sutighar' ); ?>">
 						</div>
 					</fieldset>
 				<?php endif; ?>
@@ -397,7 +511,7 @@ function sutighar_catalog_toolbar() {
 			<span class="sg-sort-select">
 				<select id="sg-catalog-orderby" name="orderby" onchange="this.form.submit()">
 					<option value="<?php echo esc_attr( $orderby ); ?>" <?php selected( $selected_option, '' ); ?>><?php esc_html_e( 'Sort by', 'sutighar' ); ?></option>
-				<?php foreach ( sutighar_catalog_ordering_options() as $id => $name ) : ?>
+				<?php foreach ( $ordering_options as $id => $name ) : ?>
 					<option value="<?php echo esc_attr( $id ); ?>" <?php selected( $selected_option, $id ); ?>><?php echo esc_html( $name ); ?></option>
 				<?php endforeach; ?>
 				</select>
@@ -429,31 +543,45 @@ function sutighar_catalog_ordering_args( $args, $orderby, $order ) {
 	return $args;
 }
 
+add_filter( 'woocommerce_enable_post_clause_filtering', 'sutighar_maybe_enable_price_filtering', 20, 2 );
+function sutighar_maybe_enable_price_filtering( $enabled, $query ) {
+	if ( ! sutighar_option_enabled( 'enable_filter_price', true ) && ( isset( $_GET['min_price'] ) || isset( $_GET['max_price'] ) ) ) {
+		return false;
+	}
+
+	return $enabled;
+}
+
 add_action( 'woocommerce_product_query', 'sutighar_apply_catalog_filters' );
 function sutighar_apply_catalog_filters( $query ) {
 	$tax_query  = (array) $query->get( 'tax_query' );
 	$meta_query = (array) $query->get( 'meta_query' );
 
-	if ( sutighar_option_enabled( 'enable_filter_category', true ) && ! empty( $_GET['product_cat'] ) && is_array( $_GET['product_cat'] ) ) {
+	$selected_categories = sutighar_catalog_request_list( 'product_cat', 'sanitize_title' );
+	$selected_sizes      = sutighar_catalog_request_list( 'filter_size', 'sanitize_title' );
+	$selected_stock      = sutighar_catalog_request_list( 'stock_status', 'sanitize_key' );
+
+	if ( sutighar_option_enabled( 'enable_filter_category', true ) && $selected_categories ) {
 		$tax_query[] = array(
 			'taxonomy' => 'product_cat',
 			'field'    => 'slug',
-			'terms'    => array_map( 'sanitize_title', wp_unslash( $_GET['product_cat'] ) ),
+			'terms'    => $selected_categories,
 		);
 	}
 
-	if ( sutighar_option_enabled( 'enable_filter_size', true ) && ! empty( $_GET['filter_size'] ) && is_array( $_GET['filter_size'] ) ) {
-		$tax_query[] = array(
-			'taxonomy' => 'pa_size',
-			'field'    => 'slug',
-			'terms'    => array_map( 'sanitize_title', wp_unslash( $_GET['filter_size'] ) ),
-		);
+	if ( sutighar_option_enabled( 'enable_filter_size', true ) && $selected_sizes ) {
+		$size_ids = sutighar_catalog_product_ids_for_size_filter( $selected_sizes );
+		$existing_post__in = array_filter( array_map( 'absint', (array) $query->get( 'post__in' ) ) );
+		if ( $existing_post__in && $size_ids ) {
+			$size_ids = array_values( array_intersect( $existing_post__in, $size_ids ) );
+		}
+		$query->set( 'post__in', $size_ids ? $size_ids : array( 0 ) );
 	}
 
-	if ( sutighar_option_enabled( 'enable_filter_availability', true ) && ! empty( $_GET['stock_status'] ) && is_array( $_GET['stock_status'] ) ) {
+	if ( sutighar_option_enabled( 'enable_filter_availability', true ) && $selected_stock ) {
 		$meta_query[] = array(
 			'key'     => '_stock_status',
-			'value'   => array_map( 'sanitize_key', wp_unslash( $_GET['stock_status'] ) ),
+			'value'   => $selected_stock,
 			'compare' => 'IN',
 		);
 	}
