@@ -320,6 +320,7 @@ function sutighar_normalize_legacy_catalog_category_query( $query ) {
 	if ( $categories ) {
 		$_GET['sg_product_cat'] = $categories;
 	}
+	$query->set( 'product_cat', '' );
 	unset( $_GET['product_cat'] );
 }
 
@@ -558,6 +559,49 @@ function sutighar_catalog_ordering_args( $args, $orderby, $order ) {
 	}
 
 	return $args;
+}
+
+add_filter( 'woocommerce_product_query_tax_query', 'sutighar_catalog_stock_visibility_query', 20, 2 );
+function sutighar_catalog_stock_visibility_query( $tax_query, $wc_query ) {
+	if ( ! sutighar_option_enabled( 'enable_filter_availability', true ) ) {
+		return $tax_query;
+	}
+
+	$selected_stock = sutighar_catalog_request_list( 'stock_status', 'sanitize_key' );
+	if ( ! in_array( 'outofstock', $selected_stock, true ) ) {
+		return $tax_query;
+	}
+
+	$visibility_terms = wc_get_product_visibility_term_ids();
+	$outofstock_term  = isset( $visibility_terms['outofstock'] ) ? (int) $visibility_terms['outofstock'] : 0;
+	if ( ! $outofstock_term ) {
+		return $tax_query;
+	}
+
+	// Explicit availability selection must override WooCommerce's global hide-out-of-stock setting.
+	foreach ( $tax_query as $index => $clause ) {
+		if ( ! is_array( $clause ) || 'product_visibility' !== ( $clause['taxonomy'] ?? '' ) || 'NOT IN' !== ( $clause['operator'] ?? '' ) ) {
+			continue;
+		}
+
+		$terms = array_values( array_diff( array_map( 'absint', (array) $clause['terms'] ), array( $outofstock_term ) ) );
+		if ( $terms ) {
+			$tax_query[ $index ]['terms'] = $terms;
+		} else {
+			unset( $tax_query[ $index ] );
+		}
+	}
+
+	if ( count( $selected_stock ) === 1 ) {
+		$tax_query[] = array(
+			'taxonomy' => 'product_visibility',
+			'field'    => 'term_taxonomy_id',
+			'terms'    => array( $outofstock_term ),
+			'operator' => 'IN',
+		);
+	}
+
+	return array_values( $tax_query );
 }
 
 add_filter( 'woocommerce_enable_post_clause_filtering', 'sutighar_maybe_enable_price_filtering', 20, 2 );
