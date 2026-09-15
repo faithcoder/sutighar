@@ -310,9 +310,18 @@ function sutighar_catalog_request_list( $key, $sanitize_callback = 'wc_clean' ) 
 
 // Older links used product_cat[] even though WooCommerce reserves product_cat for one slug.
 // Normalize those links before WooCommerce parses the catalog query.
-add_action( 'parse_query', 'sutighar_normalize_legacy_catalog_category_query', 1 );
-function sutighar_normalize_legacy_catalog_category_query( $query ) {
-	if ( ! $query instanceof WP_Query || ! isset( $_GET['product_cat'] ) || ! is_array( $_GET['product_cat'] ) ) {
+add_action( 'init', 'sutighar_normalize_legacy_catalog_category_query', 20 );
+function sutighar_normalize_legacy_catalog_category_query() {
+	if ( is_admin() ) {
+		return;
+	}
+	// Empty bounds are unrestricted, while an explicit zero remains a valid price.
+	foreach ( array( 'min_price', 'max_price' ) as $key ) {
+		if ( isset( $_GET[ $key ] ) && ( ! sutighar_option_enabled( 'enable_filter_price', true ) || ! is_scalar( $_GET[ $key ] ) || '' === trim( (string) $_GET[ $key ] ) ) ) {
+			unset( $_GET[ $key ] );
+		}
+	}
+	if ( ! isset( $_GET['product_cat'] ) || ! is_array( $_GET['product_cat'] ) ) {
 		return;
 	}
 
@@ -320,7 +329,6 @@ function sutighar_normalize_legacy_catalog_category_query( $query ) {
 	if ( $categories ) {
 		$_GET['sg_product_cat'] = $categories;
 	}
-	$query->set( 'product_cat', '' );
 	unset( $_GET['product_cat'] );
 }
 
@@ -592,16 +600,7 @@ function sutighar_catalog_stock_visibility_query( $tax_query, $wc_query ) {
 		}
 	}
 
-	if ( count( $selected_stock ) === 1 ) {
-		$tax_query[] = array(
-			'taxonomy' => 'product_visibility',
-			'field'    => 'term_taxonomy_id',
-			'terms'    => array( $outofstock_term ),
-			'operator' => 'IN',
-		);
-	}
-
-	return array_values( $tax_query );
+	return $tax_query;
 }
 
 add_filter( 'woocommerce_enable_post_clause_filtering', 'sutighar_maybe_enable_price_filtering', 20, 2 );
