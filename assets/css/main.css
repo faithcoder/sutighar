@@ -979,13 +979,6 @@ body.sg-layout-list ul.products {
 .sg-card__image.is-zooming img {
   transform: scale(1.12);
 }
-.sg-sold-out-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: rgba(0, 0, 0, .45);
-  pointer-events: none;
-}
 .sg-sold-out-badge {
   position: absolute;
   left: 50%;

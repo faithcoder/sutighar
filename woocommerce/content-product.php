@@ -37,7 +37,6 @@ $can_quick_cart  = $product->is_type( 'simple' ) && $product->is_purchasable() &
 			?>
 		</a>
 		<?php if ( $is_sold_out ) : ?>
-			<span class="sg-sold-out-overlay" aria-hidden="true"></span>
 			<span class="sg-sold-out-badge sg-sold-out-badge--card" aria-hidden="true">SOLD<br>OUT</span>
 		<?php elseif ( $can_quick_cart ) : ?>
 			<button class="sg-card-cart" type="button" data-sg-card-add-to-cart data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" aria-label="<?php esc_attr_e( 'Add to cart', 'sutighar' ); ?>">

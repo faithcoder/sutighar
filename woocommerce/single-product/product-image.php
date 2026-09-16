@@ -67,7 +67,6 @@ $is_sold_out = ! $product->is_in_stock();
 	<button class="sg-pdp__main" type="button" data-sg-gallery-open data-sg-gallery-index="0" data-sg-gallery-full="<?php echo esc_url( $main_full ); ?>" data-sg-gallery-alt="<?php echo esc_attr( $main_alt ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Open %s image gallery', 'sutighar' ), $product->get_name() ) ); ?>">
 		<?php echo $main; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		<?php if ( $is_sold_out ) : ?>
-			<span class="sg-sold-out-overlay" aria-hidden="true"></span>
 			<span class="sg-sold-out-badge sg-sold-out-badge--product" aria-hidden="true">SOLD<br>OUT</span>
 		<?php endif; ?>
 	</button>
