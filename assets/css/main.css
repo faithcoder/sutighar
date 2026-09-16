@@ -979,6 +979,36 @@ body.sg-layout-list ul.products {
 .sg-card__image.is-zooming img {
   transform: scale(1.12);
 }
+.sg-sold-out-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, .45);
+  pointer-events: none;
+}
+.sg-sold-out-badge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  color: #FF0000;
+  font-family: var(--sg-font);
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.sg-sold-out-badge--card {
+  width: 60px;
+  height: 60px;
+  font-size: 14px;
+  line-height: 16px;
+}
 body.sg-layout-list ul.products .sg-card {
   display: grid;
   grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);

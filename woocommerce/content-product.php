@@ -8,6 +8,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 }
 
 $permalink       = $product->get_permalink();
+$is_sold_out     = ! $product->is_in_stock();
 $can_quick_cart  = $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock();
 ?>
 <li <?php wc_product_class( 'sg-card', $product ); ?>>
@@ -35,7 +36,10 @@ $can_quick_cart  = $product->is_type( 'simple' ) && $product->is_purchasable() &
 			}
 			?>
 		</a>
-		<?php if ( $can_quick_cart ) : ?>
+		<?php if ( $is_sold_out ) : ?>
+			<span class="sg-sold-out-overlay" aria-hidden="true"></span>
+			<span class="sg-sold-out-badge sg-sold-out-badge--card" aria-hidden="true">SOLD<br>OUT</span>
+		<?php elseif ( $can_quick_cart ) : ?>
 			<button class="sg-card-cart" type="button" data-sg-card-add-to-cart data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" aria-label="<?php esc_attr_e( 'Add to cart', 'sutighar' ); ?>">
 				<?php echo sutighar_icon_img( 'solar_cart-outline.png', 'sg-card-cart__icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 			</button>

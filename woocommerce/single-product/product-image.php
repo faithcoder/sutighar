@@ -37,6 +37,7 @@ foreach ( array_filter( $ids ) as $gallery_id ) {
 	);
 }
 $thumbs = array_slice( array_filter( $ids ), 0, 2 );
+$is_sold_out = ! $product->is_in_stock();
 ?>
 <div class="sg-pdp__gallery" data-sg-product-gallery data-sg-gallery-items="<?php echo esc_attr( wp_json_encode( $gallery_items ) ); ?>">
 	<script type="application/json" data-sg-gallery-json><?php echo wp_json_encode( $gallery_items, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
@@ -63,7 +64,13 @@ $thumbs = array_slice( array_filter( $ids ), 0, 2 );
 			</button>
 		<?php endfor; ?>
 	</div>
-	<button class="sg-pdp__main" type="button" data-sg-gallery-open data-sg-gallery-index="0" data-sg-gallery-full="<?php echo esc_url( $main_full ); ?>" data-sg-gallery-alt="<?php echo esc_attr( $main_alt ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Open %s image gallery', 'sutighar' ), $product->get_name() ) ); ?>"><?php echo $main; ?></button>
+	<button class="sg-pdp__main" type="button" data-sg-gallery-open data-sg-gallery-index="0" data-sg-gallery-full="<?php echo esc_url( $main_full ); ?>" data-sg-gallery-alt="<?php echo esc_attr( $main_alt ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Open %s image gallery', 'sutighar' ), $product->get_name() ) ); ?>">
+		<?php echo $main; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<?php if ( $is_sold_out ) : ?>
+			<span class="sg-sold-out-overlay" aria-hidden="true"></span>
+			<span class="sg-sold-out-badge sg-sold-out-badge--product" aria-hidden="true">SOLD<br>OUT</span>
+		<?php endif; ?>
+	</button>
 </div>
 <div class="sg-gallery-modal" data-sg-gallery-modal hidden>
 	<div class="sg-gallery-modal__backdrop" data-sg-gallery-close></div>

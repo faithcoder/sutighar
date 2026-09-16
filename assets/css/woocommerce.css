@@ -33,6 +33,7 @@
   background: var(--sg-sand);
   overflow: hidden;
   display: block;
+  position: relative;
 }
 .sg-pdp__thumb,
 .sg-pdp__main {
@@ -42,6 +43,12 @@
   flex: 1 1 0;
 }
 .sg-pdp__main { aspect-ratio: 587 / 734; }
+.sg-sold-out-badge--product {
+  width: 80px;
+  height: 80px;
+  font-size: 16px;
+  line-height: 18px;
+}
 .sg-pdp__thumb img,
 .sg-pdp__main img {
   width: 100%;
