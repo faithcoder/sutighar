@@ -744,9 +744,11 @@
     const grid = document.querySelector('ul.products');
     if (!url || !grid || loadMore.classList.contains('is-loading')) return;
 
-    const originalLabel = loadMore.textContent;
+    const label = loadMore.querySelector('.sg-load-more__label');
+    const originalLabel = label ? label.textContent : loadMore.textContent;
     loadMore.classList.add('is-loading');
-    loadMore.textContent = loadMore.getAttribute('data-loading-label') || 'Loading...';
+    if (label) label.textContent = loadMore.getAttribute('data-loading-label') || 'Loading...';
+    else loadMore.textContent = loadMore.getAttribute('data-loading-label') || 'Loading...';
 
     try {
       const response = await fetch(url, { credentials: 'same-origin' });
@@ -759,7 +761,8 @@
       const next = doc.querySelector('[data-sg-load-more]');
       if (next) {
         loadMore.setAttribute('href', next.getAttribute('href'));
-        loadMore.textContent = originalLabel;
+        if (label) label.textContent = originalLabel;
+        else loadMore.textContent = originalLabel;
         loadMore.classList.remove('is-loading');
       } else {
         const wrap = loadMore.closest('.sg-load-more-wrap');

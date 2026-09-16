@@ -35,7 +35,8 @@ if ( is_shop() ) {
 		<?php if ( $total_pages > $current_page ) : ?>
 			<div class="sg-load-more-wrap">
 				<a class="sg-load-more" href="<?php echo esc_url( get_pagenum_link( $current_page + 1 ) ); ?>" data-sg-load-more data-loading-label="<?php esc_attr_e( 'Loading...', 'sutighar' ); ?>">
-					<?php esc_html_e( 'Load more', 'sutighar' ); ?>
+					<?php echo sutighar_icon_img( 'radix-icons_reload.svg', 'sg-load-more__icon' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+					<span class="sg-load-more__label"><?php esc_html_e( 'Load More', 'sutighar' ); ?></span>
 				</a>
 			</div>
 		<?php endif; ?>

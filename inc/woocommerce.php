@@ -54,6 +54,11 @@ remove_action( 'woocommerce_cart_is_empty', 'woocommerce_output_all_notices', 5 
 remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
 remove_action( 'woocommerce_before_checkout_form', 'woocommerce_output_all_notices', 10 );
 
+add_filter( 'loop_shop_per_page', 'sutighar_catalog_products_per_page', 20 );
+function sutighar_catalog_products_per_page( $products_per_page ) {
+	return wp_is_mobile() ? 12 : 16;
+}
+
 add_filter( 'woocommerce_add_to_cart_redirect', 'sutighar_buy_now_redirect' );
 function sutighar_buy_now_redirect( $url ) {
 	if ( isset( $_REQUEST['sg_buy_now'] ) ) {

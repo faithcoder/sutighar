@@ -1303,30 +1303,41 @@ body.sg-layout-list ul.products .sg-card__details {
   margin: 48px 0 0;
 }
 .sg-load-more {
-  min-width: 180px;
-  min-height: 46px;
-  border-radius: 5px;
-  background: var(--sg-brand);
-  color: #fff;
+  min-height: 20px;
+  background: transparent;
+  color: var(--sg-brand);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 24px;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  font-family: var(--sg-font);
   font-size: 14px;
-  line-height: 20px;
+  line-height: 1.2;
   font-weight: 500;
+  letter-spacing: 0;
+  text-align: center;
   text-decoration: none;
-  transition: background-color .2s ease, color .2s ease;
+  transition: color .2s ease, opacity .2s ease;
+}
+.sg-load-more__icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
 }
 .sg-load-more:hover,
 .sg-load-more:focus-visible {
-  background: #F2856F;
-  color: #fff;
+  color: #F2856F;
 }
+.sg-load-more:hover .sg-load-more__icon,
+.sg-load-more:focus-visible .sg-load-more__icon { filter: sepia(1) saturate(2.2) hue-rotate(312deg); }
 .sg-load-more.is-loading {
   opacity: .65;
   pointer-events: none;
 }
+.sg-load-more.is-loading .sg-load-more__icon { animation: sg-load-more-spin .8s linear infinite; }
+@keyframes sg-load-more-spin { to { transform: rotate(360deg); } }
 .sg-page--read {
   width: min(760px, calc(100% - (var(--sg-side) * 2)));
   max-width: 760px;
