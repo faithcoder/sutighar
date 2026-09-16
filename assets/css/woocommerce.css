@@ -1114,6 +1114,15 @@ body.sutighar-theme .sg-gallery-modal {
   font-size: 20px;
   font-weight: 700;
 }
+.sg-checkout-shipping-hint {
+  margin: -10px 0 22px;
+  color: #FF8528;
+  font-family: var(--sg-font);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: 0;
+}
 .woocommerce-checkout .form-row-first,
 .woocommerce-checkout .form-row-last {
   width: calc(50% - 8px);

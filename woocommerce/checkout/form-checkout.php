@@ -26,6 +26,9 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 						<span><?php esc_html_e( 'Delivery Charge', 'sutighar' ); ?></span>
 						<strong data-sg-shipping-cost-value>-</strong>
 					</div>
+					<p class="sg-checkout-shipping-hint" data-sg-shipping-hint role="status">
+						<?php esc_html_e( 'Please select the district to calculate the delivery charge.', 'sutighar' ); ?>
+					</p>
 					<?php do_action( 'woocommerce_checkout_shipping' ); ?>
 				<?php endif; ?>
 				<h3><?php esc_html_e( 'Payment Method', 'sutighar' ); ?></h3>

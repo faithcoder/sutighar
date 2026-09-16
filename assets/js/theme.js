@@ -644,15 +644,18 @@
   function syncCheckoutShippingCost() {
     const wrap = document.querySelector('[data-sg-shipping-cost]');
     const value = wrap && wrap.querySelector('[data-sg-shipping-cost-value]');
+    const hint = document.querySelector('[data-sg-shipping-hint]');
     if (!wrap || !value) return;
     const district = selectedDistrictSlug();
     if (!district) {
       value.textContent = wrap.getAttribute('data-empty-label') || '';
       wrap.classList.remove('has-value');
+      if (hint) hint.hidden = false;
       return;
     }
     value.textContent = district === 'dhaka' ? wrap.getAttribute('data-inside-label') : wrap.getAttribute('data-outside-label');
     wrap.classList.add('has-value');
+    if (hint) hint.hidden = true;
   }
 
   function syncMobileCheckoutSummary() {
