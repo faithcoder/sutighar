@@ -53,7 +53,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 										<?php continue; ?>
 									<?php endif; ?>
 									<a class="sg-footer__social" href="<?php echo esc_url( $footer_social_links[ $key ]['url'] ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( $footer_social_links[ $key ]['label'] ); ?>">
-										<img src="<?php echo esc_url( $footer_social_links[ $key ]['icon'] ); ?>" alt="" width="36" height="36" loading="lazy" decoding="async">
+										<img src="<?php echo esc_url( $footer_social_links[ $key ]['icon'] ); ?>" alt="" width="32" height="32" loading="lazy" decoding="async">
 									</a>
 								<?php endforeach; ?>
 							</div>

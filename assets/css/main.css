@@ -1626,7 +1626,7 @@ body.sg-layout-list ul.products .sg-card__details {
 .sg-footer {
   background: #0F201F;
   color: rgba(255,255,255,.8);
-  padding: 76px 0 36px;
+  padding: 56px 0 36px;
 }
 .sg-footer__grid {
   display: grid;
@@ -1634,32 +1634,33 @@ body.sg-layout-list ul.products .sg-card__details {
   gap: 56px;
 }
 .sg-footer__logo {
-  width: max-content;
+  width: 133px;
+  height: 108.722px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 .sg-footer__logo-icon {
   display: block;
-  width: 108.7px;
-  height: 108.7px;
+  width: 72px;
+  height: 72px;
   background: #fff;
   mask: url("../icons/logo-icon.svg") center / contain no-repeat;
   -webkit-mask: url("../icons/logo-icon.svg") center / contain no-repeat;
 }
 .sg-footer__logo-word {
   display: block;
-  width: 186px;
-  height: 38px;
-  margin-top: 16px;
+  width: 133px;
+  height: 27.2px;
+  margin-top: 9.5px;
   background: #fff;
   mask: url("../icons/logo-wordmark.svg") center / contain no-repeat;
   -webkit-mask: url("../icons/logo-wordmark.svg") center / contain no-repeat;
 }
 .sg-footer__logo-custom {
-  width: auto;
-  height: 140px;
-  max-width: 220px;
+  width: 133px;
+  height: 108.722px;
+  max-width: 100%;
   object-fit: contain;
   display: block;
 }
@@ -1668,7 +1669,7 @@ body.sg-layout-list ul.products .sg-card__details {
 .sg-footer__menus { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 48px 32px; }
 .sg-footer h3,
 .sg-footer .widgettitle,
-.sg-footer .wp-block-heading { margin: 0 0 20px; color: var(--sg-accent); font-size: 13px; font-weight: 500; line-height: 18px; text-transform: uppercase; }
+.sg-footer .wp-block-heading { margin: 0 0 20px; color: #F2856F; font-size: 11px; font-weight: 500; line-height: 14px; letter-spacing: .02em; text-transform: uppercase; }
 .sg-footer ul,
 .sg-footer .wp-block-navigation__container { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
 .sg-footer .wp-block-navigation,
@@ -1678,7 +1679,7 @@ body.sg-layout-list ul.products .sg-card__details {
   gap: 14px;
 }
 .sg-footer-widget + .sg-footer-widget { margin-top: 24px; }
-.sg-footer a { color: rgba(255,255,255,.7); font-size: 16px; line-height: 22px; }
+.sg-footer a { color: rgba(255,255,255,.7); font-size: 14px; font-weight: 400; line-height: 22px; }
 .sg-footer a:hover { color: #fff; }
 .sg-footer__socials {
   display: flex;
@@ -1687,14 +1688,14 @@ body.sg-layout-list ul.products .sg-card__details {
   margin-bottom: 24px;
 }
 .sg-footer__social {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: inline-grid;
   place-items: center;
   transition: transform .15s ease, opacity .15s ease;
 }
 .sg-footer__social:hover { transform: translateY(-2px); opacity: .9; }
-.sg-footer__social img { width: 36px; height: 36px; display: block; }
+.sg-footer__social img { width: 32px; height: 32px; display: block; }
 .sg-footer__contact {
   display: grid;
   gap: 16px;
