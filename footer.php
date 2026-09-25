@@ -25,57 +25,45 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 			<div class="sg-footer__menus">
 				<div>
-					<?php if ( is_active_sidebar( 'footer_1' ) ) : ?>
-						<?php dynamic_sidebar( 'footer_1' ); ?>
-					<?php else : ?>
-						<h3><?php esc_html_e( 'Shop', 'sutighar' ); ?></h3>
-						<?php sutighar_footer_menu( 'footer_shop', sutighar_default_shop_links() ); ?>
-					<?php endif; ?>
+					<h3><?php esc_html_e( 'Shop', 'sutighar' ); ?></h3>
+					<?php sutighar_footer_menu( 'footer_shop', sutighar_default_shop_links() ); ?>
 				</div>
 				<div>
-					<?php if ( is_active_sidebar( 'footer_2' ) ) : ?>
-						<?php dynamic_sidebar( 'footer_2' ); ?>
-					<?php else : ?>
-						<h3><?php esc_html_e( 'Company', 'sutighar' ); ?></h3>
-						<?php sutighar_footer_menu( 'footer_company', sutighar_default_company_links() ); ?>
-					<?php endif; ?>
+					<h3><?php esc_html_e( 'Company', 'sutighar' ); ?></h3>
+					<?php sutighar_footer_menu( 'footer_company', sutighar_default_company_links() ); ?>
 				</div>
 				<div>
-					<?php if ( is_active_sidebar( 'footer_3' ) ) : ?>
-						<?php dynamic_sidebar( 'footer_3' ); ?>
-					<?php else : ?>
-						<h3><?php esc_html_e( 'Connect', 'sutighar' ); ?></h3>
-						<?php $footer_social_links = sutighar_social_links(); ?>
-						<?php if ( $footer_social_links ) : ?>
-							<div class="sg-footer__socials">
-								<?php foreach ( array( 'whatsapp', 'messenger', 'facebook', 'instagram' ) as $key ) : ?>
-									<?php if ( empty( $footer_social_links[ $key ] ) ) : ?>
-										<?php continue; ?>
-									<?php endif; ?>
-									<a class="sg-footer__social" href="<?php echo esc_url( $footer_social_links[ $key ]['url'] ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( $footer_social_links[ $key ]['label'] ); ?>">
-										<img src="<?php echo esc_url( $footer_social_links[ $key ]['icon'] ); ?>" alt="" width="32" height="32" loading="lazy" decoding="async">
-									</a>
-								<?php endforeach; ?>
-							</div>
-						<?php endif; ?>
-						<div class="sg-footer__contact">
-							<?php
-							$footer_phone      = sutighar_contact_phone();
-							$footer_phone_href = sutighar_contact_phone_href();
-							$footer_email      = sutighar_contact_email();
-							$footer_address    = sutighar_contact_address();
-							?>
-							<?php if ( $footer_phone && $footer_phone_href ) : ?>
-								<a href="<?php echo esc_url( $footer_phone_href ); ?>"><?php echo esc_html( $footer_phone ); ?></a>
-							<?php endif; ?>
-							<?php if ( $footer_email ) : ?>
-								<a href="<?php echo esc_url( 'mailto:' . $footer_email ); ?>"><?php echo esc_html( $footer_email ); ?></a>
-							<?php endif; ?>
-							<?php if ( $footer_address ) : ?>
-								<p><?php echo nl2br( esc_html( $footer_address ) ); ?></p>
-							<?php endif; ?>
+					<h3><?php esc_html_e( 'Connect', 'sutighar' ); ?></h3>
+					<?php $footer_social_links = sutighar_social_links(); ?>
+					<?php if ( $footer_social_links ) : ?>
+						<div class="sg-footer__socials">
+							<?php foreach ( array( 'whatsapp', 'messenger', 'facebook', 'instagram' ) as $key ) : ?>
+								<?php if ( empty( $footer_social_links[ $key ] ) ) : ?>
+									<?php continue; ?>
+								<?php endif; ?>
+								<a class="sg-footer__social" href="<?php echo esc_url( $footer_social_links[ $key ]['url'] ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( $footer_social_links[ $key ]['label'] ); ?>">
+									<img src="<?php echo esc_url( $footer_social_links[ $key ]['icon'] ); ?>" alt="" width="32" height="32" loading="lazy" decoding="async">
+								</a>
+							<?php endforeach; ?>
 						</div>
 					<?php endif; ?>
+					<div class="sg-footer__contact">
+						<?php
+						$footer_phone      = sutighar_contact_phone();
+						$footer_phone_href = sutighar_contact_phone_href();
+						$footer_email      = sutighar_contact_email();
+						$footer_address    = sutighar_contact_address();
+						?>
+						<?php if ( $footer_phone && $footer_phone_href ) : ?>
+							<a href="<?php echo esc_url( $footer_phone_href ); ?>"><?php echo esc_html( $footer_phone ); ?></a>
+						<?php endif; ?>
+						<?php if ( $footer_email ) : ?>
+							<a href="<?php echo esc_url( 'mailto:' . $footer_email ); ?>"><?php echo esc_html( $footer_email ); ?></a>
+						<?php endif; ?>
+						<?php if ( $footer_address ) : ?>
+							<p><?php echo nl2br( esc_html( $footer_address ) ); ?></p>
+						<?php endif; ?>
+					</div>
 				</div>
 			</div>
 		</div>
