@@ -850,6 +850,32 @@ function sutighar_product_plain_price( $product ) {
 	return '' === $price ? '' : number_format_i18n( (float) $price, 0 );
 }
 
+function sutighar_product_sale_data( $product ) {
+	if ( ! $product instanceof WC_Product ) {
+		return array();
+	}
+
+	$current_price = $product->get_price();
+	$regular_price = $product->get_regular_price();
+
+	if ( $product->is_type( 'variable' ) ) {
+		$current_price = $product->get_variation_price( 'min', true );
+		$regular_price = $product->get_variation_regular_price( 'min', true );
+	}
+
+	$current_price = (float) $current_price;
+	$regular_price = (float) $regular_price;
+	if ( $current_price <= 0 || $regular_price <= $current_price ) {
+		return array();
+	}
+
+	return array(
+		'current' => number_format_i18n( $current_price, 0 ),
+		'regular' => number_format_i18n( $regular_price, 0 ),
+		'percent' => (int) round( ( ( $regular_price - $current_price ) / $regular_price ) * 100 ),
+	);
+}
+
 function sutighar_size_chart_modal() {
 	static $printed = false;
 	if ( $printed ) {

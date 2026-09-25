@@ -1002,6 +1002,27 @@ body.sg-layout-list ul.products {
   font-size: 14px;
   line-height: 16px;
 }
+.sg-sale-badge {
+  position: absolute;
+  top: 20px;
+  left: 16.5px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 20px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background: #fff;
+  color: #FB971D;
+  font-family: var(--sg-font);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 12px;
+  letter-spacing: 0;
+  pointer-events: none;
+}
 body.sg-layout-list ul.products .sg-card {
   display: grid;
   grid-template-columns: minmax(120px, 180px) minmax(0, 1fr);
@@ -1037,6 +1058,27 @@ body.sg-layout-list ul.products .sg-card__details {
   line-height: 22px;
   font-weight: 600;
   letter-spacing: 0;
+}
+.sg-card .price:has(ins),
+.woocommerce ul.products li.product .price:has(ins) {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.sg-card .price ins,
+.woocommerce ul.products li.product .price ins {
+  order: 1;
+  color: #122A49;
+  font-weight: 600;
+  text-decoration: none;
+}
+.sg-card .price del,
+.woocommerce ul.products li.product .price del {
+  order: 2;
+  color: #122A49;
+  font-size: 14px;
+  font-weight: 400;
+  text-decoration-thickness: 1px;
 }
 .sg-card-cart {
   position: absolute;

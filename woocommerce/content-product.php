@@ -10,6 +10,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 $permalink       = $product->get_permalink();
 $is_sold_out     = ! $product->is_in_stock();
 $can_quick_cart  = $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock();
+$sale_data       = sutighar_product_sale_data( $product );
 ?>
 <li <?php wc_product_class( 'sg-card', $product ); ?>>
 	<div class="sg-card__media">
@@ -36,6 +37,9 @@ $can_quick_cart  = $product->is_type( 'simple' ) && $product->is_purchasable() &
 			}
 			?>
 		</a>
+		<?php if ( ! empty( $sale_data['percent'] ) ) : ?>
+			<span class="sg-sale-badge" aria-label="<?php echo esc_attr( sprintf( __( '%d%% off', 'sutighar' ), $sale_data['percent'] ) ); ?>">-<?php echo esc_html( $sale_data['percent'] ); ?>%</span>
+		<?php endif; ?>
 		<?php if ( $is_sold_out ) : ?>
 			<span class="sg-sold-out-badge sg-sold-out-badge--card" aria-hidden="true">SOLD<br>OUT</span>
 		<?php elseif ( $can_quick_cart ) : ?>

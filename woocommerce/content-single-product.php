@@ -5,6 +5,7 @@ global $product;
 
 $measure = sutighar_product_size_measurements( $product );
 $measure = array_filter( $measure, 'strlen' );
+$sale_data = sutighar_product_sale_data( $product );
 ?>
 <section class="sg-page sg-container sg-pdp">
 	<?php do_action( 'woocommerce_before_single_product' ); ?>
@@ -14,7 +15,12 @@ $measure = array_filter( $measure, 'strlen' );
 			<h1 class="product_title entry-title"><?php the_title(); ?></h1>
 			<div class="sg-pdp__price">
 				<span class="sg-meta"><?php esc_html_e( 'Price', 'sutighar' ); ?></span>
-				<div><strong><?php echo esc_html( sutighar_product_plain_price( $product ) ); ?></strong><span>BDT</span></div>
+				<div class="sg-pdp__price-values">
+					<strong><?php echo esc_html( sutighar_product_plain_price( $product ) ); ?></strong><span>BDT</span>
+					<?php if ( ! empty( $sale_data ) ) : ?>
+						<del><span><?php echo esc_html( $sale_data['regular'] ); ?></span><span>BDT</span></del>
+					<?php endif; ?>
+				</div>
 			</div>
 			<?php if ( $measure ) : ?>
 				<hr>

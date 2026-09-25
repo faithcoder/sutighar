@@ -261,12 +261,29 @@ body.sutighar-theme .sg-gallery-modal {
   align-items: baseline;
   gap: 5px;
 }
-.sg-pdp__price div > span:last-child {
+.sg-pdp__price div > span:last-child,
+.sg-pdp__price-values > span {
   font-family: var(--sg-font);
   font-size: 20px;
   line-height: 28px;
   font-weight: 300;
   letter-spacing: 0;
+}
+.sg-pdp__price-values del {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  color: #122A49;
+  font-family: var(--sg-font);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+  letter-spacing: 0;
+  text-decoration-thickness: 1px;
+}
+.sg-pdp__price-values del span {
+  font: inherit !important;
+  color: inherit !important;
 }
 .sg-size-row {
   display: flex;
