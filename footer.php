@@ -48,12 +48,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php $footer_social_links = sutighar_social_links(); ?>
 						<?php if ( $footer_social_links ) : ?>
 							<div class="sg-footer__socials">
-								<?php foreach ( array( 'instagram', 'messenger', 'facebook', 'whatsapp' ) as $key ) : ?>
+								<?php foreach ( array( 'whatsapp', 'messenger', 'facebook', 'instagram' ) as $key ) : ?>
 									<?php if ( empty( $footer_social_links[ $key ] ) ) : ?>
 										<?php continue; ?>
 									<?php endif; ?>
 									<a class="sg-footer__social" href="<?php echo esc_url( $footer_social_links[ $key ]['url'] ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( $footer_social_links[ $key ]['label'] ); ?>">
-										<img src="<?php echo esc_url( $footer_social_links[ $key ]['icon'] ); ?>" alt="" width="24" height="24" loading="lazy" decoding="async">
+										<img src="<?php echo esc_url( $footer_social_links[ $key ]['icon'] ); ?>" alt="" width="36" height="36" loading="lazy" decoding="async">
 									</a>
 								<?php endforeach; ?>
 							</div>
