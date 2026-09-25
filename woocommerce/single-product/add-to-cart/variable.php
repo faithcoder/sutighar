@@ -29,6 +29,7 @@ foreach ( $available_variations as $variation ) {
 $variation_obj = ! empty( $chosen_variation['variation_id'] ) ? wc_get_product( $chosen_variation['variation_id'] ) : null;
 $in_stock      = $variation_obj ? $variation_obj->is_in_stock() : $product->is_in_stock();
 $stock_label   = sutighar_product_stock_label( $variation_obj ? $variation_obj : $product );
+$is_wishlisted = in_array( $product->get_id(), sutighar_wishlist_ids(), true );
 ?>
 <form class="variations_form cart sg-cart-form" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype="multipart/form-data" data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo wc_esc_json( wp_json_encode( $available_variations ) ); ?>">
 	<div hidden>
@@ -40,18 +41,31 @@ $stock_label   = sutighar_product_stock_label( $variation_obj ? $variation_obj :
 			<input type="hidden" name="<?php echo esc_attr( $attribute_key ); ?>" value="<?php echo esc_attr( $value ); ?>">
 		<?php endforeach; ?>
 	</div>
-	<div class="sg-quantity-block">
-		<span class="sg-meta"><?php esc_html_e( 'Quantity', 'sutighar' ); ?></span>
-		<?php woocommerce_quantity_input( array( 'min_value' => 1, 'input_value' => 1 ) ); ?>
-		<div class="sg-stock-row">
-			<span class="sg-stock-line <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
-			<button type="button" class="sg-size-chart-link" data-sg-size-chart><?php esc_html_e( 'Size Chart', 'sutighar' ); ?></button>
+	<?php if ( $in_stock ) : ?>
+		<div class="sg-quantity-block">
+			<span class="sg-meta"><?php esc_html_e( 'Quantity', 'sutighar' ); ?></span>
+			<?php woocommerce_quantity_input( array( 'min_value' => 1, 'input_value' => 1 ) ); ?>
+			<div class="sg-stock-row">
+				<span class="sg-stock-line <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
+				<button type="button" class="sg-size-chart-link" data-sg-size-chart><?php esc_html_e( 'Size Chart', 'sutighar' ); ?></button>
+			</div>
 		</div>
-	</div>
-	<div class="sg-buy-row">
-		<button type="submit" name="sg_buy_now" value="1" class="sg-btn" <?php disabled( ! $in_stock ); ?>><?php esc_html_e( 'Buy Now', 'sutighar' ); ?></button>
-		<button type="button" name="add-to-cart" value="<?php echo absint( $product->get_id() ); ?>" class="sg-add-to-cart-button button alt" data-sg-ajax-cart <?php disabled( ! $in_stock ); ?>><?php esc_html_e( 'Add to Cart', 'sutighar' ); ?></button>
-	</div>
+		<div class="sg-buy-row">
+			<button type="submit" name="sg_buy_now" value="1" class="sg-btn"><?php esc_html_e( 'Buy Now', 'sutighar' ); ?></button>
+			<button type="button" name="add-to-cart" value="<?php echo absint( $product->get_id() ); ?>" class="sg-add-to-cart-button button alt" data-sg-ajax-cart><?php esc_html_e( 'Add to Cart', 'sutighar' ); ?></button>
+		</div>
+	<?php else : ?>
+		<div class="sg-quantity-block">
+			<div class="sg-stock-row">
+				<span class="sg-stock-line <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
+				<button type="button" class="sg-size-chart-link" data-sg-size-chart><?php esc_html_e( 'Size Chart', 'sutighar' ); ?></button>
+			</div>
+		</div>
+		<div class="sg-buy-row sg-buy-row--wishlist">
+			<span class="sg-stock-line sg-stock-line--mobile <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
+			<button type="button" class="sg-btn sg-wishlist-button<?php echo $is_wishlisted ? ' is-saved' : ''; ?>" data-sg-wishlist-toggle data-product-id="<?php echo esc_attr( $product->get_id() ); ?>" data-sg-wishlist-add-label="<?php esc_attr_e( 'Add to Wishlist', 'sutighar' ); ?>" data-sg-wishlist-remove-label="<?php esc_attr_e( 'Remove from Wishlist', 'sutighar' ); ?>" aria-pressed="<?php echo $is_wishlisted ? 'true' : 'false'; ?>"><?php echo esc_html( $is_wishlisted ? __( 'Remove from Wishlist', 'sutighar' ) : __( 'Add to Wishlist', 'sutighar' ) ); ?></button>
+		</div>
+	<?php endif; ?>
 	<input type="hidden" name="add-to-cart" value="<?php echo absint( $product->get_id() ); ?>">
 	<input type="hidden" name="product_id" value="<?php echo absint( $product->get_id() ); ?>">
 	<input type="hidden" name="variation_id" class="variation_id" value="<?php echo esc_attr( $chosen_variation['variation_id'] ?? 0 ); ?>">

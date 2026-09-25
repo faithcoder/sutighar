@@ -8,6 +8,7 @@ if ( ! $product->is_purchasable() ) {
 }
 
 $stock_label = sutighar_product_stock_label( $product );
+$is_wishlisted = in_array( $product->get_id(), sutighar_wishlist_ids(), true );
 
 if ( $product->is_in_stock() ) : ?>
 	<form class="cart sg-cart-form" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype="multipart/form-data">
@@ -32,6 +33,20 @@ if ( $product->is_in_stock() ) : ?>
 			<span class="sg-stock-line <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
 			<button type="button" class="sg-size-chart-link" data-sg-size-chart><?php esc_html_e( 'Size Chart', 'sutighar' ); ?></button>
 		</div>
+	</div>
+	<div class="sg-buy-row sg-buy-row--wishlist">
+		<span class="sg-stock-line sg-stock-line--mobile <?php echo esc_attr( $stock_label['class'] ); ?>"><?php echo esc_html( $stock_label['text'] ); ?></span>
+		<button
+			type="button"
+			class="sg-btn sg-wishlist-button<?php echo $is_wishlisted ? ' is-saved' : ''; ?>"
+			data-sg-wishlist-toggle
+			data-product-id="<?php echo esc_attr( $product->get_id() ); ?>"
+			data-sg-wishlist-add-label="<?php esc_attr_e( 'Add to Wishlist', 'sutighar' ); ?>"
+			data-sg-wishlist-remove-label="<?php esc_attr_e( 'Remove from Wishlist', 'sutighar' ); ?>"
+			aria-pressed="<?php echo $is_wishlisted ? 'true' : 'false'; ?>"
+		>
+			<?php echo esc_html( $is_wishlisted ? __( 'Remove from Wishlist', 'sutighar' ) : __( 'Add to Wishlist', 'sutighar' ) ); ?>
+		</button>
 	</div>
 	<?php sutighar_size_chart_modal(); ?>
 <?php endif; ?>

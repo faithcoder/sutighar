@@ -310,6 +310,9 @@
     if (!json || !json.success) return;
     btn.classList.toggle('is-saved', !saved);
     btn.setAttribute('aria-pressed', saved ? 'false' : 'true');
+    if (btn.dataset.sgWishlistAddLabel) {
+      btn.textContent = saved ? btn.dataset.sgWishlistAddLabel : (btn.dataset.sgWishlistRemoveLabel || btn.dataset.sgWishlistAddLabel);
+    }
     document.querySelectorAll('[data-sg-wishlist-count]').forEach((badge) => {
       badge.textContent = json.data.count;
       badge.setAttribute('data-count', json.data.count);
