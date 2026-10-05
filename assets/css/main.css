@@ -1828,6 +1828,12 @@ label { color: var(--sg-ink); font-size: 12px; font-weight: 500; }
 }
 @media (max-width: 719px) {
   :root { --sg-side: 20px; }
+  .sg-404 {
+    min-height: 520px;
+    padding: 80px 20px 112px;
+  }
+  .sg-404 h1 { margin-bottom: 20px; }
+  .sg-404__action { margin-top: 28px; }
   .sg-header {
     position: relative;
     inset: auto;
