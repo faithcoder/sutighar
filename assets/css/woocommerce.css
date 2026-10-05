@@ -1439,6 +1439,77 @@ body.sutighar-theme .sg-gallery-modal {
   width: auto;
   min-width: 0;
 }
+body.woocommerce-account:not(.logged-in) .sg-page {
+  padding-top: 80px;
+  padding-bottom: 112px;
+}
+body.woocommerce-account:not(.logged-in) .entry-content {
+  width: min(100%, 440px);
+  margin-inline: auto;
+}
+body.woocommerce-account:not(.logged-in) .woocommerce {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+body.woocommerce-account:not(.logged-in) #customer_login {
+  width: 100%;
+  margin: 0;
+}
+body.woocommerce-account:not(.logged-in) #customer_login .u-column1,
+body.woocommerce-account:not(.logged-in) #customer_login .u-column2 {
+  float: none;
+  width: 100%;
+  margin: 0;
+}
+body.woocommerce-account:not(.logged-in) #customer_login .u-column2 {
+  margin-top: 32px;
+}
+body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-login,
+body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-register {
+  width: 100%;
+  margin: 0;
+  padding: 32px;
+  border: 1px solid var(--sg-input);
+  border-radius: 6px;
+  background: #fff;
+}
+body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-login h2,
+body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-register h2 {
+  margin: 0 0 28px;
+  color: var(--sg-ink);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 40px;
+  text-align: center;
+}
+body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-login .form-row,
+body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-register .form-row {
+  margin: 0 0 18px;
+  padding: 0;
+}
+body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-login .form-row:last-child,
+body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-register .form-row:last-child {
+  margin-bottom: 0;
+}
+body.woocommerce-account:not(.logged-in) .woocommerce form .form-row label {
+  display: block;
+  margin-bottom: 7px;
+}
+body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-login .woocommerce-form-login__submit {
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--sg-ink);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+body.woocommerce-account:not(.logged-in) .woocommerce form .woocommerce-LostPassword {
+  margin: 4px 0 0;
+}
 .woocommerce-MyAccount-navigation ul {
   list-style: none;
   padding: 0;
@@ -1672,6 +1743,14 @@ body.sutighar-theme .sg-gallery-modal {
   }
   .woocommerce-account .woocommerce {
     grid-template-columns: 1fr;
+  }
+  body.woocommerce-account:not(.logged-in) .sg-page {
+    padding-top: 48px;
+    padding-bottom: 72px;
+  }
+  body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-login,
+  body.woocommerce-account:not(.logged-in) .woocommerce form.woocommerce-form-register {
+    padding: 24px 20px;
   }
   .woocommerce-MyAccount-content {
     overflow-x: auto;
