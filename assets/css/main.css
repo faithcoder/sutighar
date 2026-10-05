@@ -724,6 +724,56 @@ input.button,
 .single_add_to_cart_button { background: var(--sg-accent) !important; color: #fff !important; }
 .sg-btn--full { width: 100%; }
 
+.sg-404 {
+  min-height: 620px;
+  display: grid;
+  place-items: center;
+  padding: 120px 20px 180px;
+  text-align: center;
+}
+.sg-404__content {
+  width: min(100%, 460px);
+  display: grid;
+  justify-items: center;
+}
+.sg-404 h1 {
+  width: 62px;
+  margin: 0 0 24px;
+  color: #F2856F;
+  font-family: var(--sg-font);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.sg-404 p {
+  max-width: 430px;
+  margin: 0;
+  color: #000;
+  font-family: var(--sg-font);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+  text-align: center;
+}
+.sg-404__action {
+  min-width: 174px;
+  min-height: 54px;
+  margin-top: 32px;
+  border-radius: 6px;
+  background: #004147;
+  color: #fff;
+  font-family: var(--sg-font);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 120%;
+}
+.sg-404__action:hover {
+  background: var(--sg-brand-hover);
+  color: #fff;
+}
+
 .sg-hero {
   position: relative;
   width: 100%;
