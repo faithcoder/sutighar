@@ -505,7 +505,7 @@ function sutighar_menu_item_thumb_url( $item ) {
 
 	$slug = sutighar_menu_item_slug( $item );
 	$map  = array(
-		'all'          => 'nav-browse-all.png',
+		'all'          => 'nav-browse-all.jpg',
 		'solid'        => 'nav-solid.png',
 		'stripe-check' => 'nav-stripe.png',
 		'jacquard'     => 'nav-jacquard.png',
@@ -516,7 +516,7 @@ function sutighar_menu_item_thumb_url( $item ) {
 		return sutighar_asset( 'assets/images/' . $map[ $slug ] );
 	}
 
-	return sutighar_asset( 'assets/images/nav-browse-all.png' );
+	return sutighar_asset( 'assets/images/nav-browse-all.jpg' );
 }
 
 function sutighar_is_active_category( $slug ) {
