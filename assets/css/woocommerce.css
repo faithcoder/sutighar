@@ -86,6 +86,8 @@ body.sutighar-theme .sg-gallery-modal {
   display: grid;
   place-items: center;
   overflow: hidden;
+  touch-action: none;
+  user-select: none;
 }
 .sg-gallery-modal__panel img {
   max-width: 100%;
@@ -96,6 +98,7 @@ body.sutighar-theme .sg-gallery-modal {
   touch-action: none;
   transition: transform .16s ease;
   user-select: none;
+  -webkit-user-drag: none;
   will-change: transform;
 }
 .sg-gallery-modal__panel img.is-zoomed {
@@ -104,6 +107,10 @@ body.sutighar-theme .sg-gallery-modal {
 .sg-gallery-modal__panel img.is-dragging {
   cursor: grabbing;
   transition: none;
+}
+.sg-gallery-modal__panel.is-dragging,
+.sg-gallery-modal__panel.is-dragging * {
+  cursor: grabbing;
 }
 .sg-gallery-modal__close {
   position: fixed;

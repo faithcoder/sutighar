@@ -428,6 +428,7 @@
 
   const galleryRoot = document.querySelector('[data-sg-product-gallery]');
   const galleryModal = document.querySelector('[data-sg-gallery-modal]');
+  const galleryPanel = galleryModal && galleryModal.querySelector('.sg-gallery-modal__panel');
   const galleryImage = galleryModal && galleryModal.querySelector('[data-sg-gallery-image]');
   const galleryCounter = galleryModal && galleryModal.querySelector('[data-sg-gallery-counter]');
   let galleryItems = [];
@@ -474,14 +475,23 @@
     galleryImage.style.transform = 'translate3d(' + galleryX + 'px, ' + galleryY + 'px, 0) scale(' + galleryScale + ')';
     galleryImage.classList.toggle('is-zoomed', galleryScale > 1);
   }
+  function stopGalleryDrag(event) {
+    if (event && galleryDrag && event.pointerId !== galleryDrag.pointerId) return;
+    if (galleryPanel && galleryDrag && galleryPanel.hasPointerCapture(galleryDrag.pointerId)) {
+      galleryPanel.releasePointerCapture(galleryDrag.pointerId);
+    }
+    galleryDrag = null;
+    if (galleryImage) galleryImage.classList.remove('is-dragging');
+    if (galleryPanel) galleryPanel.classList.remove('is-dragging');
+  }
   function resetGalleryZoom() {
     galleryScale = 1;
     galleryX = 0;
     galleryY = 0;
     if (galleryImage) {
       galleryImage.style.transformOrigin = '50% 50%';
-      galleryImage.classList.remove('is-dragging');
     }
+    stopGalleryDrag();
     applyGalleryZoom();
   }
   function setGalleryZoom(nextScale, event) {
@@ -585,8 +595,11 @@
     galleryImage.addEventListener('dblclick', (event) => {
       setGalleryZoom(galleryScale > 1 ? 1 : 2.5, event);
     });
-    galleryImage.addEventListener('pointerdown', (event) => {
-      if (galleryScale <= 1) return;
+  }
+  if (galleryPanel) {
+    galleryPanel.addEventListener('pointerdown', (event) => {
+      if (galleryScale <= 1 || event.button !== 0 || event.target.closest('button')) return;
+      event.preventDefault();
       galleryDrag = {
         pointerId: event.pointerId,
         startX: event.clientX,
@@ -595,22 +608,19 @@
         imageY: galleryY,
       };
       galleryImage.classList.add('is-dragging');
-      galleryImage.setPointerCapture(event.pointerId);
+      galleryPanel.classList.add('is-dragging');
+      galleryPanel.setPointerCapture(event.pointerId);
     });
-    galleryImage.addEventListener('pointermove', (event) => {
+    galleryPanel.addEventListener('pointermove', (event) => {
       if (!galleryDrag || galleryDrag.pointerId !== event.pointerId) return;
+      event.preventDefault();
       galleryX = galleryDrag.imageX + event.clientX - galleryDrag.startX;
       galleryY = galleryDrag.imageY + event.clientY - galleryDrag.startY;
       applyGalleryZoom();
     });
-    galleryImage.addEventListener('pointerup', () => {
-      galleryDrag = null;
-      galleryImage.classList.remove('is-dragging');
-    });
-    galleryImage.addEventListener('pointercancel', () => {
-      galleryDrag = null;
-      galleryImage.classList.remove('is-dragging');
-    });
+    galleryPanel.addEventListener('pointerup', stopGalleryDrag);
+    galleryPanel.addEventListener('pointercancel', stopGalleryDrag);
+    galleryPanel.addEventListener('lostpointercapture', stopGalleryDrag);
   }
   if (galleryModal) {
     galleryModal.addEventListener('wheel', (event) => {
