@@ -746,6 +746,8 @@
 
   document.querySelectorAll('.quantity').forEach((wrap) => {
     if (wrap.querySelector('[data-sg-qty]')) return;
+    const input = wrap.querySelector('input.qty');
+    if (!input) return;
     const minus = document.createElement('button');
     minus.type = 'button';
     minus.className = 'sg-qty-btn';
@@ -758,6 +760,15 @@
     plus.textContent = '+';
     wrap.prepend(minus);
     wrap.append(plus);
+    if (input.type === 'hidden') {
+      const value = document.createElement('span');
+      value.className = 'sg-qty-value';
+      value.setAttribute('aria-hidden', 'true');
+      value.textContent = input.value || input.min || '1';
+      input.insertAdjacentElement('afterend', value);
+      minus.disabled = true;
+      plus.disabled = true;
+    }
   });
 
   document.addEventListener('click', async (event) => {

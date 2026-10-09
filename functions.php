@@ -98,6 +98,72 @@ function sutighar_assets() {
 	);
 }
 
+function sutighar_has_seo_meta_provider() {
+	return defined( 'WPSEO_VERSION' )
+		|| defined( 'RANK_MATH_VERSION' )
+		|| defined( 'AIOSEO_VERSION' )
+		|| defined( 'SEOPRESS_VERSION' )
+		|| has_action( 'wp_head', 'wpseo_head' )
+		|| has_action( 'wp_head', 'rank_math_head' );
+}
+
+function sutighar_open_graph_image_url() {
+	$image_id = 0;
+
+	if ( is_singular() ) {
+		$image_id = get_post_thumbnail_id( get_queried_object_id() );
+	}
+
+	if ( ! $image_id ) {
+		$image_id = absint( sutighar_option( 'social_share_image', 0 ) );
+	}
+
+	if ( $image_id ) {
+		$image_url = wp_get_attachment_image_url( $image_id, 'full' );
+		if ( $image_url ) {
+			return $image_url;
+		}
+	}
+
+	return sutighar_asset( 'assets/images/hero-1440.png' );
+}
+
+function sutighar_open_graph_description() {
+	if ( is_singular() ) {
+		$description = get_the_excerpt( get_queried_object_id() );
+		if ( $description ) {
+			return wp_trim_words( wp_strip_all_tags( $description ), 30, '' );
+		}
+	}
+
+	return get_bloginfo( 'description' );
+}
+
+function sutighar_open_graph_tags() {
+	if ( is_admin() || is_feed() || is_robots() || is_rest() || sutighar_has_seo_meta_provider() ) {
+		return;
+	}
+
+	$title       = wp_get_document_title();
+	$description = sutighar_open_graph_description();
+	$image       = sutighar_open_graph_image_url();
+	$url         = is_singular() ? get_permalink( get_queried_object_id() ) : home_url( '/' );
+	$type        = is_singular( 'product' ) ? 'product' : 'website';
+
+	printf( "\n<meta property=\"og:locale\" content=\"en_BD\">\n" );
+	printf( '<meta property="og:type" content="%s">' . "\n", esc_attr( $type ) );
+	printf( '<meta property="og:title" content="%s">' . "\n", esc_attr( $title ) );
+	printf( '<meta property="og:description" content="%s">' . "\n", esc_attr( $description ) );
+	printf( '<meta property="og:url" content="%s">' . "\n", esc_url( $url ) );
+	printf( '<meta property="og:site_name" content="%s">' . "\n", esc_attr( get_bloginfo( 'name' ) ) );
+	printf( '<meta property="og:image" content="%s">' . "\n", esc_url( $image ) );
+	printf( '<meta name="twitter:card" content="summary_large_image">' . "\n" );
+	printf( '<meta name="twitter:title" content="%s">' . "\n", esc_attr( $title ) );
+	printf( '<meta name="twitter:description" content="%s">' . "\n", esc_attr( $description ) );
+	printf( '<meta name="twitter:image" content="%s">' . "\n", esc_url( $image ) );
+}
+add_action( 'wp_head', 'sutighar_open_graph_tags', 5 );
+
 add_action( 'widgets_init', 'sutighar_widgets_init' );
 function sutighar_widgets_init() {
 	$footer_widgets = array(

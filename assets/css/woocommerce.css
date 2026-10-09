@@ -393,6 +393,19 @@ body.sutighar-theme .sg-gallery-modal {
   text-align: center;
   visibility: visible;
 }
+.single-product .sg-quantity-block .sg-qty-value {
+  order: 2;
+  display: grid;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 42px;
+  place-items: center;
+  color: var(--sg-ink);
+  font-family: var(--sg-font);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+}
 .single-product .sg-quantity-block .sg-qty-btn {
   width: 38px;
   height: 42px;

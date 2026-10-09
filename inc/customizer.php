@@ -66,6 +66,27 @@ function sutighar_customize_register( $wp_customize ) {
 		);
 	}
 
+	$wp_customize->add_setting(
+		'sutighar_social_share_image',
+		array(
+			'default'           => 0,
+			'type'              => 'option',
+			'sanitize_callback' => 'absint',
+		)
+	);
+	$wp_customize->add_control(
+		new WP_Customize_Media_Control(
+			$wp_customize,
+			'sutighar_social_share_image',
+			array(
+				'label'       => __( 'Default social sharing image', 'sutighar' ),
+				'description' => __( 'Used when a page or post has no featured image. Recommended size: 1200 x 630 pixels.', 'sutighar' ),
+				'section'     => 'sutighar_branding',
+				'mime_type'   => 'image',
+			)
+		)
+	);
+
 	$store_fields = array(
 		'whatsapp_number' => array( __( 'WhatsApp number', 'sutighar' ), sutighar_default_whatsapp_number() ),
 	);
