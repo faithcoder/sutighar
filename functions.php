@@ -140,7 +140,7 @@ function sutighar_open_graph_description() {
 }
 
 function sutighar_open_graph_tags() {
-	if ( is_admin() || is_feed() || is_robots() || is_rest() || sutighar_has_seo_meta_provider() ) {
+	if ( is_admin() || is_feed() || is_robots() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || sutighar_has_seo_meta_provider() ) {
 		return;
 	}
 
