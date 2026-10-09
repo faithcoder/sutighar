@@ -126,7 +126,7 @@ function sutighar_open_graph_image_url() {
 		}
 	}
 
-	return sutighar_asset( 'assets/images/hero-1440.png' );
+	return sutighar_asset( 'assets/images/social-share.png' );
 }
 
 function sutighar_open_graph_description() {
