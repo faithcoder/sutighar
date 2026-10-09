@@ -84,7 +84,7 @@ $sale_data = sutighar_product_sale_data( $product );
 		<div class="sg-gallery-modal__counter" data-sg-gallery-counter></div>
 		<div class="sg-gallery-modal__tools" aria-label="<?php esc_attr_e( 'Image zoom controls', 'sutighar' ); ?>">
 			<button type="button" data-sg-gallery-zoom="out" aria-label="<?php esc_attr_e( 'Zoom out', 'sutighar' ); ?>">−</button>
-			<button type="button" data-sg-gallery-zoom="reset"><?php esc_html_e( '100%', 'sutighar' ); ?></button>
+			<button type="button" data-sg-gallery-zoom="reset" data-sg-gallery-zoom-level><?php esc_html_e( '100%', 'sutighar' ); ?></button>
 			<button type="button" data-sg-gallery-zoom="in" aria-label="<?php esc_attr_e( 'Zoom in', 'sutighar' ); ?>">+</button>
 		</div>
 		<img src="" alt="" data-sg-gallery-image>

@@ -431,6 +431,7 @@
   const galleryPanel = galleryModal && galleryModal.querySelector('.sg-gallery-modal__panel');
   const galleryImage = galleryModal && galleryModal.querySelector('[data-sg-gallery-image]');
   const galleryCounter = galleryModal && galleryModal.querySelector('[data-sg-gallery-counter]');
+  const galleryZoomLevel = galleryModal && galleryModal.querySelector('[data-sg-gallery-zoom-level]');
   let galleryItems = [];
   let galleryIndex = 0;
   let galleryScale = 1;
@@ -470,10 +471,23 @@
     return clickedItem;
   }
   const clampGalleryScale = (scale) => Math.max(1, Math.min(4, scale));
+  function clampGalleryPosition() {
+    if (!galleryImage || !galleryPanel || galleryScale <= 1) {
+      galleryX = 0;
+      galleryY = 0;
+      return;
+    }
+    const maxX = Math.max(0, ((galleryImage.offsetWidth * galleryScale) - galleryPanel.clientWidth) / 2);
+    const maxY = Math.max(0, ((galleryImage.offsetHeight * galleryScale) - galleryPanel.clientHeight) / 2);
+    galleryX = Math.max(-maxX, Math.min(maxX, galleryX));
+    galleryY = Math.max(-maxY, Math.min(maxY, galleryY));
+  }
   function applyGalleryZoom() {
     if (!galleryImage) return;
+    clampGalleryPosition();
     galleryImage.style.transform = 'translate3d(' + galleryX + 'px, ' + galleryY + 'px, 0) scale(' + galleryScale + ')';
     galleryImage.classList.toggle('is-zoomed', galleryScale > 1);
+    if (galleryZoomLevel) galleryZoomLevel.textContent = Math.round(galleryScale * 100) + '%';
   }
   function stopGalleryDrag(event) {
     if (event && galleryDrag && event.pointerId !== galleryDrag.pointerId) return;
@@ -494,15 +508,10 @@
     stopGalleryDrag();
     applyGalleryZoom();
   }
-  function setGalleryZoom(nextScale, event) {
+  function setGalleryZoom(nextScale) {
     if (!galleryImage) return;
     galleryScale = clampGalleryScale(nextScale);
-    if (event) {
-      const rect = galleryImage.getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width) * 100;
-      const y = ((event.clientY - rect.top) / rect.height) * 100;
-      galleryImage.style.transformOrigin = x + '% ' + y + '%';
-    }
+    galleryImage.style.transformOrigin = '50% 50%';
     if (galleryScale === 1) {
       galleryX = 0;
       galleryY = 0;
@@ -592,8 +601,8 @@
     if (event.target.closest('[data-sg-gallery-close]')) closeGallery();
   });
   if (galleryImage) {
-    galleryImage.addEventListener('dblclick', (event) => {
-      setGalleryZoom(galleryScale > 1 ? 1 : 2.5, event);
+    galleryImage.addEventListener('dblclick', () => {
+      setGalleryZoom(galleryScale > 1 ? 1 : 2.5);
     });
   }
   if (galleryPanel) {
@@ -626,7 +635,7 @@
     galleryModal.addEventListener('wheel', (event) => {
       if (galleryModal.hidden) return;
       event.preventDefault();
-      setGalleryZoom(galleryScale + (event.deltaY < 0 ? .25 : -.25), event);
+      setGalleryZoom(galleryScale + (event.deltaY < 0 ? .25 : -.25));
     }, { passive: false });
   }
 
