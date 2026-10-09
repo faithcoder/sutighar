@@ -120,7 +120,8 @@ function sutighar_open_graph_image_url() {
 
 	if ( $image_id ) {
 		$image_url = wp_get_attachment_image_url( $image_id, 'full' );
-		if ( $image_url ) {
+		$image_mime_type = get_post_mime_type( $image_id );
+		if ( $image_url && in_array( $image_mime_type, array( 'image/jpeg', 'image/png' ), true ) ) {
 			return $image_url;
 		}
 	}
